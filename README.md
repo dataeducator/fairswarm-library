@@ -81,6 +81,10 @@ optimizer = FairSwarm(
     target_demographics=target,
     config=config,
 )
+# Use built-in demographic fitness (or supply your own callable)
+from fairswarm.fitness import DemographicFitness
+fitness_fn = DemographicFitness(target=target)
+
 result = optimizer.optimize(fitness_fn)
 
 # Check results
