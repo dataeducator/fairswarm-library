@@ -98,8 +98,7 @@ FairSwarm builds upon the foundational research of:
 
 ## Documentation
 
-- [Algorithm Specification](CLAUDE.md) - Full algorithm details and proofs
-- [Implementation Guide](CLAUDE_CODE_PROMPT.md) - Development guidelines
+See the [root README](../README.md) for full project documentation, and the `publications/` directory for the formal algorithm specification and proofs.
 
 ## Citation
 
