@@ -164,19 +164,36 @@ class FairSwarmConfig:
                 "This is the differential privacy budget (Theorem 4)."
             )
 
+    # === Resource Limits (prevent denial-of-service via config injection) ===
+    MAX_SWARM_SIZE: int = 1000
+    MAX_ITERATIONS: int = 10000
+    MAX_COALITION_SIZE: int = 500
+
     def _validate_general_parameters(self) -> None:
         """Validate general algorithm parameters."""
         if self.swarm_size < 2:
             raise ValueError(f"swarm_size must be >= 2, got {self.swarm_size}")
+        if self.swarm_size > self.MAX_SWARM_SIZE:
+            raise ValueError(
+                f"swarm_size must be <= {self.MAX_SWARM_SIZE}, got {self.swarm_size}"
+            )
 
         if self.max_iterations < 1:
             raise ValueError(
                 f"max_iterations must be >= 1, got {self.max_iterations}"
             )
+        if self.max_iterations > self.MAX_ITERATIONS:
+            raise ValueError(
+                f"max_iterations must be <= {self.MAX_ITERATIONS}, got {self.max_iterations}"
+            )
 
         if self.coalition_size < 1:
             raise ValueError(
                 f"coalition_size must be >= 1, got {self.coalition_size}"
+            )
+        if self.coalition_size > self.MAX_COALITION_SIZE:
+            raise ValueError(
+                f"coalition_size must be <= {self.MAX_COALITION_SIZE}, got {self.coalition_size}"
             )
 
         if self.velocity_max <= 0:
