@@ -24,6 +24,7 @@ from numpy.typing import NDArray
 
 from fairswarm.types import (
     ClientId,
+    Demographics,
     DemographicVector,
     validate_demographic_vector,
 )
@@ -40,9 +41,12 @@ class Client:
 
     Attributes:
         id: Unique identifier for this client
-        demographics: Probability distribution over demographic groups
+        demographics: Probability distribution over demographic groups.
+            Accepts a numpy array or a Demographics object (auto-normalized).
         dataset_size: Number of samples in the local dataset
+        num_samples: Alias for dataset_size (if both given, num_samples wins)
         communication_cost: Relative cost to communicate with this client (0-1)
+        data_quality: Quality score for this client's data (0-1)
         metadata: Optional additional information
 
     Mathematical Notation (from CLAUDE.md):
@@ -72,13 +76,27 @@ class Client:
     id: ClientId
     demographics: DemographicVector
     dataset_size: int = 1000
+    num_samples: Optional[int] = None
     communication_cost: float = 0.5
+    data_quality: float = 1.0
     metadata: Optional[Dict[str, Any]] = field(default=None)
 
     def __post_init__(self) -> None:
         """Validate client data at construction time."""
+        # Handle Demographics object input (convert to array)
+        if isinstance(self.demographics, Demographics):
+            object.__setattr__(self, "demographics", self.demographics.to_array())
+
+        # Handle num_samples alias for dataset_size
+        if self.num_samples is not None:
+            object.__setattr__(self, "dataset_size", self.num_samples)
+
         # Validate demographics is a proper probability distribution
-        if not validate_demographic_vector(self.demographics):
+        # DemographicDistribution objects self-validate, so skip for those
+        from fairswarm.demographics.distribution import DemographicDistribution
+        if isinstance(self.demographics, DemographicDistribution):
+            pass  # Already validated in DemographicDistribution.__post_init__
+        elif not validate_demographic_vector(self.demographics):
             raise ValueError(
                 f"Client {self.id}: demographics must be a valid probability "
                 f"distribution (non-negative, sum to 1). "

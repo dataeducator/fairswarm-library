@@ -21,10 +21,49 @@ Research Foundation:
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from typing import List, NewType, Sequence, Union
 
 import numpy as np
 from numpy.typing import NDArray
+
+
+# =============================================================================
+# Demographics Container
+# =============================================================================
+
+
+@dataclass
+class Demographics:
+    """
+    Named demographic proportions container.
+
+    Stores named demographic attributes (e.g., age, gender, race) as
+    proportions. Values are normalized to a probability distribution
+    when converted to an array.
+
+    Attributes:
+        age: Age-related demographic proportion
+        gender: Gender-related demographic proportion
+        race: Race-related demographic proportion
+    """
+
+    age: float = 0.0
+    gender: float = 0.0
+    race: float = 0.0
+
+    def to_array(self) -> NDArray[np.float64]:
+        """Convert to a normalized numpy array (probability distribution)."""
+        arr = np.array([self.age, self.gender, self.race], dtype=np.float64)
+        total = arr.sum()
+        if total > 0:
+            return arr / total
+        return np.ones(3, dtype=np.float64) / 3  # uniform if all zeros
+
+    def to_labels(self) -> tuple:
+        """Return the demographic group labels."""
+        return ("age", "gender", "race")
+
 
 # =============================================================================
 # Semantic Type Aliases

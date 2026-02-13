@@ -296,6 +296,31 @@ class DemographicDistribution:
             labels=tuple(labels) if labels else None,
         )
 
+    @classmethod
+    def from_demographics(
+        cls,
+        demographics: "Demographics",
+    ) -> DemographicDistribution:
+        """
+        Create a distribution from a Demographics object.
+
+        The Demographics values are normalized to form a valid
+        probability distribution.
+
+        Args:
+            demographics: Demographics object with named proportions
+
+        Returns:
+            Normalized DemographicDistribution
+        """
+        from fairswarm.types import Demographics as DemoType
+
+        if not isinstance(demographics, DemoType):
+            raise TypeError(f"Expected Demographics, got {type(demographics)}")
+        values = demographics.to_array()
+        labels = demographics.to_labels()
+        return cls(values=values, labels=labels)
+
     def reorder(
         self,
         new_labels: Sequence[str],
