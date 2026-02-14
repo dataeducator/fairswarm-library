@@ -31,6 +31,8 @@ from fairswarm.core.particle import Particle
 from fairswarm.core.position import sigmoid
 from fairswarm.fitness.mock import ConstantFitness, MockFitness
 
+pytestmark = pytest.mark.theorem1
+
 # =============================================================================
 # Hypothesis Strategies
 # =============================================================================

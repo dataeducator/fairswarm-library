@@ -43,6 +43,8 @@ from fairswarm.fitness.fairness import (
     compute_fairness_gradient,
 )
 
+pytestmark = pytest.mark.theorem2
+
 # =============================================================================
 # Hypothesis Strategies
 # =============================================================================

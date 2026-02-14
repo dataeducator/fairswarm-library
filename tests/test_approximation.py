@@ -34,6 +34,8 @@ from fairswarm.demographics.targets import CensusTarget
 from fairswarm.fitness.base import FitnessFunction, FitnessResult
 from fairswarm.types import Coalition
 
+pytestmark = pytest.mark.theorem3
+
 # =============================================================================
 # Submodular Fitness Functions for Testing
 # =============================================================================
