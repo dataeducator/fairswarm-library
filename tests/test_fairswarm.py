@@ -469,10 +469,21 @@ class TestFairSwarmFairness:
         result_fair = optimizer_fair.optimize(fitness, n_iterations=100)
         result_unfair = optimizer_unfair.optimize(fitness, n_iterations=100)
 
-        # Fair version should have lower or equal divergence
-        # (not strictly lower due to randomness, but generally better)
+        # Both should have fairness metrics
         assert result_fair.fairness is not None
         assert result_unfair.fairness is not None
+
+        # Fair version should have lower divergence than unfair version
+        assert result_fair.fairness.demographic_divergence < result_unfair.fairness.demographic_divergence, (
+            f"Fair optimizer ({result_fair.fairness.demographic_divergence:.4f}) "
+            f"should have lower divergence than unfair ({result_unfair.fairness.demographic_divergence:.4f})"
+        )
+
+        # Final divergence from fair optimizer should be below a reasonable threshold
+        assert result_fair.fairness.demographic_divergence < 0.5, (
+            f"Fair optimizer divergence ({result_fair.fairness.demographic_divergence:.4f}) "
+            f"should be below 0.5"
+        )
 
 
 # =============================================================================

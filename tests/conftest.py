@@ -327,3 +327,6 @@ def pytest_configure(config):
     config.addinivalue_line("markers", "theorem1: tests for Theorem 1 (Convergence)")
     config.addinivalue_line("markers", "theorem2: tests for Theorem 2 (ε-Fairness)")
     config.addinivalue_line("markers", "theorem3: tests for Theorem 3 (Approximation)")
+    config.addinivalue_line(
+        "markers", "theorem4: tests for Theorem 4 (Privacy-Fairness Tradeoff)"
+    )

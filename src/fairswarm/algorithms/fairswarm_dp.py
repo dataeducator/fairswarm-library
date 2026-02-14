@@ -66,6 +66,8 @@ class DPConfig:
         max_grad_norm: Maximum gradient norm for clipping
         mechanism: Type of noise mechanism ("gaussian" or "laplace")
         accountant_type: Type of privacy accountant
+        fitness_sensitivity: Known sensitivity of the fitness function.
+            If None, sensitivity is estimated empirically by sampling.
     """
 
     epsilon: float = 1.0
@@ -74,6 +76,7 @@ class DPConfig:
     max_grad_norm: float = 1.0
     mechanism: str = "gaussian"
     accountant_type: str = "rdp"
+    fitness_sensitivity: float | None = None  # None = estimate automatically
 
     def __post_init__(self) -> None:
         if self.epsilon <= 0:
@@ -93,6 +96,7 @@ class DPConfig:
             "max_grad_norm": self.max_grad_norm,
             "mechanism": self.mechanism,
             "accountant_type": self.accountant_type,
+            "fitness_sensitivity": self.fitness_sensitivity,
         }
 
 
@@ -239,7 +243,8 @@ class FairSwarmDP(FairSwarm):
 
         # Initialize swarm
         self._initialize_swarm()
-        assert self.swarm is not None
+        if self.swarm is None:
+            raise RuntimeError("Swarm initialization failed: swarm is None")
 
         # Track metrics
         fitness_history: list[float] = []
@@ -291,14 +296,21 @@ class FairSwarmDP(FairSwarm):
             # Check convergence
             if len(fitness_history) >= convergence_window:
                 recent = fitness_history[-convergence_window:]
-                improvement = max(recent) - min(recent)
+                # Use variance-based detection: more robust than range
+                # to single outliers in the fitness history
+                improvement = float(np.var(recent))
                 if improvement < convergence_threshold:
                     converged = True
                     convergence_iteration = iteration
                     break
 
         # Final result
-        assert self.swarm.g_best is not None
+        if self.swarm.g_best is None:
+            raise RuntimeError(
+                "Optimization failed: no global best position found. "
+                "This may indicate an issue with the fitness function, "
+                "swarm initialization, or privacy budget exhaustion."
+            )
         final_coalition = decode_coalition(self.swarm.g_best, self.coalition_size)
         final_result = fitness_fn.evaluate(final_coalition, self.clients)
 
@@ -362,7 +374,8 @@ class FairSwarmDP(FairSwarm):
         2. Add noise to gradient
         3. Add noise to fitness evaluation
         """
-        assert self.swarm is not None
+        if self.swarm is None:
+            raise RuntimeError("Cannot update particle: swarm is not initialized")
         # Compute fairness gradient
         if self.target_distribution is not None:
             gradient_result = compute_fairness_gradient(
@@ -449,6 +462,13 @@ class FairSwarmDP(FairSwarm):
         """
         Evaluate fitness with differential privacy.
 
+        Both the aggregate value and individual components are privatized
+        to prevent information leakage through component breakdown.
+
+        Each noise addition (the fitness value + each component) is a
+        separate mechanism invocation that must be recorded in the
+        privacy accountant individually.
+
         Args:
             fitness_fn: Fitness function
             coalition: Coalition to evaluate
@@ -459,7 +479,7 @@ class FairSwarmDP(FairSwarm):
         # Get true fitness
         result = fitness_fn.evaluate(coalition, self.clients)
 
-        # Add noise to fitness value
+        # Add noise to fitness value (1 privacy query)
         noisy_value = float(
             self.mechanism.add_noise(
                 result.value,
@@ -467,16 +487,27 @@ class FairSwarmDP(FairSwarm):
                 rng=self.rng,
             )
         )
-
-        # Record privacy cost
         self._record_fitness_query()
 
-        # Return with noisy value
+        # Redact component values to prevent privacy leakage.
+        # Components could reveal information about individual clients.
+        # Each component noise addition is a separate privacy query.
+        private_components: dict[str, float] = {}
+        for k, v in result.components.items():
+            private_components[k] = float(
+                self.mechanism.add_noise(
+                    v,
+                    sensitivity=self._fitness_sensitivity,
+                    rng=self.rng,
+                )
+            )
+            self._record_fitness_query()
+
         return FitnessResult(
             value=noisy_value,
-            components=result.components,
+            components=private_components,
             coalition=result.coalition,
-            metadata={**result.metadata, "private": True},
+            metadata={"private": True},
         )
 
     def _record_gradient_query(self) -> None:
@@ -515,7 +546,11 @@ class FairSwarmDP(FairSwarm):
         """
         Estimate fitness function sensitivity.
 
-        Sensitivity Δf = max |f(D) - f(D')|
+        Sensitivity Δf = max |f(D) - f(D')| over neighboring datasets.
+
+        If dp_config.fitness_sensitivity is provided, uses that value.
+        Otherwise estimates empirically by sampling coalitions and computing
+        the maximum difference when one client is swapped.
 
         Args:
             fitness_fn: Fitness function
@@ -523,9 +558,38 @@ class FairSwarmDP(FairSwarm):
         Returns:
             Estimated sensitivity
         """
-        # Default sensitivity for bounded fitness functions
-        # This should be calibrated based on the specific fitness function
-        return 1.0
+        # Use configured value if available
+        if self.dp_config.fitness_sensitivity is not None:
+            return self.dp_config.fitness_sensitivity
+
+        # Empirical estimation: sample coalitions and measure max change
+        # when one client is swapped
+        n_samples = min(50, self.n_clients * 2)
+        max_diff = 0.0
+
+        for _ in range(n_samples):
+            # Random coalition
+            indices = self.rng.choice(
+                self.n_clients, size=self.coalition_size, replace=False
+            ).tolist()
+            base_result = fitness_fn.evaluate(indices, self.clients)
+
+            # Try swapping each member with a non-member
+            non_members = [i for i in range(self.n_clients) if i not in indices]
+            if not non_members:
+                continue
+
+            swap_idx = int(self.rng.choice(len(indices)))
+            new_member = int(self.rng.choice(non_members))
+            modified = indices.copy()
+            modified[swap_idx] = new_member
+            modified_result = fitness_fn.evaluate(modified, self.clients)
+
+            diff = abs(base_result.value - modified_result.value)
+            max_diff = max(max_diff, diff)
+
+        # Add safety margin and ensure positive
+        return max(max_diff * 1.5, 0.01)
 
     def get_privacy_spent(self) -> tuple[float, float]:
         """

@@ -152,7 +152,12 @@ class Particle:
             v_p ← ω · v_p + v_cognitive + v_social + v_fairness
             v_p ← Clamp(v_p, -v_max, v_max)
         """
-        r1, r2 = rng.random(2)
+        # Per-dimension random vectors (Kennedy & Eberhart, 1995)
+        # Each dimension gets an independent random coefficient for
+        # stochastic diversity in the search space.
+        n = len(self.position)
+        r1 = rng.random(n)
+        r2 = rng.random(n)
 
         # Cognitive component: attraction to personal best
         v_cognitive = cognitive * r1 * (self.p_best - self.position)

@@ -264,9 +264,10 @@ class FairSwarmSelector:
             )
 
         # Run optimization
-        assert fitness_fn is not None, (
-            "fitness_fn must be set (either provided or built from target_distribution)"
-        )
+        if fitness_fn is None:
+            raise ValueError(
+                "fitness_fn must be set (either provided or built from target_distribution)"
+            )
         self.result_ = optimizer.optimize(
             fitness_fn=fitness_fn,
             n_iterations=self.max_iterations,
@@ -363,7 +364,7 @@ class FairSwarmSelector:
         if not self.is_fitted_ or self.selected_indices_ is None:
             raise RuntimeError("Selector has not been fitted")
 
-        mask = np.zeros(n_clients, dtype=bool)
+        mask: NDArray[np.bool_] = np.zeros(n_clients, dtype=bool)
         for idx in self.selected_indices_:
             if idx < n_clients:
                 mask[idx] = True

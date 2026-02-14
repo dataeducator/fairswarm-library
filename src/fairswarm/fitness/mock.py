@@ -360,21 +360,19 @@ class DataQualityFitness(FitnessFunction):
     """
     Fitness based on client data quality attributes.
 
-    Combines multiple quality metrics (sample size, data quality score,
-    staleness) into a single fitness value.
+    Combines multiple quality metrics (sample size, data quality score)
+    into a single fitness value.
 
-    Fitness = Σ quality_i - penalty * staleness_i
+    Fitness = w_quality * avg_quality + w_size * avg_normalized_size
 
     Attributes:
         quality_weight: Weight for data quality score
         size_weight: Weight for sample size (normalized)
-        staleness_penalty: Penalty per unit of staleness
 
     Example:
         >>> fitness = DataQualityFitness(
         ...     quality_weight=0.5,
         ...     size_weight=0.3,
-        ...     staleness_penalty=0.1,
         ... )
     """
 
@@ -382,7 +380,6 @@ class DataQualityFitness(FitnessFunction):
         self,
         quality_weight: float = 0.5,
         size_weight: float = 0.3,
-        staleness_penalty: float = 0.1,
     ):
         """
         Initialize DataQualityFitness.
@@ -390,11 +387,9 @@ class DataQualityFitness(FitnessFunction):
         Args:
             quality_weight: Weight for data quality score
             size_weight: Weight for normalized sample size
-            staleness_penalty: Penalty per staleness unit
         """
         self.quality_weight = quality_weight
         self.size_weight = size_weight
-        self.staleness_penalty = staleness_penalty
 
     def evaluate(
         self,
@@ -414,26 +409,24 @@ class DataQualityFitness(FitnessFunction):
         if not coalition:
             return FitnessResult(
                 value=0.0,
-                components={"quality": 0.0, "size": 0.0, "staleness": 0.0},
+                components={"quality": 0.0, "size": 0.0},
                 coalition=coalition,
             )
 
         # Collect metrics
         qualities = []
         sizes = []
-        stalenesses = []
 
         for idx in coalition:
             if 0 <= idx < len(clients):
                 client = clients[idx]
                 qualities.append(client.data_quality)
                 sizes.append(client.dataset_size)
-                stalenesses.append(getattr(client, "staleness", 0))
 
         if not qualities:
             return FitnessResult(
                 value=0.0,
-                components={"quality": 0.0, "size": 0.0, "staleness": 0.0},
+                components={"quality": 0.0, "size": 0.0},
                 coalition=coalition,
             )
 
@@ -444,13 +437,11 @@ class DataQualityFitness(FitnessFunction):
         # Compute components
         avg_quality = float(np.mean(qualities))
         avg_size = float(np.mean(normalized_sizes))
-        avg_staleness = float(np.mean(stalenesses))
 
         # Combined fitness
         fitness = (
             self.quality_weight * avg_quality
             + self.size_weight * avg_size
-            - self.staleness_penalty * avg_staleness
         )
 
         return FitnessResult(
@@ -458,10 +449,8 @@ class DataQualityFitness(FitnessFunction):
             components={
                 "quality": avg_quality,
                 "size": avg_size,
-                "staleness": avg_staleness,
                 "quality_contribution": self.quality_weight * avg_quality,
                 "size_contribution": self.size_weight * avg_size,
-                "staleness_penalty": -self.staleness_penalty * avg_staleness,
             },
             coalition=coalition,
         )
@@ -493,12 +482,10 @@ class DataQualityFitness(FitnessFunction):
             normalized_size = (
                 client.dataset_size / max_samples if max_samples > 0 else 0
             )
-            staleness = getattr(client, "staleness", 0)
 
             gradient[i] = (
                 self.quality_weight * client.data_quality
                 + self.size_weight * normalized_size
-                - self.staleness_penalty * staleness
             )
 
         # Normalize
@@ -514,5 +501,4 @@ class DataQualityFitness(FitnessFunction):
             "class": self.__class__.__name__,
             "quality_weight": self.quality_weight,
             "size_weight": self.size_weight,
-            "staleness_penalty": self.staleness_penalty,
         }

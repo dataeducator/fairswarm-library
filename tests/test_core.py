@@ -150,10 +150,10 @@ class TestFairSwarmConfig:
         config = FairSwarmConfig()
         assert config.swarm_size == 30
         assert config.max_iterations == 100
-        # Default config has inertia=0.7, cognitive=1.5, social=1.5
-        # Convergence metric = 0.7 + (1.5+1.5)/2 = 2.2 >= 2.0
-        # So the strict convergence condition is NOT satisfied by default
-        assert config.convergence_metric == pytest.approx(2.2)
+        # Default config uses Clerc & Kennedy constriction coefficients:
+        # inertia=0.729, cognitive=1.494, social=1.494
+        # Convergence metric = 0.729 + (1.494+1.494)/2 = 2.223
+        assert config.convergence_metric == pytest.approx(2.223)
 
     def test_convergence_metric_calculation(self):
         """Test convergence metric is computed correctly."""

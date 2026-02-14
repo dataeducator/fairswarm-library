@@ -218,7 +218,8 @@ class FairSwarm:
 
         # Initialize swarm (Algorithm 1: Initialization)
         self._initialize_swarm()
-        assert self.swarm is not None
+        if self.swarm is None:
+            raise RuntimeError("Swarm initialization failed: swarm is None")
 
         # Track convergence
         fitness_history: list[float] = []
@@ -254,10 +255,6 @@ class FairSwarm:
                 # Compute fairness (demographic divergence) for this iteration
                 fairness_value = 0.0
                 if self.target_distribution is not None:
-                    from fairswarm.fitness.fairness import (
-                        compute_coalition_demographics,
-                    )
-
                     coalition_demo = compute_coalition_demographics(
                         g_best_coalition, self.clients
                     )
@@ -299,7 +296,9 @@ class FairSwarm:
             # Check convergence
             if len(fitness_history) >= convergence_window:
                 recent = fitness_history[-convergence_window:]
-                improvement = max(recent) - min(recent)
+                # Use variance-based detection: more robust than range
+                # to single outliers in the fitness history
+                improvement = float(np.var(recent))
                 if improvement < convergence_threshold:
                     converged = True
                     convergence_iteration = iteration
@@ -308,7 +307,12 @@ class FairSwarm:
                     break
 
         # Extract final coalition
-        assert self.swarm.g_best is not None
+        if self.swarm.g_best is None:
+            raise RuntimeError(
+                "Optimization failed: no global best position found. "
+                "This may indicate an issue with the fitness function "
+                "or swarm initialization."
+            )
         final_coalition = decode_coalition(self.swarm.g_best, self.coalition_size)
         final_result = fitness_fn.evaluate(final_coalition, self.clients)
 
@@ -381,7 +385,8 @@ class FairSwarm:
             particle: The particle to update
             fitness_fn: Fitness function for evaluation
         """
-        assert self.swarm is not None
+        if self.swarm is None:
+            raise RuntimeError("Cannot update particle: swarm is not initialized")
         # Compute fairness gradient (NOVEL contribution)
         if self.target_distribution is not None:
             gradient_result = compute_fairness_gradient(

@@ -73,6 +73,7 @@ def kl_divergence(
 
     Raises:
         ValueError: If distributions have different lengths
+        ValueError: If either distribution does not sum to ~1.0 (tolerance: 0.01)
 
     Example:
         >>> import numpy as np
@@ -99,11 +100,26 @@ def kl_divergence(
             f"Distributions must have same length. Got {len(p_arr)} and {len(q_arr)}"
         )
 
+    # Validate that inputs are valid probability distributions (sum to ~1.0)
+    p_sum = float(np.sum(p_arr))
+    q_sum = float(np.sum(q_arr))
+    tolerance = 0.01
+    if abs(p_sum - 1.0) > tolerance:
+        raise ValueError(
+            f"Distribution p does not sum to 1.0 (got {p_sum:.6f}). "
+            f"Pass a valid probability distribution or normalize before calling."
+        )
+    if abs(q_sum - 1.0) > tolerance:
+        raise ValueError(
+            f"Distribution q does not sum to 1.0 (got {q_sum:.6f}). "
+            f"Pass a valid probability distribution or normalize before calling."
+        )
+
     # Add smoothing to avoid log(0) - as specified in CLAUDE.md
     p_smooth = np.clip(p_arr, eps, 1.0)
     q_smooth = np.clip(q_arr, eps, 1.0)
 
-    # Renormalize after clipping to ensure valid distributions
+    # Renormalize ONLY to account for the slight change introduced by smoothing
     p_smooth = p_smooth / np.sum(p_smooth)
     q_smooth = q_smooth / np.sum(q_smooth)
 

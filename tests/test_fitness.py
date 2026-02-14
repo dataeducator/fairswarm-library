@@ -237,8 +237,8 @@ class TestDemographicFitness:
 
         assert len(gradient) == len(diverse_clients)
         assert np.isfinite(gradient).all()
-        # Gradient should be normalized
-        assert np.linalg.norm(gradient) == pytest.approx(1.0, rel=1e-5)
+        # Gradient magnitude is preserved (bounded, not unit-normalized)
+        assert np.linalg.norm(gradient) <= 10.0 + 1e-6
 
 
 # =============================================================================
@@ -266,8 +266,8 @@ class TestFairnessGradient:
         assert isinstance(result.divergence, float)
         assert len(result.coalition_distribution) > 0
 
-    def test_gradient_is_normalized(self, diverse_clients, target_distribution):
-        """Test that gradient is normalized to unit length."""
+    def test_gradient_is_bounded(self, diverse_clients, target_distribution):
+        """Test that gradient has bounded norm (magnitude-preserving clip)."""
         position = np.random.default_rng(42).random(len(diverse_clients))
 
         result = compute_fairness_gradient(
@@ -278,7 +278,8 @@ class TestFairnessGradient:
         )
 
         norm = np.linalg.norm(result.gradient)
-        assert norm == pytest.approx(1.0, rel=1e-5)
+        assert norm <= 10.0 + 1e-6, f"Gradient norm {norm} exceeds max bound"
+        assert norm > 0, "Gradient should be non-zero for non-perfect distribution"
 
     def test_gradient_favors_underrepresented_groups(self, target_distribution):
         """Test that gradient pushes toward underrepresented demographics."""
@@ -608,7 +609,6 @@ class TestDataQualityFitness:
         fitness = DataQualityFitness(
             quality_weight=1.0,
             size_weight=0.0,
-            staleness_penalty=0.0,
         )
 
         result = fitness.evaluate([0, 1], diverse_clients)

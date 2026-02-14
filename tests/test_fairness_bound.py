@@ -148,26 +148,15 @@ class TestDefinition2KLDivergence:
             f"Self-divergence should be 0, got {divergence}"
         )
 
-    @given(
-        demographic_distribution_strategy(),
-        demographic_distribution_strategy(),
-    )
-    @settings(max_examples=30)
-    def test_kl_divergence_asymmetric(self, dist1, dist2):
+    def test_kl_divergence_asymmetric(self):
         """
         Property: D_KL(P || Q) != D_KL(Q || P) in general (asymmetry).
+
+        Uses well-separated distributions where asymmetry is clearly measurable.
         """
-        p = dist1.as_array()
-        q = dist2.as_array()
-
-        # Align lengths
-        max_len = max(len(p), len(q))
-        p = np.pad(p, (0, max_len - len(p)), constant_values=1e-10)
-        q = np.pad(q, (0, max_len - len(q)), constant_values=1e-10)
-
-        # Normalize
-        p = p / p.sum()
-        q = q / q.sum()
+        # Highly skewed vs. near-uniform: strong asymmetry
+        p = np.array([0.9, 0.05, 0.05])
+        q = np.array([0.33, 0.34, 0.33])
 
         div_pq = kl_divergence(p, q)
         div_qp = kl_divergence(q, p)
@@ -176,11 +165,22 @@ class TestDefinition2KLDivergence:
         assert div_pq >= 0
         assert div_qp >= 0
 
-        # They should be equal only if p == q (approximately)
-        if not np.allclose(p, q, atol=1e-5):
-            # Note: KL divergence is NOT symmetric in general
-            # This is a defining property
-            pass  # Just verify computation succeeds
+        # KL divergence is NOT symmetric
+        assert div_pq != pytest.approx(div_qp, rel=0.1), (
+            f"KL divergence should be asymmetric: "
+            f"D_KL(P||Q)={div_pq:.6f}, D_KL(Q||P)={div_qp:.6f}"
+        )
+
+        # Additional case: asymmetric pair (not mirror images)
+        r = np.array([0.8, 0.15, 0.05])
+        s = np.array([0.4, 0.4, 0.2])
+
+        div_rs = kl_divergence(r, s)
+        div_sr = kl_divergence(s, r)
+
+        assert div_rs >= 0
+        assert div_sr >= 0
+        assert div_rs != pytest.approx(div_sr, rel=0.1)
 
     def test_kl_divergence_known_values(self):
         """
@@ -289,9 +289,10 @@ class TestTheorem2FairnessGradient:
     Tests for the fairness gradient that guides optimization.
     """
 
-    def test_gradient_is_normalized(self):
+    def test_gradient_is_bounded(self):
         """
-        Property: Fairness gradient has unit norm.
+        Property: Fairness gradient has bounded norm (clipped to max_grad_norm=10).
+        The gradient preserves magnitude for Theorem 2's drift analysis.
         """
         clients = create_synthetic_clients(
             n_clients=10, n_demographic_groups=5, seed=42
@@ -307,9 +308,10 @@ class TestTheorem2FairnessGradient:
         )
 
         norm = np.linalg.norm(result.gradient)
-        assert np.isclose(norm, 1.0, atol=1e-5), (
-            f"Gradient norm is {norm}, expected 1.0"
+        assert norm <= 10.0 + 1e-6, (
+            f"Gradient norm is {norm}, expected <= 10.0"
         )
+        assert norm > 0, "Gradient should be non-zero for non-perfect distribution"
 
     @given(st.integers(min_value=5, max_value=20))
     @settings(max_examples=20, deadline=None)
@@ -516,8 +518,9 @@ class TestTheorem2EpsilonFairness:
 
         # Should achieve or approach epsilon
         achieved_div = result.fairness.demographic_divergence
-        # Note: This is a "soft" test - we expect improvement but may not always hit epsilon
-        assert achieved_div < 2.0, (
+        # With 200 iterations, strong fairness coefficient, and diverse clients,
+        # divergence should be well below 0.5
+        assert achieved_div < 0.5, (
             f"Divergence {achieved_div:.4f} too high after 200 iterations"
         )
 

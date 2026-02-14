@@ -76,15 +76,19 @@ def compute_coalition_demographics(
     if not coalition:
         raise ValueError("Coalition cannot be empty")
 
+    # Validate all indices before processing
+    for idx in coalition:
+        if not (0 <= idx < len(clients)):
+            raise ValueError(
+                f"Coalition index {idx} is out of range for "
+                f"{len(clients)} clients (valid range: 0 to {len(clients) - 1})"
+            )
+
     # Get demographic vectors for coalition members
     demo_vectors = []
     for idx in coalition:
-        if 0 <= idx < len(clients):
-            client = clients[idx]
-            demo_vectors.append(np.asarray(client.demographics))
-
-    if not demo_vectors:
-        raise ValueError("No valid clients in coalition")
+        client = clients[idx]
+        demo_vectors.append(np.asarray(client.demographics))
 
     # Compute average: δ_S = (1/|S|) Σ_{i∈S} δ_i
     stacked = np.vstack(demo_vectors)
@@ -218,13 +222,13 @@ def compute_fairness_gradient(
     # Handle numerical issues: replace NaN/inf with zeros
     gradient = np.nan_to_num(gradient, nan=0.0, posinf=0.0, neginf=0.0)
 
-    # Normalize gradient to have reasonable magnitude
+    # Clip gradient norm to prevent extreme velocity updates,
+    # but preserve magnitude so the restoring force is proportional
+    # to divergence (required by Theorem 2's drift analysis).
     grad_norm = np.linalg.norm(gradient)
-    if grad_norm > eps:
-        gradient = gradient / grad_norm
-    else:
-        # If gradient is all zeros, no clear direction - stay neutral
-        gradient = np.zeros(n_clients)
+    max_grad_norm = 10.0
+    if grad_norm > max_grad_norm:
+        gradient = gradient * (max_grad_norm / grad_norm)
 
     return FairnessGradient(
         gradient=gradient,

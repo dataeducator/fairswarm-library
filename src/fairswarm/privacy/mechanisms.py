@@ -359,7 +359,12 @@ class ExponentialMechanism(NoiseMechanism):
         scores = self.epsilon * utilities_arr / (2 * self.sensitivity)
         scores = scores - np.max(scores)  # Numerical stability
         probs = np.exp(scores)
-        probs = probs / np.sum(probs)
+        prob_sum = float(np.sum(probs))
+        if prob_sum <= 0:
+            # Uniform fallback if all probabilities collapse
+            probs = np.ones_like(probs) / len(probs)
+        else:
+            probs = probs / prob_sum
 
         # Sample
         idx = rng.choice(len(options), p=probs)
@@ -506,7 +511,14 @@ class SubsampledMechanism:
         rng: np.random.Generator | None = None,
     ) -> float | NDArray[np.float64]:
         """
-        Add noise with subsampling amplification.
+        Add noise via the base mechanism.
+
+        NOTE: This method does NOT perform Poisson subsampling on the data.
+        Actual subsampling (randomly selecting a subset of records) must be
+        performed at the FL round level BEFORE calling this method. If you
+        call add_noise() on the full dataset without prior subsampling, the
+        privacy guarantee is that of the base mechanism alone -- no
+        amplification applies.
 
         Args:
             value: Value(s) to privatize
@@ -514,30 +526,63 @@ class SubsampledMechanism:
             rng: Random number generator
 
         Returns:
-            Private value with amplified privacy
+            Noisy value (without subsampling amplification)
         """
-        # Apply base mechanism
-        # Note: The amplification is accounted for in get_epsilon
+        # Delegate to the base mechanism.  Privacy amplification by
+        # subsampling requires the *caller* to subsample the data before
+        # invoking this method.  We intentionally do NOT claim amplified
+        # privacy here because we cannot verify that subsampling occurred.
         return self.base_mechanism.add_noise(value, sensitivity, rng)
 
     def get_epsilon(self, sensitivity: float, delta: float = 1e-5) -> float:
         """
-        Get amplified epsilon.
+        Get effective epsilon (WITHOUT privacy amplification).
 
-        Uses privacy amplification by subsampling.
+        Privacy amplification by subsampling (Balle et al., 2018) only
+        holds when the data is actually Poisson-subsampled before the
+        noise mechanism is applied.  Since this class cannot enforce or
+        verify that subsampling occurred at the data level, we
+        conservatively return the base mechanism's epsilon to avoid
+        claiming stronger privacy than is actually provided.
+
+        If you need the amplified bound, perform Poisson subsampling on
+        the data yourself and call ``get_amplified_epsilon()`` which
+        documents the assumption explicitly.
 
         Args:
             sensitivity: Query sensitivity
             delta: Target delta
 
         Returns:
-            Amplified epsilon (smaller than base)
+            Base mechanism epsilon (no amplification)
+        """
+        return self.base_mechanism.get_epsilon(sensitivity)
+
+    def get_amplified_epsilon(self, sensitivity: float, delta: float = 1e-5) -> float:
+        """
+        Get amplified epsilon assuming Poisson subsampling was performed.
+
+        IMPORTANT: This bound is ONLY valid if the caller actually
+        performed Poisson subsampling (each record included independently
+        with probability ``self.sampling_rate``) before applying the base
+        noise mechanism.  Calling this without true subsampling yields a
+        falsely optimistic privacy guarantee.
+
+        Uses the tight amplification bound from Balle et al. (2018):
+            amplified eps <= log(1 + q * (exp(base_eps) - 1))
+
+        Args:
+            sensitivity: Query sensitivity
+            delta: Target delta
+
+        Returns:
+            Amplified epsilon (smaller than base), valid only under
+            actual Poisson subsampling.
         """
         base_eps = self.base_mechanism.get_epsilon(sensitivity)
+        q = self.sampling_rate
 
-        # Simplified amplification bound
-        # More precise bounds available via RDP
-        amplified = 2 * self.sampling_rate * base_eps
+        amplified = float(np.log(1 + q * (np.exp(base_eps) - 1)))
         return min(base_eps, amplified)
 
     @property

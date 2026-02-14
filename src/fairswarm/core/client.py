@@ -46,6 +46,8 @@ class Client:
         num_samples: Alias for dataset_size (if both given, num_samples wins)
         communication_cost: Relative cost to communicate with this client (0-1)
         data_quality: Quality score for this client's data (0-1)
+        privacy_epsilon: Client's local differential privacy parameter (optional).
+            When set, LocalPrivacyConstraint checks this value against its bounds.
         metadata: Optional additional information
 
     Mathematical Notation (from CLAUDE.md):
@@ -78,6 +80,7 @@ class Client:
     num_samples: int | None = None
     communication_cost: float = 0.5
     data_quality: float = 1.0
+    privacy_epsilon: float | None = None
     metadata: dict[str, Any] | None = field(default=None)
 
     def __post_init__(self) -> None:

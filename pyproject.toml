@@ -45,7 +45,6 @@ dev = [
     "hypothesis>=6.82.0",
     "mypy>=1.5.0",
     "ruff>=0.1.0",
-    "black>=23.0.0",
     "pre-commit>=3.4.0",
 ]
 flower = [
@@ -56,9 +55,9 @@ full = [
 ]
 
 [project.urls]
-Documentation = "https://github.com/tnorwood/fairswarm#readme"
-Issues = "https://github.com/tnorwood/fairswarm/issues"
-Source = "https://github.com/tnorwood/fairswarm"
+Documentation = "https://github.com/dataeducator/fairswarm#readme"
+Issues = "https://github.com/dataeducator/fairswarm/issues"
+Source = "https://github.com/dataeducator/fairswarm"
 
 [tool.hatch.version]
 path = "src/fairswarm/__version__.py"
@@ -110,10 +109,6 @@ ignore = [
 
 [tool.ruff.lint.isort]
 known-first-party = ["fairswarm"]
-
-[tool.black]
-target-version = ["py39"]
-line-length = 88
 
 [tool.bandit]
 exclude_dirs = ["tests", "experiments"]

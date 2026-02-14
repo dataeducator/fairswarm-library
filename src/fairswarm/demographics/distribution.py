@@ -61,11 +61,10 @@ class DemographicDistribution:
 
     def __post_init__(self) -> None:
         """Validate that values form a valid probability distribution."""
-        # Ensure numpy array
-        if not isinstance(self.values, np.ndarray):
-            object.__setattr__(
-                self, "values", np.asarray(self.values, dtype=np.float64)
-            )
+        # Ensure numpy array and make a defensive copy
+        object.__setattr__(
+            self, "values", np.array(self.values, dtype=np.float64).copy()
+        )
 
         # Check non-negative
         if bool(np.any(self.values < 0)):
@@ -88,6 +87,9 @@ class DemographicDistribution:
                 f"Labels length ({len(self.labels)}) must match "
                 f"values length ({len(self.values)})"
             )
+
+        # Make the array read-only to enforce true immutability
+        self.values.flags.writeable = False
 
     @property
     def n_groups(self) -> int:
@@ -412,8 +414,19 @@ def combine_distributions(
                 f"Number of weights ({len(weights)}) must match "
                 f"number of distributions ({len(distributions)})"
             )
-        if not bool(np.isclose(sum(weights), 1.0, atol=1e-6)):
-            raise ValueError(f"Weights must sum to 1, got {sum(weights)}")
+        if any(w < 0 for w in weights):
+            raise ValueError(
+                "Weights must be non-negative. "
+                f"Got: {weights}"
+            )
+        weight_sum = sum(weights)
+        if weight_sum <= 0:
+            raise ValueError(
+                "Weights must sum to a positive number. "
+                f"Got sum: {weight_sum}"
+            )
+        if not bool(np.isclose(weight_sum, 1.0, atol=1e-6)):
+            raise ValueError(f"Weights must sum to 1, got {weight_sum}")
 
     # Weighted combination
     combined: NDArray[np.float64] = np.zeros(n_groups, dtype=np.float64)

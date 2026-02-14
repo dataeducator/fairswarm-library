@@ -22,6 +22,7 @@ from __future__ import annotations
 from enum import Enum
 
 import numpy as np
+from numpy.typing import NDArray
 
 from fairswarm.demographics.distribution import DemographicDistribution
 
@@ -115,7 +116,7 @@ class CensusTarget(Enum):
         """
         return DemographicDistribution.from_dict(self.value)
 
-    def as_array(self) -> np.ndarray:
+    def as_array(self) -> NDArray[np.float64]:
         """
         Get the target as a numpy array.
 
@@ -126,7 +127,8 @@ class CensusTarget(Enum):
             >>> CensusTarget.US_2020.as_array()
             array([0.576, 0.124, 0.187, 0.061, 0.052])
         """
-        return np.array(list(self.value.values()), dtype=np.float64)
+        result: NDArray[np.float64] = np.array(list(self.value.values()), dtype=np.float64)
+        return result
 
     def as_dict(self) -> dict[str, float]:
         """
@@ -304,6 +306,7 @@ class HealthcareTarget(Enum):
         """Convert to DemographicDistribution."""
         return DemographicDistribution.from_dict(self.value)
 
-    def as_array(self) -> np.ndarray:
+    def as_array(self) -> NDArray[np.float64]:
         """Get as numpy array."""
-        return np.array(list(self.value.values()), dtype=np.float64)
+        result: NDArray[np.float64] = np.array(list(self.value.values()), dtype=np.float64)
+        return result

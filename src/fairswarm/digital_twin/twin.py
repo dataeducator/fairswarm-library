@@ -180,8 +180,9 @@ class BentleyDigitalTwin:
     Key Features:
         1. sync_physical_to_virtual(): Update twin from reality
         2. simulate(): Run FairSwarm optimization in virtual env
-        3. deploy_to_physical(): Transfer optimized policy
-        4. monitor_drift(): Detect distribution shift
+        3. prepare_deployment(): Generate deployment configuration
+        4. deploy_to_physical(): Override in subclass for real deployment
+        5. monitor_drift(): Detect distribution shift
 
     Theoretical Connection:
         The twin enables Theorem 2 (ε-fairness) verification
@@ -203,9 +204,9 @@ class BentleyDigitalTwin:
         >>> # Optimize in simulation
         >>> opt_result = twin.simulate(n_rounds=10)
         >>>
-        >>> # Deploy optimized policy if satisfactory
+        >>> # Prepare deployment config if satisfactory
         >>> if opt_result.is_fair:
-        ...     deploy_result = twin.deploy_to_physical()
+        ...     deploy_config = twin.prepare_deployment()
 
     Research Attribution:
         - Dr. Elizabeth Bentley (Computer Networks 2023)
@@ -422,76 +423,87 @@ class BentleyDigitalTwin:
         self,
         coalition: Coalition | None = None,
         policy_parameters: dict[str, Any] | None = None,
-    ) -> SyncResult:
+    ) -> None:
         """
         Deploy optimized policy to physical system.
 
-        Transfers coalition selection policy or model updates
-        from the virtual environment to production.
+        This method is not implemented in the base digital twin because
+        physical deployment is platform-specific. Subclass BentleyDigitalTwin
+        and override this method with your deployment logic, or use
+        prepare_deployment() to generate a deployment configuration.
+
+        Args:
+            coalition: Optimized coalition to deploy
+            policy_parameters: Additional policy parameters
+
+        Raises:
+            NotImplementedError: Always. Physical deployment requires
+                platform-specific implementation.
+        """
+        raise NotImplementedError(
+            "Physical deployment requires platform-specific implementation. "
+            "Use prepare_deployment() to generate deployment configuration, "
+            "or subclass BentleyDigitalTwin and override deploy_to_physical() "
+            "with your platform-specific deployment logic."
+        )
+
+    def prepare_deployment(
+        self,
+        coalition: Coalition | None = None,
+        policy_parameters: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        """
+        Prepare deployment configuration for physical system.
+
+        Generates a deployment configuration dictionary containing the
+        coalition, policy parameters, and virtual model metadata without
+        actually performing a deployment. The returned configuration can
+        be used by platform-specific deployment tooling.
 
         Args:
             coalition: Optimized coalition to deploy
             policy_parameters: Additional policy parameters
 
         Returns:
-            SyncResult with deployment status
+            Deployment configuration dictionary with keys:
+                - coalition: List of client IDs (if provided)
+                - coalition_size: Number of clients (if provided)
+                - policy_parameters: Policy parameters (if provided)
+                - has_model: Whether virtual model parameters are available
+                - virtual_simulation_round: Current simulation round
+                - timestamp: When configuration was generated
 
         Example:
             >>> # After optimization
             >>> opt_result = twin.simulate(n_rounds=10)
             >>>
-            >>> # Deploy if fairness satisfied
-            >>> if opt_result.fairness.epsilon_satisfied:
-            ...     deploy_result = twin.deploy_to_physical(
-            ...         coalition=opt_result.coalition,
-            ...     )
+            >>> # Generate deployment config
+            >>> config = twin.prepare_deployment(
+            ...     coalition=opt_result.coalition,
+            ... )
+            >>> # Pass config to your platform-specific deployer
+            >>> my_deployer.deploy(config)
         """
-        self._state = TwinState.DEPLOYING
+        config: dict[str, Any] = {
+            "timestamp": datetime.now().isoformat(),
+            "virtual_simulation_round": self._virtual_state.simulation_round,
+        }
 
-        try:
-            details: dict[str, Any] = {}
+        if coalition is not None:
+            config["coalition"] = list(coalition)
+            config["coalition_size"] = len(coalition)
 
-            # Record coalition deployment
-            if coalition is not None:
-                details["coalition"] = list(coalition)
-                details["coalition_size"] = len(coalition)
+        if policy_parameters:
+            config["policy_parameters"] = policy_parameters
 
-            # Record policy parameters
-            if policy_parameters:
-                details["policy_parameters"] = policy_parameters
+        config["has_model"] = self._virtual_state.model_parameters is not None
 
-            # Record virtual model if available
-            if self._virtual_state.model_parameters is not None:
-                details["model_deployed"] = True
+        logger.info(
+            f"Prepared deployment config: "
+            f"coalition={len(coalition) if coalition else 0} clients"
+        )
 
-            self._state = TwinState.SYNCHRONIZED
-
-            result = SyncResult(
-                success=True,
-                direction="virtual_to_physical",
-                metrics_transferred=len(details),
-                details=details,
-            )
-
-            self._sync_history.append(result)
-
-            if self.on_sync:
-                self.on_sync(result)
-
-            logger.info(
-                f"Deploy virtual→physical: coalition={len(coalition) if coalition else 0} clients"
-            )
-
-            return result
-
-        except Exception as e:
-            self._state = TwinState.ERROR
-            logger.error(f"Deploy failed: {e}")
-            return SyncResult(
-                success=False,
-                direction="virtual_to_physical",
-                details={"error": str(e)},
-            )
+        return config
 
     def simulate(
         self,

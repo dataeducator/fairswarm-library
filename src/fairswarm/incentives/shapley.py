@@ -23,7 +23,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from itertools import permutations
 from math import factorial
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING, Any, Callable
 
 import numpy as np
 from numpy.typing import NDArray
@@ -54,7 +54,7 @@ class ShapleyResult:
 
     def normalize(self) -> NDArray[np.float64]:
         """Normalize values to sum to 1."""
-        total = np.sum(self.values)
+        total: np.floating[Any] = np.sum(self.values)
         if total > 0:
             return self.values / total
         return self.values
@@ -107,7 +107,7 @@ class ExactShapley(ShapleyValue):
     Computes exact Shapley values using the definition:
         φ_i = Σ_{S⊆N\\{i}} (|S|!(n-|S|-1)!/n!) [v(S∪{i}) - v(S)]
 
-    Complexity: O(2^n) where n is coalition size.
+    Complexity: O(n!) where n is coalition size (permutation-based formula).
     Only feasible for small coalitions (n ≤ 12).
 
     Example:
@@ -161,9 +161,6 @@ class ExactShapley(ShapleyValue):
                 computation_time=time.time() - start_time,
             )
 
-        # Map coalition indices to 0...n-1
-        {idx: i for i, idx in enumerate(coalition)}
-
         # Initialize Shapley values
         shapley_values = np.zeros(n)
 
@@ -179,8 +176,6 @@ class ExactShapley(ShapleyValue):
             predecessors: set[int] = set()
 
             for player_local in perm:
-                coalition[player_local]
-
                 # v(S ∪ {i})
                 coalition_with = list(predecessors) + [player_local]
                 global_coalition_with = [coalition[j] for j in coalition_with]
@@ -292,8 +287,6 @@ class MonteCarloShapley(ShapleyValue):
             predecessors: set[int] = set()
 
             for _pos, player_local in enumerate(perm):
-                coalition[player_local]
-
                 # v(S ∪ {i})
                 coalition_with_local = list(predecessors) + [player_local]
                 coalition_with = [coalition[j] for j in coalition_with_local]
@@ -390,18 +383,22 @@ class StratifiedShapley(ShapleyValue):
         # For each player
         for player_local in range(n):
             player_value = 0.0
-            coalition[player_local]
 
             # For each coalition size (stratum)
             for size in range(n):
                 stratum_value = 0.0
                 others = [i for i in range(n) if i != player_local]
 
+                # Skip invalid strata (can't have more predecessors than
+                # available players)
+                if size > len(others):
+                    continue
+
                 for _ in range(self.samples_per_stratum):
                     # Sample random subset of size `size` from others
                     if size > 0:
                         subset_local = self.rng.choice(
-                            others, size=min(size, len(others)), replace=False
+                            others, size=size, replace=False
                         ).tolist()
                     else:
                         subset_local = []

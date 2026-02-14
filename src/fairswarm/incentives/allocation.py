@@ -509,8 +509,8 @@ class FairnessAwareAllocator(RewardAllocator):
                 )
 
                 # Marginal fairness improvement
-                dist_without = np.sum((demos_without - target) ** 2)
-                dist_with = np.sum((demos_with - target) ** 2)
+                dist_without: np.floating[Any] = np.sum((demos_without - target) ** 2)
+                dist_with: np.floating[Any] = np.sum((demos_with - target) ** 2)
                 improvement = dist_without - dist_with
 
                 fairness_scores[idx] = max(0, improvement)

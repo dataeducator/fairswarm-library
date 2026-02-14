@@ -432,8 +432,8 @@ class TestTheorem3ApproximationRatio:
         if opt_fitness > 0:
             ratio = result.fitness / opt_fitness
             # Theoretical guarantee is (1 - 1/e) ≈ 0.632
-            # Allow slack for stochastic nature
-            assert ratio >= 0.3, (
+            # Allow some slack for stochastic nature but stay meaningful
+            assert ratio >= 0.5, (
                 f"Approximation ratio too low: {ratio:.4f} "
                 f"(FairSwarm={result.fitness:.4f}, OPT={opt_fitness:.4f})"
             )
@@ -516,7 +516,7 @@ class TestTheorem3GreedyComparison:
         # Should achieve at least 50% of greedy (allowing for stochasticity)
         if greedy_fitness > 0:
             ratio = result.fitness / greedy_fitness
-            assert ratio >= 0.4, f"FairSwarm ratio vs greedy: {ratio:.4f}"
+            assert ratio >= 0.5, f"FairSwarm ratio vs greedy: {ratio:.4f}"
 
     def test_greedy_is_near_optimal_for_small_instances(self):
         """
@@ -673,8 +673,8 @@ class TestTheorem3Statistical:
                 ratio = result.fitness / greedy_fitness
                 worst_ratio = min(worst_ratio, ratio)
 
-        # Worst case should still be reasonable
-        assert worst_ratio >= 0.3, f"Worst ratio {worst_ratio:.4f} too low"
+        # Worst case should still be reasonable (> 0.5)
+        assert worst_ratio >= 0.5, f"Worst ratio {worst_ratio:.4f} too low"
 
 
 # =============================================================================
@@ -756,7 +756,7 @@ class TestTheorem3Integration:
 
             if greedy_fitness > 0:
                 ratio = result.fitness / greedy_fitness
-                assert ratio >= 0.3, (
+                assert ratio >= 0.5, (
                     f"{name}: ratio {ratio:.4f} too low "
                     f"(FairSwarm={result.fitness:.4f}, Greedy={greedy_fitness:.4f})"
                 )

@@ -128,19 +128,29 @@ class TestBentleyDigitalTwin:
         assert result.direction == "physical_to_virtual"
         assert result.metrics_transferred > 0
 
-    def test_deploy_to_physical(self):
-        """Test virtual to physical deployment."""
+    def test_deploy_to_physical_raises(self):
+        """Test that deploy_to_physical raises NotImplementedError."""
         from fairswarm.digital_twin.twin import BentleyDigitalTwin
 
         clients = create_test_clients(10)
         twin = BentleyDigitalTwin(physical_clients=clients)
 
         coalition = [0, 2, 4, 6, 8]
-        result = twin.deploy_to_physical(coalition=coalition)
+        with pytest.raises(NotImplementedError):
+            twin.deploy_to_physical(coalition=coalition)
 
-        assert result.success is True
-        assert result.direction == "virtual_to_physical"
-        assert result.details["coalition"] == coalition
+    def test_prepare_deployment(self):
+        """Test deployment configuration preparation."""
+        from fairswarm.digital_twin.twin import BentleyDigitalTwin
+
+        clients = create_test_clients(10)
+        twin = BentleyDigitalTwin(physical_clients=clients)
+
+        coalition = [0, 2, 4, 6, 8]
+        config = twin.prepare_deployment(coalition=coalition)
+
+        assert config["coalition"] == coalition
+        assert "timestamp" in config
 
     def test_simulate(self):
         """Test simulation in virtual environment."""

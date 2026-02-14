@@ -174,11 +174,6 @@ class WeightedFitness(FitnessFunction):
             )
             total_gradient += comp.weight * comp_gradient
 
-        # Normalize if non-zero
-        norm = np.linalg.norm(total_gradient)
-        if norm > 1e-10:
-            total_gradient = total_gradient / norm
-
         return total_gradient
 
     def get_config(self) -> dict[str, Any]:
@@ -344,11 +339,6 @@ class CompositeFitness(FitnessFunction):
             )
             total_gradient += comp.weight * comp_gradient
 
-        # Normalize
-        norm = np.linalg.norm(total_gradient)
-        if norm > 1e-10:
-            total_gradient = total_gradient / norm
-
         return total_gradient
 
     def get_config(self) -> dict[str, Any]:
@@ -459,17 +449,11 @@ class CommunicationCostFitness(FitnessFunction):
         Returns:
             Gradient vector (negative for high-cost clients)
         """
-        len(clients)
         costs = np.array([c.communication_cost for c in clients])
 
         # Gradient: negative for high-cost clients
         # (we want to reduce selection of expensive clients)
         gradient = -costs
-
-        # Normalize
-        norm = np.linalg.norm(gradient)
-        if norm > 1e-10:
-            gradient = gradient / norm
 
         return gradient
 

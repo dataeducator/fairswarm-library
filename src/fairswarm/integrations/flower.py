@@ -65,6 +65,7 @@ from fairswarm.algorithms.result import OptimizationResult
 from fairswarm.core.client import Client
 from fairswarm.core.config import FairSwarmConfig
 from fairswarm.demographics.distribution import DemographicDistribution
+from fairswarm.demographics.divergence import kl_divergence
 from fairswarm.fitness.base import FitnessFunction, FitnessResult
 from fairswarm.types import ClientId, Coalition
 
@@ -283,11 +284,20 @@ class FlowerFitness(FitnessFunction):
         size_score = total_samples / max_possible if max_possible > 0 else 0.0
 
         # Fairness component (negative divergence)
+        # Uses KL divergence per Definition 2: DemDiv(S) = D_KL(delta_S || delta*)
         coalition_demo = np.mean(
             [np.asarray(c.demographics) for c in coalition_clients], axis=0
         )
         target = self.target_distribution.as_array()
-        divergence = float(np.sum((coalition_demo - target) ** 2))
+        # Normalize to valid probability distributions for KL divergence
+        coalition_demo_sum = float(np.sum(coalition_demo))
+        target_sum = float(np.sum(target))
+        if coalition_demo_sum > 0 and target_sum > 0:
+            coalition_demo_norm = coalition_demo / coalition_demo_sum
+            target_norm = target / target_sum
+            divergence = kl_divergence(coalition_demo_norm, target_norm)
+        else:
+            divergence = float("inf")
         fairness_score = 1.0 / (1.0 + divergence)  # Higher is better
 
         # Combined fitness
@@ -464,6 +474,11 @@ class FairSwarmStrategy(Strategy if FLOWER_AVAILABLE else object):  # type: igno
         # Client registry
         self._client_registry: dict[str, ClientInfo] = {}
 
+        # Cached FairSwarm optimizer (reused across rounds when possible)
+        self._optimizer: FairSwarm | None = None
+        self._optimizer_n_clients: int | None = None
+        self._optimizer_coalition_size: int | None = None
+
         logger.info(
             f"Initialized FairSwarmStrategy with coalition_size={coalition_size}, "
             f"target_distribution={target_distribution is not None}"
@@ -575,22 +590,38 @@ class FairSwarmStrategy(Strategy if FLOWER_AVAILABLE else object):  # type: igno
         )
         coalition_size = min(coalition_size, len(fairswarm_clients))
 
-        # Create fitness function
+        # Create fitness function using fairness weight from config (lambda in Algorithm 1)
         assert self.target_distribution is not None
         fitness_fn = FlowerFitness(
             target_distribution=self.target_distribution,
-            fairness_weight=0.3,
+            fairness_weight=self.fairswarm_config.fairness_weight,
         )
 
-        # Run FairSwarm optimization
-        optimizer = FairSwarm(
-            clients=fairswarm_clients,
-            coalition_size=coalition_size,
-            config=self.fairswarm_config,
-            target_distribution=self.target_distribution,
-        )
+        # Reuse cached optimizer if client count and coalition size are unchanged;
+        # otherwise create a new one and cache it. This preserves swarm state
+        # (particle positions, velocities, personal/global bests) across rounds.
+        if (
+            self._optimizer is None
+            or self._optimizer_n_clients != len(fairswarm_clients)
+            or self._optimizer_coalition_size != coalition_size
+        ):
+            self._optimizer = FairSwarm(
+                clients=fairswarm_clients,
+                coalition_size=coalition_size,
+                config=self.fairswarm_config,
+                target_distribution=self.target_distribution,
+            )
+            self._optimizer_n_clients = len(fairswarm_clients)
+            self._optimizer_coalition_size = coalition_size
+            logger.debug(
+                f"Created new FairSwarm optimizer: "
+                f"n_clients={len(fairswarm_clients)}, coalition_size={coalition_size}"
+            )
+        else:
+            # Update clients in case demographics or quality changed
+            self._optimizer.clients = fairswarm_clients
 
-        result = optimizer.optimize(
+        result = self._optimizer.optimize(
             fitness_fn=fitness_fn,
             n_iterations=self.fairswarm_iterations,
         )

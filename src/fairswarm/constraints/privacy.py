@@ -64,6 +64,7 @@ class PrivacyBudgetConstraint(PrivacyConstraint):
         epsilon_budget: float,
         delta: float = 1e-5,
         accountant: PrivacyAccountant | None = None,
+        cost_per_round: float = 0.0,
     ):
         """
         Initialize PrivacyBudgetConstraint.
@@ -72,6 +73,9 @@ class PrivacyBudgetConstraint(PrivacyConstraint):
             epsilon_budget: Maximum allowed epsilon
             delta: Privacy failure probability
             accountant: Optional privacy accountant for tracking
+            cost_per_round: Expected epsilon cost per round of training.
+                When > 0, the constraint checks that the remaining budget
+                is sufficient to cover at least one more round.
         """
         if epsilon_budget <= 0:
             raise ValueError("epsilon_budget must be positive")
@@ -81,6 +85,7 @@ class PrivacyBudgetConstraint(PrivacyConstraint):
         self.epsilon_budget = epsilon_budget
         self.delta = delta
         self.accountant = accountant
+        self.cost_per_round = cost_per_round
         self._consumed_epsilon = 0.0
 
     def evaluate(
@@ -105,16 +110,24 @@ class PrivacyBudgetConstraint(PrivacyConstraint):
             consumed = self._consumed_epsilon
 
         remaining = self.epsilon_budget - consumed
-        satisfied = remaining > 0
+
+        # Check that consumed epsilon hasn't exceeded the budget
+        within_budget = consumed <= self.epsilon_budget
+
+        # Check that remaining budget is sufficient for another round
+        sufficient_remaining = remaining >= self.cost_per_round
+
+        satisfied = within_budget and sufficient_remaining
 
         return ConstraintResult(
             satisfied=satisfied,
-            violation=max(0, consumed - self.epsilon_budget),
-            message=f"Budget: {consumed:.4f}/{self.epsilon_budget} consumed",
+            violation=max(0.0, consumed - self.epsilon_budget),
+            message=f"Budget: {consumed:.4f}/{self.epsilon_budget} consumed, {remaining:.4f} remaining",
             details={
                 "consumed": consumed,
                 "budget": self.epsilon_budget,
                 "remaining": remaining,
+                "cost_per_round": self.cost_per_round,
                 "delta": self.delta,
             },
         )
@@ -205,10 +218,13 @@ class LocalPrivacyConstraint(PrivacyConstraint):
         for idx in coalition:
             if 0 <= idx < len(clients):
                 client = clients[idx]
-                # Get client's privacy level (if defined)
-                client_epsilon = getattr(client, "privacy_epsilon", self.max_epsilon)
+                client_epsilon = client.privacy_epsilon
 
-                if client_epsilon < self.min_epsilon:
+                if client_epsilon is None:
+                    violations.append(
+                        f"{client.id}: no privacy_epsilon declared"
+                    )
+                elif client_epsilon < self.min_epsilon:
                     violations.append(
                         f"{client.id}: ε={client_epsilon:.2f} < {self.min_epsilon}"
                     )
@@ -291,8 +307,8 @@ class SensitivityConstraint(PrivacyConstraint):
         for idx in coalition:
             if 0 <= idx < len(clients):
                 client = clients[idx]
-                # Get client sensitivity (if defined)
-                sensitivity = getattr(client, "sensitivity", 1.0 / len(coalition))
+                # Get client sensitivity (if defined); default to 1.0
+                sensitivity = getattr(client, "sensitivity", 1.0)
                 sensitivities.append(sensitivity)
 
         total_sensitivity = np.sqrt(np.sum(np.array(sensitivities) ** 2))
@@ -329,6 +345,7 @@ class CompositionConstraint(PrivacyConstraint):
         epsilon_per_query: Epsilon per query
         delta_per_query: Delta per query
         max_queries: Maximum number of queries
+        max_epsilon: Maximum total composed epsilon budget
         composition_type: "basic" or "advanced"
     """
 
@@ -337,6 +354,7 @@ class CompositionConstraint(PrivacyConstraint):
         epsilon_per_query: float,
         delta_per_query: float = 1e-6,
         max_queries: int = 100,
+        max_epsilon: float = float("inf"),
         composition_type: str = "advanced",
     ):
         """
@@ -346,6 +364,7 @@ class CompositionConstraint(PrivacyConstraint):
             epsilon_per_query: Epsilon spent per query
             delta_per_query: Delta per query
             max_queries: Maximum allowed queries
+            max_epsilon: Maximum total composed epsilon (privacy budget)
             composition_type: Composition theorem to use
         """
         if epsilon_per_query <= 0:
@@ -354,6 +373,7 @@ class CompositionConstraint(PrivacyConstraint):
         self.epsilon_per_query = epsilon_per_query
         self.delta_per_query = delta_per_query
         self.max_queries = max_queries
+        self.max_epsilon = max_epsilon
         self.composition_type = composition_type
         self._query_count = 0
 
@@ -388,16 +408,27 @@ class CompositionConstraint(PrivacyConstraint):
             else:
                 composed_epsilon = 0.0
 
-        satisfied = self._query_count < self.max_queries
+        within_query_limit = self._query_count < self.max_queries
+        within_epsilon_budget = bool(composed_epsilon <= self.max_epsilon)
+        satisfied = within_query_limit and within_epsilon_budget
+
+        # Violation magnitude: sum of query overshoot and epsilon overshoot
+        query_violation = max(0, self._query_count - self.max_queries)
+        epsilon_violation = max(0.0, composed_epsilon - self.max_epsilon)
+
+        parts = [f"Queries: {self._query_count}/{self.max_queries}"]
+        if self.max_epsilon < float("inf"):
+            parts.append(f"Composed ε: {composed_epsilon:.4f}/{self.max_epsilon}")
 
         return ConstraintResult(
             satisfied=satisfied,
-            violation=max(0, self._query_count - self.max_queries),
-            message=f"Queries: {self._query_count}/{self.max_queries}",
+            violation=float(query_violation) + epsilon_violation,
+            message=", ".join(parts),
             details={
                 "query_count": self._query_count,
                 "max_queries": self.max_queries,
                 "composed_epsilon": composed_epsilon,
+                "max_epsilon": self.max_epsilon,
                 "composition_type": self.composition_type,
             },
         )
@@ -440,5 +471,6 @@ class CompositionConstraint(PrivacyConstraint):
             "epsilon_per_query": self.epsilon_per_query,
             "delta_per_query": self.delta_per_query,
             "max_queries": self.max_queries,
+            "max_epsilon": self.max_epsilon,
             "composition_type": self.composition_type,
         }

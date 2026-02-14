@@ -531,14 +531,14 @@ class ClientDissimilarityFitness(FitnessFunction):
         )
 
         # Normalize sizes to [0, 1]
-        max_size = np.max(sizes)
+        max_size: np.floating[Any] = np.max(sizes)
         if max_size > 0:
             normalized_sizes = sizes / max_size
         else:
             normalized_sizes = np.zeros(n_clients)
 
         # Weighted mean accuracy (using size proxy)
-        weighted_mean = np.sum(weights * normalized_sizes)
+        weighted_mean: np.floating[Any] = np.sum(weights * normalized_sizes)
 
         # Gradient: clients closer to the mean reduce variance
         # grad[i] = -(normalized_size_i - weighted_mean)^2

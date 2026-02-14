@@ -25,13 +25,32 @@ Advisor: Dr. Uttam Ghosh
 """
 
 from fairswarm.fitness.base import FitnessFunction, FitnessResult
-from fairswarm.fitness.composite import CompositeFitness, WeightedFitness
+from fairswarm.fitness.composite import (
+    CommunicationCostFitness,
+    CompositeFitness,
+    WeightedComponent,
+    WeightedFitness,
+)
+from fairswarm.fitness.equity import (
+    ClientDissimilarityFitness,
+    client_dissimilarity,
+    demographic_parity_difference,
+    equal_opportunity_difference,
+    equalized_odds_gap,
+)
 from fairswarm.fitness.fairness import (
+    AccuracyFairnessFitness,
     DemographicFitness,
     FairnessGradient,
+    compute_coalition_demographics,
     compute_fairness_gradient,
 )
-from fairswarm.fitness.mock import ConstantFitness, MockFitness
+from fairswarm.fitness.mock import (
+    ConstantFitness,
+    DataQualityFitness,
+    DeterministicFitness,
+    MockFitness,
+)
 
 __all__ = [
     # Base
@@ -39,12 +58,24 @@ __all__ = [
     "FitnessResult",
     # Fairness
     "DemographicFitness",
+    "AccuracyFairnessFitness",
     "FairnessGradient",
     "compute_fairness_gradient",
+    "compute_coalition_demographics",
     # Composite
     "CompositeFitness",
     "WeightedFitness",
+    "WeightedComponent",
+    "CommunicationCostFitness",
+    # Equity metrics
+    "ClientDissimilarityFitness",
+    "client_dissimilarity",
+    "equalized_odds_gap",
+    "equal_opportunity_difference",
+    "demographic_parity_difference",
     # Testing
     "MockFitness",
     "ConstantFitness",
+    "DeterministicFitness",
+    "DataQualityFitness",
 ]

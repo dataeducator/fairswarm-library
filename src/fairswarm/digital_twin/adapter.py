@@ -309,7 +309,6 @@ class SimToRealAdapter:
 
         # Compute density ratio estimation using kernel mean matching
         n_source = len(self._source_features)
-        len(self._target_features)
 
         # Simple approach: weight by demographic similarity to target mean
         target_mean = np.mean(self._target_features, axis=0)
@@ -355,12 +354,15 @@ class SimToRealAdapter:
         target_std = np.std(self._target_features, axis=0) + 1e-8
 
         # Compute transformation: (x - source_mean) / source_std * target_std + target_mean
-        # This is equivalent to a diagonal transform
-        self._source_features.shape[1]
+        # This is equivalent to a diagonal transform + shift
         transform = np.diag(target_std / source_std)
 
-        # Compute weights that account for mean shift
+        # Compute mean shift to align source mean to target mean after scaling
         shift = target_mean - source_mean * (target_std / source_std)
+
+        # Apply the moment-matching transformation to source features:
+        # transformed = source @ diag(target_std/source_std) + shift
+        self._source_features = self._source_features @ transform + shift
 
         self._transform_matrix = transform
 

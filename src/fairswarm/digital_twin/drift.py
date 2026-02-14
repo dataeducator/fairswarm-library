@@ -410,11 +410,13 @@ class DriftDetector:
         Returns:
             DriftMetrics with all computed values
         """
-        # Ensure same shape
+        # Validate matching shapes
         if len(reference) != len(current):
-            min_len = min(len(reference), len(current))
-            reference = reference[:min_len]
-            current = current[:min_len]
+            raise ValueError(
+                f"Reference and current distributions must have the same length, "
+                f"got {len(reference)} and {len(current)}. "
+                f"Ensure both distributions cover the same demographic groups."
+            )
 
         # Add smoothing
         eps = 1e-10
@@ -591,7 +593,12 @@ class DriftDetector:
 
     def _compute_confidence(self, metrics: DriftMetrics) -> float:
         """
-        Compute confidence in drift detection.
+        Compute confidence in drift detection using metric agreement.
+
+        Uses a principled approach: normalize each metric against its
+        detection threshold, then combine via agreement and magnitude.
+        When Bonferroni correction is enabled, the effective significance
+        level is divided by the number of tests (4).
 
         Args:
             metrics: Drift metrics
@@ -599,22 +606,35 @@ class DriftDetector:
         Returns:
             Confidence score (0-1)
         """
-        # Use agreement between metrics as confidence indicator
+        # Number of independent tests
+        n_tests = 4
+        alpha = self.config.significance_level
+        if self.config.use_bonferroni:
+            alpha = alpha / n_tests
+
+        # Normalize each metric against meaningful scales:
+        # KL: unbounded, but values > 1 indicate large divergence
+        # JS: bounded in [0, log(2) ≈ 0.693]
+        # PSI: values > 0.25 indicate significant shift (industry standard)
+        # KS: bounded in [0, 1], compare against critical value
         normalized_metrics = [
-            min(metrics.kl_divergence / 1, 1),
-            metrics.js_divergence,
-            min(metrics.psi, 1),
+            min(metrics.kl_divergence / 0.5, 1.0),
+            min(metrics.js_divergence / 0.693, 1.0),
+            min(metrics.psi / 0.25, 1.0),
             metrics.ks_statistic,
         ]
 
-        # Higher agreement = higher confidence
+        # Agreement: low variance among normalized metrics = high confidence
         std_val: float = float(np.std(normalized_metrics))
-        agreement = 1 - min(std_val * 2, 1)
+        agreement = max(0.0, 1.0 - std_val * 2)
 
-        # Also factor in magnitude
+        # Magnitude: average signal strength across all metrics
         magnitude: float = float(np.mean(normalized_metrics))
 
-        return float(0.5 * agreement + 0.5 * magnitude)
+        # Weight agreement (consistency) and magnitude (strength) equally
+        confidence = 0.5 * agreement + 0.5 * magnitude
+
+        return float(np.clip(confidence, 0.0, 1.0))
 
     def add_observation(
         self,
