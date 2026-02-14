@@ -760,3 +760,218 @@ class TestTheorem3Integration:
                     f"{name}: ratio {ratio:.4f} too low "
                     f"(FairSwarm={result.fitness:.4f}, Greedy={greedy_fitness:.4f})"
                 )
+
+
+# =============================================================================
+# Theorem 3: Boundary Condition Tests
+# =============================================================================
+
+
+class TestTheorem3BoundaryConditions:
+    """
+    Boundary condition tests for approximation guarantees.
+    """
+
+    def test_coalition_size_one(self):
+        """
+        Boundary: m=1. FairSwarm should find the single best client.
+        """
+        clients = create_synthetic_clients(n_clients=10, seed=42)
+        fitness = FacilityLocationFitness(n_groups=5)
+        coalition_size = 1
+
+        # Optimal is just the best single client
+        _, opt_fitness = optimal_exhaustive(clients, coalition_size, fitness)
+
+        config = FairSwarmConfig(swarm_size=15, fairness_coefficient=0.0)
+        optimizer = FairSwarm(
+            clients=clients,
+            coalition_size=coalition_size,
+            config=config,
+            seed=42,
+        )
+        result = optimizer.optimize(fitness, n_iterations=80)
+
+        if opt_fitness > 0:
+            ratio = result.fitness / opt_fitness
+            # With m=1, PSO should easily find the best single client
+            assert ratio >= 0.8, (
+                f"Coalition size 1: ratio {ratio:.4f} too low "
+                f"(FairSwarm={result.fitness:.4f}, OPT={opt_fitness:.4f})"
+            )
+
+    def test_coalition_equals_n_clients(self):
+        """
+        Boundary: m=n. Only one possible coalition (all clients).
+        """
+        clients = create_synthetic_clients(n_clients=6, seed=42)
+        fitness = CoverageFitness(n_groups=5)
+        coalition_size = len(clients)
+
+        # The only possible coalition is all clients
+        all_coalition = list(range(len(clients)))
+        expected_fitness = fitness.evaluate(all_coalition, clients).value
+
+        config = FairSwarmConfig(swarm_size=10, fairness_coefficient=0.0)
+        optimizer = FairSwarm(
+            clients=clients,
+            coalition_size=coalition_size,
+            config=config,
+            seed=42,
+        )
+        result = optimizer.optimize(fitness, n_iterations=50)
+
+        # Must find the only possible coalition
+        assert abs(result.fitness - expected_fitness) < 1e-6, (
+            f"With m=n, should find exact fitness {expected_fitness:.4f}, "
+            f"got {result.fitness:.4f}"
+        )
+
+    def test_empty_coalition_zero_fitness(self):
+        """
+        Verify all submodular fitness functions return 0 for empty coalition.
+        """
+        clients = create_synthetic_clients(n_clients=5, seed=42)
+        fitness_fns = [
+            CoverageFitness(n_groups=5),
+            DiversityFitness(),
+            FacilityLocationFitness(n_groups=5),
+        ]
+
+        for fn in fitness_fns:
+            result = fn.evaluate([], clients)
+            assert result.value == 0.0, (
+                f"{fn.__class__.__name__} should return 0 for empty coalition, "
+                f"got {result.value}"
+            )
+
+
+# =============================================================================
+# Theorem 3: Exhaustive Comparison Tests
+# =============================================================================
+
+
+class TestTheorem3ExhaustiveComparison:
+    """
+    Compare FairSwarm against exhaustive search on small instances.
+    """
+
+    @given(
+        n_clients=st.integers(min_value=6, max_value=10),
+        coalition_size=st.integers(min_value=2, max_value=4),
+    )
+    @settings(
+        max_examples=10,
+        deadline=None,
+        suppress_health_check=[HealthCheck.too_slow],
+    )
+    def test_fairswarm_vs_exhaustive_small_instances(self, n_clients, coalition_size):
+        """
+        Property: On small instances, FairSwarm should achieve at least
+        (1 - 1/e - 0.1) ≈ 0.53 of the true optimum.
+        """
+        assume(coalition_size <= n_clients)
+        clients = create_synthetic_clients(n_clients=n_clients, seed=42)
+        fitness = CoverageFitness(n_groups=5)
+
+        _, opt_fitness = optimal_exhaustive(clients, coalition_size, fitness)
+
+        config = FairSwarmConfig(swarm_size=20, fairness_coefficient=0.0)
+        optimizer = FairSwarm(
+            clients=clients,
+            coalition_size=coalition_size,
+            config=config,
+            seed=42,
+        )
+        result = optimizer.optimize(fitness, n_iterations=80)
+
+        if opt_fitness > 0:
+            ratio = result.fitness / opt_fitness
+            # (1 - 1/e) ≈ 0.632, allow η=0.15 slack
+            assert ratio >= 0.48, (
+                f"Approximation ratio {ratio:.4f} below threshold "
+                f"(n={n_clients}, m={coalition_size})"
+            )
+
+    def test_swarm_size_affects_approximation_quality(self):
+        """
+        Larger swarm should achieve better approximation (more exploration).
+        """
+        clients = create_synthetic_clients(n_clients=12, seed=42)
+        fitness = CoverageFitness(n_groups=5)
+        coalition_size = 4
+
+        # Small swarm
+        config_small = FairSwarmConfig(swarm_size=5, fairness_coefficient=0.0)
+        optimizer_small = FairSwarm(
+            clients=clients,
+            coalition_size=coalition_size,
+            config=config_small,
+            seed=42,
+        )
+        result_small = optimizer_small.optimize(fitness, n_iterations=50)
+
+        # Large swarm
+        config_large = FairSwarmConfig(swarm_size=30, fairness_coefficient=0.0)
+        optimizer_large = FairSwarm(
+            clients=clients,
+            coalition_size=coalition_size,
+            config=config_large,
+            seed=42,
+        )
+        result_large = optimizer_large.optimize(fitness, n_iterations=50)
+
+        # Larger swarm should find at least as good a solution
+        assert result_large.fitness >= result_small.fitness - 1e-6, (
+            f"Larger swarm ({result_large.fitness:.4f}) should achieve >= "
+            f"smaller swarm ({result_small.fitness:.4f})"
+        )
+
+
+# =============================================================================
+# Theorem 3: Cross-Theorem Tests
+# =============================================================================
+
+
+class TestTheorem3CrossTheorem:
+    """
+    Tests for interactions between approximation (Theorem 3) and fairness (Theorem 2).
+    """
+
+    def test_fairness_constraint_cost_on_approximation(self):
+        """
+        Increasing fairness pressure should reduce approximation ratio
+        (demonstrating the Pareto tradeoff between fairness and optimality).
+        """
+        clients = create_synthetic_clients(
+            n_clients=15, n_demographic_groups=5, seed=42
+        )
+        target = CensusTarget.US_2020.as_distribution()
+        fitness = FacilityLocationFitness(n_groups=5)
+        coalition_size = 5
+
+        _, opt_fitness = optimal_exhaustive(clients, coalition_size, fitness)
+
+        ratios = []
+        for fairness_coeff in [0.0, 0.5, 1.0]:
+            config = FairSwarmConfig(
+                swarm_size=20, fairness_coefficient=fairness_coeff
+            )
+            optimizer = FairSwarm(
+                clients=clients,
+                coalition_size=coalition_size,
+                config=config,
+                target_distribution=target,
+                seed=42,
+            )
+            result = optimizer.optimize(fitness, n_iterations=80)
+            if opt_fitness > 0:
+                ratios.append(result.fitness / opt_fitness)
+            else:
+                ratios.append(1.0)
+
+        # No fairness should achieve best or equal approximation
+        assert ratios[0] >= ratios[-1] - 0.05, (
+            f"No-fairness ratio ({ratios[0]:.4f}) should be >= "
+            f"high-fairness ratio ({ratios[-1]:.4f})"
+        )

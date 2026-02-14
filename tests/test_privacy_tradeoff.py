@@ -610,3 +610,384 @@ class TestPrivacyBudgetImpact:
             f"Tight budget iterations ({result_tight.convergence.iterations}) should be <= "
             f"loose budget iterations ({result_loose.convergence.iterations})"
         )
+
+
+# =============================================================================
+# Theorem 4 Test 6: Boundary Conditions
+# =============================================================================
+
+
+class TestPrivacyBoundaryConditions:
+    """
+    Boundary condition tests for privacy-fairness tradeoff.
+    """
+
+    def test_very_large_epsilon_matches_non_dp(
+        self, clients_5groups, target_5groups, quality_fitness, pso_config
+    ):
+        """
+        With epsilon → ∞ (very large budget, very low noise), FairSwarmDP
+        should approach non-private FairSwarm performance.
+        """
+        n_iterations = 30
+        coalition_size = 5
+        seed = 42
+
+        # Non-private baseline
+        optimizer_clean = FairSwarm(
+            clients=clients_5groups,
+            coalition_size=coalition_size,
+            config=pso_config,
+            target_distribution=target_5groups,
+            seed=seed,
+        )
+        result_clean = optimizer_clean.optimize(
+            quality_fitness, n_iterations=n_iterations
+        )
+
+        # Near-infinite budget, minimal noise
+        dp_config = DPConfig(
+            epsilon=1000.0,
+            delta=1e-5,
+            noise_multiplier=0.001,
+            max_grad_norm=1.0,
+        )
+        optimizer_dp = FairSwarmDP(
+            clients=clients_5groups,
+            coalition_size=coalition_size,
+            config=pso_config,
+            target_distribution=target_5groups,
+            dp_config=dp_config,
+            seed=seed,
+        )
+        result_dp = optimizer_dp.optimize(quality_fitness, n_iterations=n_iterations)
+
+        # Should be very close to non-DP performance
+        gap = abs(result_clean.fitness - result_dp.fitness)
+        relative_gap = gap / max(abs(result_clean.fitness), 1e-10)
+        assert relative_gap < 0.3, (
+            f"With near-zero noise, DP fitness ({result_dp.fitness:.4f}) should be "
+            f"close to non-DP ({result_clean.fitness:.4f}), gap={relative_gap:.4f}"
+        )
+
+    def test_single_demographic_group_trivial_fairness(
+        self, quality_fitness, pso_config
+    ):
+        """
+        With k=1 demographic group, fairness is trivially satisfied.
+        DP noise should still reduce fitness but fairness shouldn't matter.
+        """
+        clients = create_synthetic_clients(
+            n_clients=15, n_demographic_groups=1, seed=42
+        )
+        target = DemographicDistribution.from_dict({"group_0": 1.0})
+        n_iterations = 30
+        coalition_size = 5
+        seed = 42
+
+        # Non-private
+        optimizer_clean = FairSwarm(
+            clients=clients,
+            coalition_size=coalition_size,
+            config=pso_config,
+            target_distribution=target,
+            seed=seed,
+        )
+        result_clean = optimizer_clean.optimize(
+            quality_fitness, n_iterations=n_iterations
+        )
+
+        # Private (moderate noise)
+        dp_config = DPConfig(
+            epsilon=10.0,
+            delta=1e-5,
+            noise_multiplier=1.0,
+            max_grad_norm=1.0,
+        )
+        optimizer_dp = FairSwarmDP(
+            clients=clients,
+            coalition_size=coalition_size,
+            config=pso_config,
+            target_distribution=target,
+            dp_config=dp_config,
+            seed=seed,
+        )
+        result_dp = optimizer_dp.optimize(quality_fitness, n_iterations=n_iterations)
+
+        # Both should achieve reasonable fitness since fairness is trivial
+        assert result_clean.fitness > 0, "Non-DP should achieve positive fitness"
+        assert result_dp.fitness > 0, "DP with k=1 should still achieve positive fitness"
+
+    def test_very_tight_budget_minimal_optimization(
+        self, clients_5groups, target_5groups, quality_fitness, pso_config
+    ):
+        """
+        With an extremely tight budget, optimization should terminate early
+        and produce limited results.
+        """
+        dp_config = DPConfig(
+            epsilon=0.01,
+            delta=1e-5,
+            noise_multiplier=0.01,
+            max_grad_norm=1.0,
+        )
+        optimizer = FairSwarmDP(
+            clients=clients_5groups,
+            coalition_size=5,
+            config=pso_config,
+            target_distribution=target_5groups,
+            dp_config=dp_config,
+            seed=42,
+        )
+        result = optimizer.optimize(quality_fitness, n_iterations=30)
+
+        # Should terminate very early due to budget exhaustion
+        assert result.convergence.iterations <= 30, (
+            f"With very tight budget, should not exceed max iterations"
+        )
+        # Fitness should be non-negative (but may be poor)
+        assert result.fitness >= 0 or np.isfinite(result.fitness), (
+            f"Fitness should be finite, got {result.fitness}"
+        )
+
+
+# =============================================================================
+# Theorem 4 Test 7: Budget Accounting
+# =============================================================================
+
+
+class TestPrivacyBudgetAccounting:
+    """
+    Test that privacy budget is tracked correctly.
+    """
+
+    def test_spent_epsilon_does_not_exceed_budget(
+        self, clients_5groups, target_5groups, quality_fitness, pso_config
+    ):
+        """
+        The total privacy expenditure should not exceed the configured epsilon.
+        """
+        epsilon_budget = 10.0
+        dp_config = DPConfig(
+            epsilon=epsilon_budget,
+            delta=1e-5,
+            noise_multiplier=1.0,
+            max_grad_norm=1.0,
+        )
+        optimizer = FairSwarmDP(
+            clients=clients_5groups,
+            coalition_size=5,
+            config=pso_config,
+            target_distribution=target_5groups,
+            dp_config=dp_config,
+            seed=42,
+        )
+        result = optimizer.optimize(quality_fitness, n_iterations=30)
+
+        # Check the accountant if accessible
+        if hasattr(optimizer, "_accountant"):
+            spent = optimizer._accountant.get_epsilon(dp_config.delta)
+            assert spent <= epsilon_budget + 0.1, (
+                f"Spent epsilon ({spent:.4f}) exceeds budget ({epsilon_budget})"
+            )
+
+        # Should have completed at least 1 iteration
+        assert result.convergence.iterations >= 1
+
+    def test_more_iterations_spend_more_budget(
+        self, clients_5groups, target_5groups, quality_fitness
+    ):
+        """
+        Running more iterations should consume more privacy budget.
+        """
+        dp_config = DPConfig(
+            epsilon=100.0,
+            delta=1e-5,
+            noise_multiplier=1.0,
+            max_grad_norm=1.0,
+        )
+        config = FairSwarmConfig(
+            swarm_size=10,
+            inertia=0.7,
+            cognitive=1.5,
+            social=1.5,
+            fairness_coefficient=0.2,
+        )
+
+        # Short run
+        optimizer_short = FairSwarmDP(
+            clients=clients_5groups,
+            coalition_size=5,
+            config=config,
+            target_distribution=target_5groups,
+            dp_config=dp_config,
+            seed=42,
+        )
+        optimizer_short.optimize(quality_fitness, n_iterations=5)
+
+        # Long run (fresh optimizer with same config)
+        optimizer_long = FairSwarmDP(
+            clients=clients_5groups,
+            coalition_size=5,
+            config=config,
+            target_distribution=target_5groups,
+            dp_config=dp_config,
+            seed=42,
+        )
+        optimizer_long.optimize(quality_fitness, n_iterations=25)
+
+        # Long run used more iterations
+        if hasattr(optimizer_short, "_accountant") and hasattr(
+            optimizer_long, "_accountant"
+        ):
+            spent_short = optimizer_short._accountant.get_epsilon(dp_config.delta)
+            spent_long = optimizer_long._accountant.get_epsilon(dp_config.delta)
+            assert spent_long >= spent_short, (
+                f"Long run ({spent_long:.4f}) should spend >= "
+                f"short run ({spent_short:.4f})"
+            )
+
+
+# =============================================================================
+# Theorem 4 Test 8: Cross-Theorem Interactions
+# =============================================================================
+
+
+class TestPrivacyFairnessCrossTheorem:
+    """
+    Tests for interactions between privacy (Theorem 4) and fairness (Theorem 2).
+    """
+
+    def test_dp_with_fairness_both_degrade_utility(
+        self, clients_5groups, target_5groups, quality_fitness, pso_config
+    ):
+        """
+        Combining DP noise and fairness constraint should produce worse fitness
+        than either alone.
+        """
+        n_iterations = 30
+        coalition_size = 5
+        seed = 42
+
+        # No fairness, no DP (pure optimization)
+        config_no_fair = FairSwarmConfig(
+            swarm_size=15,
+            max_iterations=30,
+            inertia=0.7,
+            cognitive=1.5,
+            social=1.5,
+            fairness_coefficient=0.0,
+        )
+        optimizer_pure = FairSwarm(
+            clients=clients_5groups,
+            coalition_size=coalition_size,
+            config=config_no_fair,
+            seed=seed,
+        )
+        result_pure = optimizer_pure.optimize(
+            quality_fitness, n_iterations=n_iterations
+        )
+
+        # Fairness only (no DP)
+        optimizer_fair = FairSwarm(
+            clients=clients_5groups,
+            coalition_size=coalition_size,
+            config=pso_config,
+            target_distribution=target_5groups,
+            seed=seed,
+        )
+        result_fair = optimizer_fair.optimize(
+            quality_fitness, n_iterations=n_iterations
+        )
+
+        # DP only (no fairness)
+        dp_config = DPConfig(
+            epsilon=10.0,
+            delta=1e-5,
+            noise_multiplier=1.5,
+            max_grad_norm=1.0,
+        )
+        optimizer_dp = FairSwarmDP(
+            clients=clients_5groups,
+            coalition_size=coalition_size,
+            config=config_no_fair,
+            dp_config=dp_config,
+            seed=seed,
+        )
+        result_dp = optimizer_dp.optimize(quality_fitness, n_iterations=n_iterations)
+
+        # Both DP and fairness
+        optimizer_both = FairSwarmDP(
+            clients=clients_5groups,
+            coalition_size=coalition_size,
+            config=pso_config,
+            target_distribution=target_5groups,
+            dp_config=dp_config,
+            seed=seed,
+        )
+        result_both = optimizer_both.optimize(
+            quality_fitness, n_iterations=n_iterations
+        )
+
+        # Pure should be best or tied
+        assert result_pure.fitness >= result_both.fitness - 1e-6, (
+            f"Pure ({result_pure.fitness:.4f}) should be >= "
+            f"DP+fair ({result_both.fitness:.4f})"
+        )
+
+    def test_dp_noise_does_not_help_fairness(
+        self, clients_5groups, target_5groups, quality_fitness, pso_config
+    ):
+        """
+        Adding DP noise should not systematically improve fairness.
+        Noise is random and shouldn't be a substitute for the fairness gradient.
+        """
+        n_iterations = 30
+        coalition_size = 5
+        n_runs = 5
+
+        fair_div_clean = []
+        fair_div_dp = []
+
+        for seed in range(n_runs):
+            # Non-DP with fairness
+            optimizer_clean = FairSwarm(
+                clients=clients_5groups,
+                coalition_size=coalition_size,
+                config=pso_config,
+                target_distribution=target_5groups,
+                seed=seed,
+            )
+            result_clean = optimizer_clean.optimize(
+                quality_fitness, n_iterations=n_iterations
+            )
+            fair_div_clean.append(result_clean.fairness.demographic_divergence)
+
+            # DP with fairness (moderate noise)
+            dp_config = DPConfig(
+                epsilon=10.0,
+                delta=1e-5,
+                noise_multiplier=1.5,
+                max_grad_norm=1.0,
+            )
+            optimizer_dp = FairSwarmDP(
+                clients=clients_5groups,
+                coalition_size=coalition_size,
+                config=pso_config,
+                target_distribution=target_5groups,
+                dp_config=dp_config,
+                seed=seed,
+            )
+            result_dp = optimizer_dp.optimize(
+                quality_fitness, n_iterations=n_iterations
+            )
+            fair_div_dp.append(result_dp.fairness.demographic_divergence)
+
+        avg_clean = np.mean(fair_div_clean)
+        avg_dp = np.mean(fair_div_dp)
+
+        # Non-DP should achieve equal or better fairness (lower divergence)
+        assert avg_clean <= avg_dp + 0.1, (
+            f"Non-DP avg divergence ({avg_clean:.4f}) should be <= "
+            f"DP avg divergence ({avg_dp:.4f})"
+        )

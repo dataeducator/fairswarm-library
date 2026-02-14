@@ -592,3 +592,267 @@ class TestTheorem1LongRunConvergence:
         assert fitness_range < 0.3, (
             f"Too much variance across runs: range = {fitness_range}"
         )
+
+
+# =============================================================================
+# Theorem 1: Boundary Condition Tests
+# =============================================================================
+
+
+class TestTheorem1BoundaryConditions:
+    """
+    Tests at parameter boundaries of Theorem 1.
+    """
+
+    def test_near_zero_inertia_still_converges(self):
+        """
+        With ω ≈ 0 (near-zero momentum), particles have minimal inertia.
+        Should still converge via cognitive and social terms.
+        """
+        clients = create_synthetic_clients(n_clients=15, seed=42)
+        fitness = MockFitness(mode="mean_quality")
+
+        config = FairSwarmConfig(
+            swarm_size=10,
+            inertia=0.01,
+            cognitive=1.0,
+            social=1.0,
+            velocity_max=2.0,
+        )
+
+        optimizer = FairSwarm(
+            clients=clients,
+            coalition_size=5,
+            config=config,
+            seed=42,
+        )
+
+        result = optimizer.optimize(fitness, n_iterations=50)
+
+        assert np.isfinite(result.fitness)
+        assert result.fitness > 0
+
+    def test_minimal_swarm_size(self):
+        """
+        With swarm_size = 2 (minimum), very limited social interaction.
+        Should still optimize via cognitive + fairness terms.
+        """
+        clients = create_synthetic_clients(n_clients=10, seed=42)
+        fitness = MockFitness(mode="mean_quality")
+
+        config = FairSwarmConfig(
+            swarm_size=2,
+            inertia=0.5,
+            cognitive=1.0,
+            social=1.0,
+        )
+
+        optimizer = FairSwarm(
+            clients=clients,
+            coalition_size=5,
+            config=config,
+            seed=42,
+        )
+
+        result = optimizer.optimize(fitness, n_iterations=50)
+
+        assert np.isfinite(result.fitness)
+        assert len(result.coalition) == 5
+
+    def test_near_stability_boundary(self):
+        """
+        Test at ω + (c₁+c₂)/2 = 1.99, just inside stability region.
+        Should converge but potentially slowly.
+        """
+        clients = create_synthetic_clients(n_clients=15, seed=42)
+        fitness = MockFitness(mode="mean_quality")
+
+        config = FairSwarmConfig(
+            swarm_size=10,
+            inertia=0.99,
+            cognitive=1.0,
+            social=1.0,
+            velocity_max=2.0,
+        )
+
+        # Verify we're inside stability region
+        assert config.inertia + (config.cognitive + config.social) / 2 < 2.0
+
+        optimizer = FairSwarm(
+            clients=clients,
+            coalition_size=5,
+            config=config,
+            seed=42,
+        )
+
+        result = optimizer.optimize(fitness, n_iterations=100)
+
+        assert np.isfinite(result.fitness)
+        for f in result.convergence.fitness_history:
+            assert np.isfinite(f)
+
+
+# =============================================================================
+# Theorem 1: Scale Tests
+# =============================================================================
+
+
+class TestTheorem1ScaleTests:
+    """
+    Tests for convergence at different problem scales.
+    """
+
+    def test_convergence_large_client_pool(self):
+        """
+        With n=100 clients, convergence should still hold.
+        """
+        clients = create_synthetic_clients(n_clients=100, seed=42)
+        fitness = MockFitness(mode="mean_quality")
+
+        config = FairSwarmConfig(
+            swarm_size=15,
+            inertia=0.5,
+            cognitive=1.0,
+            social=1.0,
+        )
+
+        optimizer = FairSwarm(
+            clients=clients,
+            coalition_size=20,
+            config=config,
+            seed=42,
+        )
+
+        result = optimizer.optimize(fitness, n_iterations=50)
+
+        assert np.isfinite(result.fitness)
+        assert len(result.coalition) == 20
+
+        # Positions should remain bounded
+        assert result.position is not None
+        assert np.all(result.position >= 0)
+        assert np.all(result.position <= 1)
+
+    def test_coalition_size_one(self):
+        """
+        With coalition_size = 1, trivial selection problem.
+        Should converge to best single client.
+        """
+        clients = create_synthetic_clients(n_clients=10, seed=42)
+        fitness = MockFitness(mode="mean_quality")
+
+        optimizer = FairSwarm(
+            clients=clients,
+            coalition_size=1,
+            seed=42,
+        )
+
+        result = optimizer.optimize(fitness, n_iterations=50)
+
+        assert len(result.coalition) == 1
+        assert np.isfinite(result.fitness)
+
+    def test_coalition_equals_client_count(self):
+        """
+        With coalition_size = n, only one possible coalition (all clients).
+        Should converge immediately.
+        """
+        clients = create_synthetic_clients(n_clients=5, seed=42)
+        fitness = MockFitness(mode="mean_quality")
+
+        optimizer = FairSwarm(
+            clients=clients,
+            coalition_size=5,
+            seed=42,
+        )
+
+        result = optimizer.optimize(fitness, n_iterations=30)
+
+        assert len(result.coalition) == 5
+        assert set(result.coalition) == {0, 1, 2, 3, 4}
+
+
+# =============================================================================
+# Theorem 1: Cross-Theorem Tests
+# =============================================================================
+
+
+class TestTheorem1CrossTheorem:
+    """
+    Tests verifying convergence holds under fairness gradient influence.
+    """
+
+    @given(st.floats(min_value=0.0, max_value=1.0))
+    @settings(max_examples=20, deadline=None)
+    def test_fairness_gradient_does_not_break_convergence(self, fairness_coeff):
+        """
+        Property: Adding fairness gradient (c₃ > 0) should not prevent convergence.
+        The fairness term is bounded, so stability still holds.
+        """
+        clients = create_synthetic_clients(
+            n_clients=15, n_demographic_groups=5, seed=42
+        )
+        fitness = MockFitness(mode="mean_quality")
+
+        config = FairSwarmConfig(
+            swarm_size=10,
+            inertia=0.5,
+            cognitive=1.0,
+            social=1.0,
+            fairness_coefficient=fairness_coeff,
+        )
+
+        optimizer = FairSwarm(
+            clients=clients,
+            coalition_size=5,
+            config=config,
+            seed=42,
+        )
+
+        result = optimizer.optimize(fitness, n_iterations=50)
+
+        # Should converge regardless of fairness coefficient
+        assert np.isfinite(result.fitness)
+        for f in result.convergence.fitness_history:
+            assert np.isfinite(f)
+
+    def test_convergence_rate_with_vs_without_fairness(self):
+        """
+        Compare convergence with and without fairness gradient.
+        Both should converge, fairness version may converge to different point.
+        """
+        clients = create_synthetic_clients(
+            n_clients=20, n_demographic_groups=5, seed=42
+        )
+        fitness = MockFitness(mode="mean_quality")
+
+        # Without fairness
+        config_no_fair = FairSwarmConfig(
+            swarm_size=15, fairness_coefficient=0.0
+        )
+        opt_no = FairSwarm(
+            clients=clients, coalition_size=10,
+            config=config_no_fair, seed=42,
+        )
+        result_no = opt_no.optimize(fitness, n_iterations=100)
+
+        # With fairness
+        config_fair = FairSwarmConfig(
+            swarm_size=15, fairness_coefficient=0.5
+        )
+        opt_fair = FairSwarm(
+            clients=clients, coalition_size=10,
+            config=config_fair, seed=42,
+        )
+        result_fair = opt_fair.optimize(fitness, n_iterations=100)
+
+        # Both should converge (finite fitness, reasonable variance)
+        assert np.isfinite(result_no.fitness)
+        assert np.isfinite(result_fair.fitness)
+
+        # Both should show decreasing variance in late iterations
+        for result in [result_no, result_fair]:
+            history = result.convergence.fitness_history
+            if len(history) >= 20:
+                late_var = np.var(history[-10:])
+                assert late_var < 1.0, "Failed to converge"
