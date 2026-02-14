@@ -556,7 +556,7 @@ class ClientDissimilarityFitness(FitnessFunction):
         else:
             gradient = np.zeros(n_clients)
 
-        return gradient
+        return np.asarray(gradient, dtype=np.float64)
 
     def get_config(self) -> dict[str, Any]:
         """Get configuration for reproducibility."""
