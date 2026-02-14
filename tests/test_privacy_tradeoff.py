@@ -31,7 +31,6 @@ from fairswarm.core.config import FairSwarmConfig
 from fairswarm.demographics.distribution import DemographicDistribution
 from fairswarm.demographics.targets import CensusTarget
 from fairswarm.fitness.base import FitnessFunction, FitnessResult
-from fairswarm.fitness.mock import MockFitness
 from fairswarm.types import Coalition
 
 pytestmark = pytest.mark.theorem4
@@ -58,9 +57,7 @@ class QualitySumFitness(FitnessFunction):
         if not coalition:
             return FitnessResult(value=0.0, components={}, coalition=coalition)
 
-        value = sum(
-            clients[i].data_quality for i in coalition if 0 <= i < len(clients)
-        )
+        value = sum(clients[i].data_quality for i in coalition if 0 <= i < len(clients))
         return FitnessResult(
             value=value,
             components={"quality_sum": value},
@@ -158,7 +155,9 @@ class TestDPUtilityLoss:
             target_distribution=target_5groups,
             seed=seed,
         )
-        result_clean = optimizer_clean.optimize(quality_fitness, n_iterations=n_iterations)
+        result_clean = optimizer_clean.optimize(
+            quality_fitness, n_iterations=n_iterations
+        )
 
         # Private FairSwarm-DP (moderate privacy)
         dp_config = DPConfig(
@@ -274,7 +273,7 @@ class TestPrivacyUtilityMonotonicity:
             target_distribution=target_5groups,
             seed=seed,
         )
-        result_clean = optimizer_clean.optimize(quality_fitness, n_iterations=n_iterations)
+        optimizer_clean.optimize(quality_fitness, n_iterations=n_iterations)
 
         # High epsilon (low privacy, low noise) - should be close to non-DP
         dp_config_high_eps = DPConfig(
@@ -457,7 +456,9 @@ class TestTradeoffBoundDirection:
         when epsilon_DP decreases or k increases.
         """
 
-        def tradeoff_bound(k: int, epsilon_dp: float, epsilon_f: float, delta: float) -> float:
+        def tradeoff_bound(
+            k: int, epsilon_dp: float, epsilon_f: float, delta: float
+        ) -> float:
             """Compute Theorem 4 lower bound on utility loss."""
             return np.sqrt(k * np.log(1.0 / delta)) / (epsilon_dp * epsilon_f)
 
@@ -472,8 +473,12 @@ class TestTradeoffBoundDirection:
         )
 
         # Lower epsilon_DP = higher bound
-        bound_high_eps = tradeoff_bound(k=5, epsilon_dp=5.0, epsilon_f=epsilon_f, delta=delta)
-        bound_low_eps = tradeoff_bound(k=5, epsilon_dp=0.5, epsilon_f=epsilon_f, delta=delta)
+        bound_high_eps = tradeoff_bound(
+            k=5, epsilon_dp=5.0, epsilon_f=epsilon_f, delta=delta
+        )
+        bound_low_eps = tradeoff_bound(
+            k=5, epsilon_dp=0.5, epsilon_f=epsilon_f, delta=delta
+        )
         assert bound_low_eps > bound_high_eps, (
             f"Bound with low epsilon ({bound_low_eps:.4f}) should exceed "
             f"high epsilon ({bound_high_eps:.4f})"
@@ -481,7 +486,9 @@ class TestTradeoffBoundDirection:
 
         # Lower epsilon_F (stricter fairness) = higher bound
         bound_loose_f = tradeoff_bound(k=5, epsilon_dp=1.0, epsilon_f=0.5, delta=delta)
-        bound_strict_f = tradeoff_bound(k=5, epsilon_dp=1.0, epsilon_f=0.05, delta=delta)
+        bound_strict_f = tradeoff_bound(
+            k=5, epsilon_dp=1.0, epsilon_f=0.05, delta=delta
+        )
         assert bound_strict_f > bound_loose_f, (
             f"Bound with strict fairness ({bound_strict_f:.4f}) should exceed "
             f"loose fairness ({bound_loose_f:.4f})"
@@ -597,7 +604,9 @@ class TestPrivacyBudgetImpact:
         )
 
         # Tight budget should have run fewer iterations
-        assert result_tight.convergence.iterations <= result_loose.convergence.iterations, (
+        assert (
+            result_tight.convergence.iterations <= result_loose.convergence.iterations
+        ), (
             f"Tight budget iterations ({result_tight.convergence.iterations}) should be <= "
             f"loose budget iterations ({result_loose.convergence.iterations})"
         )

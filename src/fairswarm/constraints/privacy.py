@@ -221,9 +221,7 @@ class LocalPrivacyConstraint(PrivacyConstraint):
                 client_epsilon = client.privacy_epsilon
 
                 if client_epsilon is None:
-                    violations.append(
-                        f"{client.id}: no privacy_epsilon declared"
-                    )
+                    violations.append(f"{client.id}: no privacy_epsilon declared")
                 elif client_epsilon < self.min_epsilon:
                     violations.append(
                         f"{client.id}: ε={client_epsilon:.2f} < {self.min_epsilon}"

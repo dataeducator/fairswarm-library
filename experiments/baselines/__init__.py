@@ -10,8 +10,8 @@ Implements the baselines from Section 4.2 of CLAUDE.md:
     - Grey Wolf Optimizer (alternative swarm algorithm)
 """
 
-from experiments.baselines.random_selection import RandomSelection
 from experiments.baselines.greedy_selection import GreedySelection
+from experiments.baselines.random_selection import RandomSelection
 from experiments.baselines.standard_pso import StandardPSO
 
 __all__ = [

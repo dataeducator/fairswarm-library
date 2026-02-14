@@ -474,7 +474,10 @@ class TestFairSwarmFairness:
         assert result_unfair.fairness is not None
 
         # Fair version should have lower divergence than unfair version
-        assert result_fair.fairness.demographic_divergence < result_unfair.fairness.demographic_divergence, (
+        assert (
+            result_fair.fairness.demographic_divergence
+            < result_unfair.fairness.demographic_divergence
+        ), (
             f"Fair optimizer ({result_fair.fairness.demographic_divergence:.4f}) "
             f"should have lower divergence than unfair ({result_unfair.fairness.demographic_divergence:.4f})"
         )

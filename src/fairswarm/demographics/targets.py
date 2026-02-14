@@ -127,7 +127,9 @@ class CensusTarget(Enum):
             >>> CensusTarget.US_2020.as_array()
             array([0.576, 0.124, 0.187, 0.061, 0.052])
         """
-        result: NDArray[np.float64] = np.array(list(self.value.values()), dtype=np.float64)
+        result: NDArray[np.float64] = np.array(
+            list(self.value.values()), dtype=np.float64
+        )
         return result
 
     def as_dict(self) -> dict[str, float]:
@@ -308,5 +310,7 @@ class HealthcareTarget(Enum):
 
     def as_array(self) -> NDArray[np.float64]:
         """Get as numpy array."""
-        result: NDArray[np.float64] = np.array(list(self.value.values()), dtype=np.float64)
+        result: NDArray[np.float64] = np.array(
+            list(self.value.values()), dtype=np.float64
+        )
         return result

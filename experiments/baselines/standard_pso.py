@@ -10,13 +10,10 @@ Reference: CLAUDE.md Section 4.2 (Baselines), Algorithm 1 ablation
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from fairswarm.algorithms.fairswarm import FairSwarm
-from fairswarm.algorithms.result import OptimizationResult
 from fairswarm.core.config import FairSwarmConfig
-from fairswarm.fitness.base import FitnessFunction
 
 if TYPE_CHECKING:
     from fairswarm.core.client import Client

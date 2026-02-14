@@ -439,10 +439,7 @@ class DataQualityFitness(FitnessFunction):
         avg_size = float(np.mean(normalized_sizes))
 
         # Combined fitness
-        fitness = (
-            self.quality_weight * avg_quality
-            + self.size_weight * avg_size
-        )
+        fitness = self.quality_weight * avg_quality + self.size_weight * avg_size
 
         return FitnessResult(
             value=fitness,

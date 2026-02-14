@@ -308,9 +308,7 @@ class TestTheorem2FairnessGradient:
         )
 
         norm = np.linalg.norm(result.gradient)
-        assert norm <= 10.0 + 1e-6, (
-            f"Gradient norm is {norm}, expected <= 10.0"
-        )
+        assert norm <= 10.0 + 1e-6, f"Gradient norm is {norm}, expected <= 10.0"
         assert norm > 0, "Gradient should be non-zero for non-perfect distribution"
 
     @given(st.integers(min_value=5, max_value=20))

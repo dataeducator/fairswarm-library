@@ -415,15 +415,11 @@ def combine_distributions(
                 f"number of distributions ({len(distributions)})"
             )
         if any(w < 0 for w in weights):
-            raise ValueError(
-                "Weights must be non-negative. "
-                f"Got: {weights}"
-            )
+            raise ValueError(f"Weights must be non-negative. Got: {weights}")
         weight_sum = sum(weights)
         if weight_sum <= 0:
             raise ValueError(
-                "Weights must sum to a positive number. "
-                f"Got sum: {weight_sum}"
+                f"Weights must sum to a positive number. Got sum: {weight_sum}"
             )
         if not bool(np.isclose(weight_sum, 1.0, atol=1e-6)):
             raise ValueError(f"Weights must sum to 1, got {weight_sum}")
