@@ -141,7 +141,7 @@ def decode_coalition(
     sorted_indices = np.argsort(position)[::-1]
 
     # Select top m indices
-    coalition = sorted_indices[:coalition_size].tolist()
+    coalition: Coalition = [int(x) for x in sorted_indices[:coalition_size]]
 
     return coalition
 
@@ -172,7 +172,9 @@ def encode_coalition(
         >>> encode_coalition(coalition, n_clients=5)
         array([0.9, 0.1, 0.9, 0.1, 0.9])
     """
-    position = np.full(n_clients, unselected_value, dtype=np.float64)
+    position: NDArray[np.float64] = np.full(
+        n_clients, unselected_value, dtype=np.float64
+    )
     for idx in coalition:
         if 0 <= idx < n_clients:
             position[idx] = selected_value
@@ -222,12 +224,15 @@ def soft_decode_coalition(
     probabilities = exp_scaled / np.sum(exp_scaled)
 
     # Sample without replacement
-    coalition = rng.choice(
-        n_clients,
-        size=coalition_size,
-        replace=False,
-        p=probabilities,
-    ).tolist()
+    coalition: Coalition = [
+        int(x)
+        for x in rng.choice(
+            n_clients,
+            size=coalition_size,
+            replace=False,
+            p=probabilities,
+        )
+    ]
 
     return coalition
 

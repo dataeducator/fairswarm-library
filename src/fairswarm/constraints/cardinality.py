@@ -49,7 +49,7 @@ class CardinalityConstraint(Constraint):
     def __init__(
         self,
         min_size: int = 1,
-        max_size: int = float("inf"),
+        max_size: float = float("inf"),
     ):
         """
         Initialize CardinalityConstraint.
@@ -84,7 +84,7 @@ class CardinalityConstraint(Constraint):
         size = len(coalition)
 
         if size < self.min_size:
-            violation = self.min_size - size
+            violation: float = self.min_size - size
             return ConstraintResult(
                 satisfied=False,
                 violation=float(violation),

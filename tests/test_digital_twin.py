@@ -431,7 +431,9 @@ class TestSimToRealAdapter:
         source_clients = create_test_clients(10)
         target_clients = create_test_clients(10)
 
-        config = DomainAdaptationConfig(strategy=AdaptationStrategy.IMPORTANCE_WEIGHTING)
+        config = DomainAdaptationConfig(
+            strategy=AdaptationStrategy.IMPORTANCE_WEIGHTING
+        )
 
         adapter = SimToRealAdapter(
             source_clients=source_clients,
@@ -456,7 +458,9 @@ class TestSimToRealAdapter:
         source_clients = create_test_clients(10)
         target_clients = create_test_clients(10)
 
-        config = DomainAdaptationConfig(strategy=AdaptationStrategy.IMPORTANCE_WEIGHTING)
+        config = DomainAdaptationConfig(
+            strategy=AdaptationStrategy.IMPORTANCE_WEIGHTING
+        )
 
         adapter = SimToRealAdapter(
             source_clients=source_clients,
@@ -549,13 +553,15 @@ class TestDriftDetector:
         current = []
         for i in range(10):
             # Inverted demographics
-            demographics = DemographicDistribution.from_dict({
-                "white": 0.1,
-                "black": 0.6,
-                "hispanic": 0.2,
-                "asian": 0.05,
-                "other": 0.05,
-            })
+            demographics = DemographicDistribution.from_dict(
+                {
+                    "white": 0.1,
+                    "black": 0.6,
+                    "hispanic": 0.2,
+                    "asian": 0.05,
+                    "other": 0.05,
+                }
+            )
             client = Client(
                 id=f"new_hospital_{i}",
                 num_samples=1000,

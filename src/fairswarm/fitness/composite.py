@@ -288,7 +288,7 @@ class CompositeFitness(FitnessFunction):
         elif self.aggregation == "product":
             # Shift values to be positive for product
             shifted = [max(v + 1, 0.001) for v in weighted_values]
-            total_fitness = np.prod(shifted) - 1
+            total_fitness = float(np.prod(shifted)) - 1
         elif self.aggregation == "lexicographic":
             # Use large multipliers to enforce priority
             total_fitness = 0.0

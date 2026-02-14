@@ -50,12 +50,14 @@ class TestDemographicDistribution:
 
     def test_creation_from_dict(self):
         """Test creating distribution from dictionary."""
-        dist = DemographicDistribution.from_dict({
-            "white": 0.6,
-            "black": 0.2,
-            "hispanic": 0.15,
-            "other": 0.05,
-        })
+        dist = DemographicDistribution.from_dict(
+            {
+                "white": 0.6,
+                "black": 0.2,
+                "hispanic": 0.15,
+                "other": 0.05,
+            }
+        )
 
         assert dist.n_groups == 4
         assert dist["white"] == 0.6
@@ -64,11 +66,13 @@ class TestDemographicDistribution:
 
     def test_creation_from_counts(self):
         """Test creating distribution from counts (auto-normalizes)."""
-        dist = DemographicDistribution.from_counts({
-            "group_a": 600,
-            "group_b": 300,
-            "group_c": 100,
-        })
+        dist = DemographicDistribution.from_counts(
+            {
+                "group_a": 600,
+                "group_b": 300,
+                "group_c": 100,
+            }
+        )
 
         assert np.isclose(dist["group_a"], 0.6)
         assert np.isclose(dist["group_b"], 0.3)
@@ -109,7 +113,7 @@ class TestDemographicDistribution:
         )
 
         assert dist.labels == ("low", "medium", "high")
-        assert dist["medium"] == pytest.approx(1/3)
+        assert dist["medium"] == pytest.approx(1 / 3)
 
     def test_entropy_uniform_is_maximum(self):
         """Test that uniform distribution has maximum entropy."""
@@ -155,9 +159,7 @@ class TestDemographicDistribution:
 
     def test_reorder(self):
         """Test reordering distribution labels."""
-        dist = DemographicDistribution.from_dict({
-            "a": 0.5, "b": 0.3, "c": 0.2
-        })
+        dist = DemographicDistribution.from_dict({"a": 0.5, "b": 0.3, "c": 0.2})
         reordered = dist.reorder(["c", "a", "b"])
 
         assert reordered.labels == ("c", "a", "b")
@@ -166,9 +168,7 @@ class TestDemographicDistribution:
 
     def test_items_iteration(self):
         """Test iterating over (label, value) pairs."""
-        dist = DemographicDistribution.from_dict({
-            "x": 0.6, "y": 0.4
-        })
+        dist = DemographicDistribution.from_dict({"x": 0.6, "y": 0.4})
         items = list(dist.items())
         assert items == [("x", 0.6), ("y", 0.4)]
 
@@ -537,11 +537,13 @@ class TestCustomTarget:
 
     def test_create_custom_target(self):
         """Test creating a custom target."""
-        target = create_custom_target({
-            "majority": 70,
-            "minority_a": 20,
-            "minority_b": 10,
-        })
+        target = create_custom_target(
+            {
+                "majority": 70,
+                "minority_a": 20,
+                "minority_b": 10,
+            }
+        )
 
         assert target["majority"] == pytest.approx(0.7)
         assert target["minority_a"] == pytest.approx(0.2)

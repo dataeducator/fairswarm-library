@@ -118,11 +118,11 @@ class MockFitness(FitnessFunction):
 
         elif self.mode == "diversity":
             # Fitness = number of unique demographic groups represented
-            groups = set()
+            groups: set[int] = set()
             for i in coalition:
                 if 0 <= i < len(clients):
                     # Use the dominant demographic group
-                    demo = np.asarray(clients[i].demographics)
+                    demo = np.asarray(clients[i].demographics, dtype=np.float64)
                     dominant = int(np.argmax(demo))
                     groups.add(dominant)
             fitness = float(len(groups))
@@ -167,7 +167,7 @@ class MockFitness(FitnessFunction):
 
         elif self.mode == "mean_quality":
             # Gradient proportional to data quality
-            gradient = np.array([c.data_quality for c in clients])
+            gradient = np.array([c.data_quality for c in clients], dtype=np.float64)
             norm = np.linalg.norm(gradient)
             if norm > 1e-10:
                 gradient = gradient / norm
@@ -286,7 +286,7 @@ class DeterministicFitness(FitnessFunction):
 
     def __init__(
         self,
-        values: dict[frozenset, float],
+        values: dict[frozenset[int], float],
         default_value: float = 0.0,
     ):
         """
@@ -442,9 +442,9 @@ class DataQualityFitness(FitnessFunction):
         normalized_sizes = [s / max_size for s in sizes] if max_size > 0 else sizes
 
         # Compute components
-        avg_quality = np.mean(qualities)
-        avg_size = np.mean(normalized_sizes)
-        avg_staleness = np.mean(stalenesses)
+        avg_quality = float(np.mean(qualities))
+        avg_size = float(np.mean(normalized_sizes))
+        avg_staleness = float(np.mean(stalenesses))
 
         # Combined fitness
         fitness = (
@@ -490,7 +490,9 @@ class DataQualityFitness(FitnessFunction):
         max_samples = max(c.dataset_size for c in clients) if clients else 1
 
         for i, client in enumerate(clients):
-            normalized_size = client.dataset_size / max_samples if max_samples > 0 else 0
+            normalized_size = (
+                client.dataset_size / max_samples if max_samples > 0 else 0
+            )
             staleness = getattr(client, "staleness", 0)
 
             gradient[i] = (

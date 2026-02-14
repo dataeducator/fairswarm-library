@@ -34,7 +34,7 @@ def safe_normalize(
     """
     x = np.asarray(x, dtype=np.float64)
     x = np.clip(x, 0, None)  # Ensure non-negative
-    total = np.sum(x)
+    total: float = float(np.sum(x))
 
     # If all zeros, return uniform distribution
     if total <= eps:
@@ -97,19 +97,19 @@ def check_distribution(
     p = np.asarray(p)
 
     # Check for NaN
-    if np.any(np.isnan(p)):
+    if bool(np.any(np.isnan(p))):
         return False, "Distribution contains NaN values"
 
     # Check for Inf
-    if np.any(np.isinf(p)):
+    if bool(np.any(np.isinf(p))):
         return False, "Distribution contains Inf values"
 
     # Check non-negativity
-    if np.any(p < 0):
+    if bool(np.any(p < 0)):
         return False, f"Distribution has negative values: min={p.min()}"
 
     # Check sum to 1
-    total = np.sum(p)
+    total = float(np.sum(p))
     if abs(total - 1.0) > eps:
         return False, f"Distribution sums to {total}, not 1.0"
 
@@ -169,15 +169,15 @@ def check_gradient(
     gradient = np.asarray(gradient)
 
     # Check for NaN
-    if np.any(np.isnan(gradient)):
+    if bool(np.any(np.isnan(gradient))):
         return False, "Gradient contains NaN values"
 
     # Check for Inf
-    if np.any(np.isinf(gradient)):
+    if bool(np.any(np.isinf(gradient))):
         return False, "Gradient contains Inf values"
 
     # Check norm
-    norm = np.linalg.norm(gradient)
+    norm = float(np.linalg.norm(gradient))
     if norm > max_norm:
         return False, f"Gradient norm {norm:.2f} exceeds max {max_norm}"
 

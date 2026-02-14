@@ -34,6 +34,7 @@ from datetime import datetime
 from typing import Any, Callable
 
 import numpy as np
+from numpy.typing import NDArray
 
 from fairswarm.algorithms.fairswarm import FairSwarm
 from fairswarm.algorithms.result import OptimizationResult
@@ -169,7 +170,7 @@ class VirtualClient:
         return self.client.id
 
     @property
-    def demographics(self) -> DemographicDistribution:
+    def demographics(self) -> NDArray[np.float64]:
         """Client demographics."""
         return self.client.demographics
 
@@ -318,9 +319,7 @@ class VirtualEnvironment:
         self.fitness_fn = fitness_fn
 
         # Create virtual clients
-        self.virtual_clients = [
-            VirtualClient.from_client(c) for c in clients
-        ]
+        self.virtual_clients = [VirtualClient.from_client(c) for c in clients]
         self.clients = clients
 
         # Random state
@@ -405,13 +404,22 @@ class VirtualEnvironment:
                     logger.info(f"Converged at round {round_num}")
 
             # Reset optimizer for next round
-            self._optimizer.reset(seed=self.config.seed + round_num + 1)
+            next_seed = (
+                (self.config.seed + round_num + 1)
+                if self.config.seed is not None
+                else None
+            )
+            self._optimizer.reset(seed=next_seed)
 
         elapsed_time = (datetime.now() - start_time).total_seconds()
 
         result = SimulationResult(
-            final_accuracy=self._accuracy_history[-1] if self._accuracy_history else 0.0,
-            final_divergence=self._divergence_history[-1] if self._divergence_history else 0.0,
+            final_accuracy=(
+                self._accuracy_history[-1] if self._accuracy_history else 0.0
+            ),
+            final_divergence=(
+                self._divergence_history[-1] if self._divergence_history else 0.0
+            ),
             accuracy_history=self._accuracy_history.copy(),
             divergence_history=self._divergence_history.copy(),
             coalition_history=self._coalition_history.copy(),
@@ -441,9 +449,7 @@ class VirtualEnvironment:
         from fairswarm.fitness.mock import MockFitness
 
         if self.target_distribution:
-            return DemographicFitness(
-                target_distribution=self.target_distribution
-            )
+            return DemographicFitness(target_distribution=self.target_distribution)
         else:
             return MockFitness(mode="mean_quality")
 
@@ -484,9 +490,8 @@ class VirtualEnvironment:
 
         # Update global accuracy with learning rate
         new_accuracy = (
-            (1 - self.config.learning_rate) * self._global_accuracy
-            + self.config.learning_rate * avg_contribution
-        )
+            1 - self.config.learning_rate
+        ) * self._global_accuracy + self.config.learning_rate * avg_contribution
 
         # Add noise
         noise = self.rng.normal(0, self.config.noise_level)
@@ -511,10 +516,12 @@ class VirtualEnvironment:
             return float("inf")
 
         # Compute coalition demographics
-        demo_vectors = []
+        demo_vectors: list[NDArray[np.float64]] = []
         for idx in coalition:
             if 0 <= idx < len(self.clients):
-                demo_vectors.append(np.asarray(self.clients[idx].demographics))
+                demo_vectors.append(
+                    np.asarray(self.clients[idx].demographics, dtype=np.float64)
+                )
 
         if not demo_vectors:
             return float("inf")
@@ -558,11 +565,19 @@ class VirtualEnvironment:
         # Create modified config
         modified_config = SimulationConfig(
             n_rounds=parameter_changes.get("n_rounds", self.config.n_rounds),
-            n_iterations=parameter_changes.get("n_iterations", self.config.n_iterations),
-            coalition_size=parameter_changes.get("coalition_size", self.config.coalition_size),
-            learning_rate=parameter_changes.get("learning_rate", self.config.learning_rate),
+            n_iterations=parameter_changes.get(
+                "n_iterations", self.config.n_iterations
+            ),
+            coalition_size=parameter_changes.get(
+                "coalition_size", self.config.coalition_size
+            ),
+            learning_rate=parameter_changes.get(
+                "learning_rate", self.config.learning_rate
+            ),
             noise_level=parameter_changes.get("noise_level", self.config.noise_level),
-            dropout_prob=parameter_changes.get("dropout_prob", self.config.dropout_prob),
+            dropout_prob=parameter_changes.get(
+                "dropout_prob", self.config.dropout_prob
+            ),
             seed=parameter_changes.get("seed", self.config.seed),
         )
 

@@ -247,6 +247,8 @@ class DriftDetector:
         self.on_drift = on_drift
 
         # Reference distribution
+        self._reference_features: NDArray[np.float64] | None
+        self._reference_distribution: NDArray[np.float64] | None
         if reference_clients:
             self._reference_features = self._extract_features(reference_clients)
             self._reference_distribution = self._compute_aggregate_demographics(
@@ -307,7 +309,8 @@ class DriftDetector:
             return np.array([])
 
         demos = [np.asarray(c.demographics) for c in clients]
-        return np.mean(demos, axis=0)
+        result: NDArray[np.float64] = np.mean(demos, axis=0)
+        return result
 
     def detect(
         self,
@@ -549,27 +552,35 @@ class DriftDetector:
             return ["No action required - distributions are stable"]
 
         if severity == DriftSeverity.CRITICAL:
-            recommendations.extend([
-                "URGENT: Re-synchronize digital twin immediately",
-                "Halt deployment of current policies",
-                "Investigate root cause of distribution shift",
-            ])
+            recommendations.extend(
+                [
+                    "URGENT: Re-synchronize digital twin immediately",
+                    "Halt deployment of current policies",
+                    "Investigate root cause of distribution shift",
+                ]
+            )
         elif severity == DriftSeverity.HIGH:
-            recommendations.extend([
-                "Schedule digital twin re-synchronization",
-                "Review coalition selection policies",
-                "Increase monitoring frequency",
-            ])
+            recommendations.extend(
+                [
+                    "Schedule digital twin re-synchronization",
+                    "Review coalition selection policies",
+                    "Increase monitoring frequency",
+                ]
+            )
         elif severity == DriftSeverity.MEDIUM:
-            recommendations.extend([
-                "Monitor drift trend over next iterations",
-                "Consider adapting fairness weights",
-            ])
+            recommendations.extend(
+                [
+                    "Monitor drift trend over next iterations",
+                    "Consider adapting fairness weights",
+                ]
+            )
         else:
-            recommendations.extend([
-                "Continue monitoring",
-                "Log drift for trend analysis",
-            ])
+            recommendations.extend(
+                [
+                    "Continue monitoring",
+                    "Log drift for trend analysis",
+                ]
+            )
 
         if drift_type == DriftType.GRADUAL:
             recommendations.append("Consider continuous adaptation strategy")
@@ -597,11 +608,11 @@ class DriftDetector:
         ]
 
         # Higher agreement = higher confidence
-        std = np.std(normalized_metrics)
-        agreement = 1 - min(std * 2, 1)
+        std_val: float = float(np.std(normalized_metrics))
+        agreement = 1 - min(std_val * 2, 1)
 
         # Also factor in magnitude
-        magnitude = np.mean(normalized_metrics)
+        magnitude: float = float(np.mean(normalized_metrics))
 
         return float(0.5 * agreement + 0.5 * magnitude)
 

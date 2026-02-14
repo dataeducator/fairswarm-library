@@ -94,12 +94,17 @@ def simple_fitness():
         def evaluate(self, coalition, clients):
             if not coalition:
                 return FitnessResult(value=0.0, components={}, coalition=coalition)
-            value = sum(clients[i].data_quality for i in coalition if 0 <= i < len(clients))
-            return FitnessResult(value=value, components={"quality": value}, coalition=coalition)
+            value = sum(
+                clients[i].data_quality for i in coalition if 0 <= i < len(clients)
+            )
+            return FitnessResult(
+                value=value, components={"quality": value}, coalition=coalition
+            )
 
         def compute_gradient(self, position, clients, coalition_size):
             """Compute gradient based on data quality."""
             import numpy as np
+
             len(clients)
             gradient = np.array([c.data_quality for c in clients])
             norm = np.linalg.norm(gradient)
@@ -145,9 +150,7 @@ class TestShapleyResult:
 
         normalized = result.normalize()
         assert normalized.sum() == pytest.approx(1.0)
-        np.testing.assert_array_almost_equal(
-            normalized, [1 / 6, 2 / 6, 3 / 6]
-        )
+        np.testing.assert_array_almost_equal(normalized, [1 / 6, 2 / 6, 3 / 6])
 
     def test_normalize_zero_sum(self):
         """Test normalization with zero sum."""
@@ -189,8 +192,12 @@ class TestExactShapley:
         result = shapley.compute([0, 1], sample_clients, additive_value_fn)
 
         # For additive function, Shapley = individual value
-        assert result.values[0] == pytest.approx(sample_clients[0].data_quality, rel=1e-5)
-        assert result.values[1] == pytest.approx(sample_clients[1].data_quality, rel=1e-5)
+        assert result.values[0] == pytest.approx(
+            sample_clients[0].data_quality, rel=1e-5
+        )
+        assert result.values[1] == pytest.approx(
+            sample_clients[1].data_quality, rel=1e-5
+        )
 
     def test_efficiency_property(self, sample_clients, additive_value_fn):
         """Test efficiency: Σφ_i = v(N)."""
@@ -207,8 +214,12 @@ class TestExactShapley:
         """Test symmetry: identical players get identical values."""
         # Create identical clients
         identical_clients = [
-            Client(id="a", num_samples=100, demographics=Demographics(), data_quality=0.8),
-            Client(id="b", num_samples=100, demographics=Demographics(), data_quality=0.8),
+            Client(
+                id="a", num_samples=100, demographics=Demographics(), data_quality=0.8
+            ),
+            Client(
+                id="b", num_samples=100, demographics=Demographics(), data_quality=0.8
+            ),
         ]
 
         def value_fn(coalition, clients):
@@ -281,20 +292,27 @@ class TestMonteCarloShapley:
 
     def test_variance_decreases_with_samples(self, sample_clients):
         """Test variance decreases with more samples."""
+
         # Use a supermodular (non-additive) value function so that marginal
         # contributions vary across permutations, producing meaningful variance.
         def supermodular_value_fn(coalition, clients):
             if not coalition:
                 return 0.0
-            base = sum(clients[i].data_quality for i in coalition if 0 <= i < len(clients))
+            base = sum(
+                clients[i].data_quality for i in coalition if 0 <= i < len(clients)
+            )
             diversity_bonus = len(coalition) * 0.1
             return base + diversity_bonus
 
         low_samples = MonteCarloShapley(n_samples=100, seed=42)
         high_samples = MonteCarloShapley(n_samples=2000, seed=42)
 
-        result_low = low_samples.compute([0, 1, 2], sample_clients, supermodular_value_fn)
-        result_high = high_samples.compute([0, 1, 2], sample_clients, supermodular_value_fn)
+        result_low = low_samples.compute(
+            [0, 1, 2], sample_clients, supermodular_value_fn
+        )
+        result_high = high_samples.compute(
+            [0, 1, 2], sample_clients, supermodular_value_fn
+        )
 
         # Both should produce valid variance estimates
         assert result_high.variance is not None
@@ -699,13 +717,19 @@ class TestFairnessAwareAllocator:
             fairness_weight=0.9,
         )
 
-        result_low = low_fairness.allocate([0, 1, 2], sample_clients, total_reward=100.0)
-        result_high = high_fairness.allocate([0, 1, 2], sample_clients, total_reward=100.0)
+        result_low = low_fairness.allocate(
+            [0, 1, 2], sample_clients, total_reward=100.0
+        )
+        result_high = high_fairness.allocate(
+            [0, 1, 2], sample_clients, total_reward=100.0
+        )
 
         # Different fairness weights should give different allocations
         assert result_low.allocations != result_high.allocations
 
-    def test_metrics_contain_fairness_contribution(self, sample_clients, target_demographics):
+    def test_metrics_contain_fairness_contribution(
+        self, sample_clients, target_demographics
+    ):
         """Test metrics contain fairness contribution."""
         allocator = FairnessAwareAllocator(
             target_distribution=target_demographics,
@@ -869,9 +893,12 @@ class TestIncentivesIntegration:
 
     def test_shapley_to_allocation_pipeline(self, sample_clients):
         """Test Shapley values feed into allocation."""
+
         # Compute Shapley values
         def value_fn(coalition, clients):
-            return sum(clients[i].data_quality for i in coalition if 0 <= i < len(clients))
+            return sum(
+                clients[i].data_quality for i in coalition if 0 <= i < len(clients)
+            )
 
         shapley_result = compute_shapley_values(
             coalition=[0, 1, 2],
@@ -899,11 +926,15 @@ class TestIncentivesIntegration:
         coalition = [0, 1, 2]
         total_reward = 100.0
 
-        equal_result = EqualAllocator().allocate(coalition, sample_clients, total_reward)
-        prop_result = ProportionalAllocator().allocate(coalition, sample_clients, total_reward)
-        fair_result = FairnessAwareAllocator(target_distribution=target_demographics).allocate(
+        equal_result = EqualAllocator().allocate(
             coalition, sample_clients, total_reward
         )
+        prop_result = ProportionalAllocator().allocate(
+            coalition, sample_clients, total_reward
+        )
+        fair_result = FairnessAwareAllocator(
+            target_distribution=target_demographics
+        ).allocate(coalition, sample_clients, total_reward)
 
         assert sum(equal_result.allocations.values()) == pytest.approx(total_reward)
         assert sum(prop_result.allocations.values()) == pytest.approx(total_reward)

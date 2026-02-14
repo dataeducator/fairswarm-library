@@ -109,7 +109,7 @@ def kl_divergence(
 
     # KL divergence: Σ P(i) * log(P(i) / Q(i))
     # Only sum over non-zero P entries (0 * log(0) = 0 by convention)
-    kl = np.sum(p_smooth * np.log(p_smooth / q_smooth))
+    kl: float = float(np.sum(p_smooth * np.log(p_smooth / q_smooth)))
 
     return float(kl)
 
@@ -303,9 +303,7 @@ def coalition_demographic_divergence(
     max_idx = len(client_demographics) - 1
     for idx in coalition_indices:
         if idx < 0 or idx > max_idx:
-            raise ValueError(
-                f"Coalition index {idx} out of range [0, {max_idx}]"
-            )
+            raise ValueError(f"Coalition index {idx} out of range [0, {max_idx}]")
 
     # Convert client demographics to DemographicDistribution objects if needed
     coalition_dists: list[DemographicDistribution] = []
@@ -314,7 +312,8 @@ def coalition_demographic_divergence(
         if isinstance(demo, DemographicDistribution):
             coalition_dists.append(demo)
         else:
-            coalition_dists.append(DemographicDistribution(values=np.asarray(demo)))
+            demo_arr: NDArray[np.float64] = np.asarray(demo, dtype=np.float64)
+            coalition_dists.append(DemographicDistribution(values=demo_arr))
 
     # Compute coalition average: δ_S = (1/|S|) Σ_{i ∈ S} δ_i
     if weights is not None:

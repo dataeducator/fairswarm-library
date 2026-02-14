@@ -92,6 +92,15 @@ class PrivacyAccountant(ABC):
         """Accountant name."""
         pass
 
+    def get_config(self) -> dict[str, Any]:
+        """
+        Get accountant configuration.
+
+        Returns:
+            Dictionary of configuration parameters
+        """
+        return {"name": self.name}
+
     def get_privacy_spent(self, delta: float) -> tuple[float, float]:
         """
         Get (epsilon, delta) tuple.
@@ -119,7 +128,7 @@ class SimpleAccountant(PrivacyAccountant):
         history: List of privacy expenditures
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.history: list[PrivacySpent] = []
         self._total_epsilon = 0.0
         self._total_delta = 0.0
@@ -253,7 +262,7 @@ class MomentsAccountant(PrivacyAccountant):
         """
         if self.sampling_rate == 1.0:
             # No subsampling: standard Gaussian RDP
-            return order / (2 * self.noise_multiplier ** 2)
+            return order / (2 * self.noise_multiplier**2)
         else:
             # Subsampled Gaussian mechanism
             # Using simplified bound
@@ -264,7 +273,7 @@ class MomentsAccountant(PrivacyAccountant):
                 return 0.0
 
             # Simplified RDP bound for subsampled Gaussian
-            rdp = (q ** 2 * order) / (2 * sigma ** 2)
+            rdp = (q**2 * order) / (2 * sigma**2)
             return rdp
 
     def _rdp_to_dp(self, rdp: float, order: float, delta: float) -> float:
@@ -283,7 +292,7 @@ class MomentsAccountant(PrivacyAccountant):
         """
         if order <= 1:
             return float("inf")
-        return rdp + np.log(1 / delta) / (order - 1)
+        return float(rdp + np.log(1 / delta) / (order - 1))
 
     def get_epsilon(self, delta: float) -> float:
         """
@@ -360,8 +369,7 @@ class RDPAccountant(PrivacyAccountant):
             orders: Orders λ for RDP (default: auto-selected range)
         """
         self.orders = orders or (
-            [1 + x / 10.0 for x in range(1, 100)]
-            + list(range(12, 64))
+            [1 + x / 10.0 for x in range(1, 100)] + list(range(12, 64))
         )
         self._rdp_values = dict.fromkeys(self.orders, 0.0)
         self._steps = 0
@@ -394,11 +402,11 @@ class RDPAccountant(PrivacyAccountant):
                     )
                 else:
                     # Standard Gaussian
-                    rdp = order / (2 * noise_multiplier ** 2)
+                    rdp = order / (2 * noise_multiplier**2)
             else:
                 # Convert (ε, δ) to RDP (approximate)
                 if order > 1:
-                    rdp = epsilon + np.log(1 / max(delta, 1e-10)) / (order - 1)
+                    rdp = float(epsilon + np.log(1 / max(delta, 1e-10)) / (order - 1))
                 else:
                     rdp = epsilon
 
@@ -428,7 +436,7 @@ class RDPAccountant(PrivacyAccountant):
         sigma = noise_multiplier
 
         # Simplified bound (more precise bounds available)
-        return (q ** 2 * order) / (2 * sigma ** 2)
+        return (q**2 * order) / (2 * sigma**2)
 
     def get_epsilon(self, delta: float) -> float:
         """
@@ -450,7 +458,7 @@ class RDPAccountant(PrivacyAccountant):
         for order, rdp in self._rdp_values.items():
             if order <= 1:
                 continue
-            epsilon = rdp + np.log(1 / delta) / (order - 1)
+            epsilon = float(rdp + np.log(1 / delta) / (order - 1))
             min_epsilon = min(min_epsilon, epsilon)
 
         return min_epsilon if min_epsilon < float("inf") else 0.0
@@ -539,9 +547,8 @@ class AdvancedCompositionAccountant(PrivacyAccountant):
 
         # Advanced composition
         # ε' = √(2k·ln(1/δ))·ε + k·ε·(e^ε - 1)
-        composed = (
-            np.sqrt(2 * k * np.log(1 / delta)) * eps
-            + k * eps * (np.exp(eps) - 1)
+        composed = float(
+            np.sqrt(2 * k * np.log(1 / delta)) * eps + k * eps * (np.exp(eps) - 1)
         )
 
         return composed

@@ -222,9 +222,11 @@ class LocalPrivacyConstraint(PrivacyConstraint):
         return ConstraintResult(
             satisfied=satisfied,
             violation=float(len(violations)),
-            message=f"{len(violations)} clients violate privacy bounds"
-            if violations
-            else "All clients within privacy bounds",
+            message=(
+                f"{len(violations)} clients violate privacy bounds"
+                if violations
+                else "All clients within privacy bounds"
+            ),
             details={
                 "violations": violations,
                 "min_epsilon": self.min_epsilon,
@@ -380,10 +382,9 @@ class CompositionConstraint(PrivacyConstraint):
             eps = self.epsilon_per_query
             delta = self.delta_per_query
             if k > 0 and delta > 0:
-                composed_epsilon = (
-                    np.sqrt(2 * k * np.log(1 / delta)) * eps
-                    + k * eps * (np.exp(eps) - 1)
-                )
+                composed_epsilon = np.sqrt(
+                    2 * k * np.log(1 / delta)
+                ) * eps + k * eps * (np.exp(eps) - 1)
             else:
                 composed_epsilon = 0.0
 
@@ -409,7 +410,7 @@ class CompositionConstraint(PrivacyConstraint):
         """Reset query count."""
         self._query_count = 0
 
-    def get_composed_epsilon(self, delta: float = None) -> float:
+    def get_composed_epsilon(self, delta: float | None = None) -> float:
         """
         Get total epsilon under composition.
 
@@ -424,10 +425,10 @@ class CompositionConstraint(PrivacyConstraint):
         eps = self.epsilon_per_query
 
         if self.composition_type == "basic":
-            return k * eps
+            return float(k * eps)
         else:
             if k > 0 and delta > 0:
-                return (
+                return float(
                     np.sqrt(2 * k * np.log(1 / delta)) * eps
                     + k * eps * (np.exp(eps) - 1)
                 )

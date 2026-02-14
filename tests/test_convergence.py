@@ -256,7 +256,7 @@ class TestTheorem1FitnessMonotonicity:
         for i in range(1, len(history)):
             assert history[i] >= history[i - 1] - 1e-10, (
                 f"Fitness decreased at iteration {i}: "
-                f"{history[i-1]:.6f} -> {history[i]:.6f}"
+                f"{history[i - 1]:.6f} -> {history[i]:.6f}"
             )
 
     @given(st.integers(min_value=10, max_value=100))
@@ -414,7 +414,15 @@ class TestTheorem1SigmoidBoundedness:
     Tests for sigmoid position bounding.
     """
 
-    @given(st.lists(st.floats(min_value=-100, max_value=100, allow_nan=False, allow_infinity=False), min_size=1, max_size=50))
+    @given(
+        st.lists(
+            st.floats(
+                min_value=-100, max_value=100, allow_nan=False, allow_infinity=False
+            ),
+            min_size=1,
+            max_size=50,
+        )
+    )
     def test_sigmoid_bounds_to_zero_one(self, values):
         """
         Property: Sigmoid maps any real values to (0, 1).

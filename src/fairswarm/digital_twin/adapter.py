@@ -402,7 +402,9 @@ class SimToRealAdapter:
 
             # Gradient of MMD w.r.t. W
             diff = source_mean - target_mean
-            grad = (self._source_features.T @ np.ones((len(self._source_features), 1))) @ diff.reshape(1, -1)
+            grad = (
+                self._source_features.T @ np.ones((len(self._source_features), 1))
+            ) @ diff.reshape(1, -1)
             grad = grad / len(self._source_features)
 
             # Add regularization
@@ -412,7 +414,9 @@ class SimToRealAdapter:
             W = W - learning_rate * grad
 
             # Compute loss
-            loss = np.linalg.norm(diff) + 0.5 * self.config.regularization * np.sum(W**2)
+            loss = np.linalg.norm(diff) + 0.5 * self.config.regularization * np.sum(
+                W**2
+            )
             losses.append(loss)
 
             # Check convergence

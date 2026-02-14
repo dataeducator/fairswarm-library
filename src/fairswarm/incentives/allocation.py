@@ -26,6 +26,7 @@ from fairswarm.types import Coalition
 
 if TYPE_CHECKING:
     from fairswarm.core.client import Client
+    from fairswarm.demographics.distribution import DemographicDistribution
 
 
 @dataclass
@@ -234,8 +235,8 @@ class ProportionalAllocator(RewardAllocator):
             )
 
         # Compute scores for each client
-        scores = {}
-        metrics = {}
+        scores: dict[int, float] = {}
+        metrics: dict[int, ContributionMetrics] = {}
 
         # Get normalization factors
         max_samples = max(clients[i].dataset_size for i in coalition)
@@ -247,7 +248,9 @@ class ProportionalAllocator(RewardAllocator):
             # Normalize contributions
             data_score = client.dataset_size / max_samples if max_samples > 0 else 0
             quality_score = client.data_quality
-            efficiency_score = 1 - (client.communication_cost / max_cost) if max_cost > 0 else 1
+            efficiency_score = (
+                1 - (client.communication_cost / max_cost) if max_cost > 0 else 1
+            )
 
             # Weighted sum
             total_score = (
@@ -376,8 +379,7 @@ class ShapleyAllocator(RewardAllocator):
 
         # Map back to client indices
         shapley_values = {
-            coalition[i]: shapley_result.values[i]
-            for i in range(len(coalition))
+            coalition[i]: shapley_result.values[i] for i in range(len(coalition))
         }
 
         # Normalize and allocate
@@ -399,9 +401,11 @@ class ShapleyAllocator(RewardAllocator):
                 total_contribution=shapley_result.values[i],
                 details={
                     "shapley_value": shapley_result.values[i],
-                    "variance": shapley_result.variance[i]
-                    if shapley_result.variance is not None
-                    else None,
+                    "variance": (
+                        shapley_result.variance[i]
+                        if shapley_result.variance is not None
+                        else None
+                    ),
                 },
             )
             for i in range(len(coalition))
@@ -433,7 +437,7 @@ class FairnessAwareAllocator(RewardAllocator):
 
     def __init__(
         self,
-        target_distribution=None,
+        target_distribution: DemographicDistribution | None = None,
         fairness_weight: float = 0.3,
         base_allocator: RewardAllocator | None = None,
     ):
@@ -479,7 +483,7 @@ class FairnessAwareAllocator(RewardAllocator):
         )
 
         # Compute fairness contributions
-        fairness_scores = {}
+        fairness_scores: dict[int, float] = {}
 
         if self.target_distribution is not None:
             target = self.target_distribution.as_array()
@@ -532,15 +536,13 @@ class FairnessAwareAllocator(RewardAllocator):
         }
 
         # Build metrics
-        metrics = {}
+        metrics: dict[int, ContributionMetrics] = {}
         for idx in coalition:
-            base_metrics = (
-                base_result.metrics.get(idx) if base_result.metrics else None
-            )
+            base_metrics = base_result.metrics.get(idx) if base_result.metrics else None
             metrics[idx] = ContributionMetrics(
-                data_contribution=base_metrics.data_contribution
-                if base_metrics
-                else 0.0,
+                data_contribution=(
+                    base_metrics.data_contribution if base_metrics else 0.0
+                ),
                 fairness_contribution=fairness_scores.get(idx, 0.0),
                 total_contribution=final_allocations[idx],
                 details={
@@ -566,7 +568,7 @@ def allocate_rewards(
     clients: list[Client],
     total_reward: float,
     method: str = "proportional",
-    **kwargs,
+    **kwargs: Any,
 ) -> AllocationResult:
     """
     Convenience function for reward allocation.
@@ -589,6 +591,7 @@ def allocate_rewards(
         ...     method="shapley",
         ... )
     """
+    allocator: RewardAllocator
     if method == "equal":
         allocator = EqualAllocator()
     elif method == "shapley":

@@ -93,6 +93,7 @@ class Client:
         # Validate demographics is a proper probability distribution
         # DemographicDistribution objects self-validate, so skip for those
         from fairswarm.demographics.distribution import DemographicDistribution
+
         if isinstance(self.demographics, DemographicDistribution):
             pass  # Already validated in DemographicDistribution.__post_init__
         elif not validate_demographic_vector(self.demographics):

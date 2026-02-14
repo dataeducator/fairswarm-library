@@ -167,7 +167,11 @@ class DivergenceConstraint(FairnessConstraint):
         return {
             "name": self.name,
             "epsilon": self.epsilon,
-            "target": self.target_distribution.as_dict() if self.target_distribution.labels else self.target_distribution.values.tolist(),
+            "target": (
+                self.target_distribution.as_dict()
+                if self.target_distribution.labels
+                else self.target_distribution.values.tolist()
+            ),
         }
 
 
@@ -228,8 +232,8 @@ class RepresentationConstraint(FairnessConstraint):
 
         # Check each group
         deviations = np.abs(coalition_demo - target)
-        max_deviation = np.max(deviations)
-        total_violation = np.sum(np.maximum(0, deviations - self.threshold))
+        max_deviation = float(np.max(deviations))
+        total_violation = float(np.sum(np.maximum(0, deviations - self.threshold)))
 
         satisfied = max_deviation <= self.threshold
 
@@ -248,7 +252,11 @@ class RepresentationConstraint(FairnessConstraint):
         return {
             "name": self.name,
             "threshold": self.threshold,
-            "target": self.target_distribution.as_dict() if self.target_distribution.labels else self.target_distribution.values.tolist(),
+            "target": (
+                self.target_distribution.as_dict()
+                if self.target_distribution.labels
+                else self.target_distribution.values.tolist()
+            ),
         }
 
 
@@ -352,9 +360,11 @@ class MinorityRepresentationConstraint(FairnessConstraint):
         return ConstraintResult(
             satisfied=satisfied,
             violation=total_violation,
-            message=f"{len(violations)} minority groups below threshold"
-            if violations
-            else "All minority groups represented",
+            message=(
+                f"{len(violations)} minority groups below threshold"
+                if violations
+                else "All minority groups represented"
+            ),
             details={
                 "violations": violations,
                 "min_representation": self.min_representation,
@@ -470,5 +480,9 @@ class TotalVariationConstraint(FairnessConstraint):
         return {
             "name": self.name,
             "threshold": self.threshold,
-            "target": self.target_distribution.as_dict() if self.target_distribution.labels else self.target_distribution.values.tolist(),
+            "target": (
+                self.target_distribution.as_dict()
+                if self.target_distribution.labels
+                else self.target_distribution.values.tolist()
+            ),
         }

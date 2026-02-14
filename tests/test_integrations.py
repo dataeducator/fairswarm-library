@@ -73,12 +73,14 @@ class TestFairSwarmClient:
         """Test FairSwarmClient with custom demographics."""
         from fairswarm.integrations.flower import FairSwarmClient
 
-        demographics = DemographicDistribution.from_dict({
-            "white": 0.6,
-            "black": 0.2,
-            "hispanic": 0.15,
-            "asian": 0.05,
-        })
+        demographics = DemographicDistribution.from_dict(
+            {
+                "white": 0.6,
+                "black": 0.2,
+                "hispanic": 0.15,
+                "asian": 0.05,
+            }
+        )
 
         client = FairSwarmClient(
             cid="demo_client",
@@ -236,11 +238,13 @@ class TestClientInfo:
         """Test conversion to FairSwarm client."""
         from fairswarm.integrations.flower import ClientInfo
 
-        demographics = DemographicDistribution.from_dict({
-            "white": 0.5,
-            "black": 0.3,
-            "other": 0.2,
-        })
+        demographics = DemographicDistribution.from_dict(
+            {
+                "white": 0.5,
+                "black": 0.3,
+                "other": 0.2,
+            }
+        )
 
         info = ClientInfo(
             cid="convert_test",
@@ -259,6 +263,7 @@ class TestClientInfo:
 # Skip Flower-dependent tests if Flower not available
 try:
     import flwr  # noqa: F401
+
     FLOWER_AVAILABLE = True
 except ImportError:
     FLOWER_AVAILABLE = False
@@ -290,12 +295,14 @@ class TestFairSwarmStrategy:
 
         strategy = FairSwarmStrategy(coalition_size=5)
 
-        demographics = DemographicDistribution.from_dict({
-            "white": 0.6,
-            "black": 0.2,
-            "hispanic": 0.15,
-            "asian": 0.05,
-        })
+        demographics = DemographicDistribution.from_dict(
+            {
+                "white": 0.6,
+                "black": 0.2,
+                "hispanic": 0.15,
+                "asian": 0.05,
+            }
+        )
 
         strategy.register_client_demographics(
             cid="hospital_1",

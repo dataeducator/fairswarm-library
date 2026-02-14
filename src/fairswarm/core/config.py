@@ -179,18 +179,14 @@ class FairSwarmConfig:
             )
 
         if self.max_iterations < 1:
-            raise ValueError(
-                f"max_iterations must be >= 1, got {self.max_iterations}"
-            )
+            raise ValueError(f"max_iterations must be >= 1, got {self.max_iterations}")
         if self.max_iterations > self.MAX_ITERATIONS:
             raise ValueError(
                 f"max_iterations must be <= {self.MAX_ITERATIONS}, got {self.max_iterations}"
             )
 
         if self.coalition_size < 1:
-            raise ValueError(
-                f"coalition_size must be >= 1, got {self.coalition_size}"
-            )
+            raise ValueError(f"coalition_size must be >= 1, got {self.coalition_size}")
         if self.coalition_size > self.MAX_COALITION_SIZE:
             raise ValueError(
                 f"coalition_size must be <= {self.MAX_COALITION_SIZE}, got {self.coalition_size}"
@@ -257,7 +253,7 @@ class FairSwarmConfig:
         t_min = (n**2 * math.log(self.swarm_size / delta)) / (epsilon**2 * lambda_**2)
         return int(math.ceil(t_min))
 
-    def with_updates(self, **kwargs) -> FairSwarmConfig:
+    def with_updates(self, **kwargs: object) -> FairSwarmConfig:
         """
         Create a new config with updated values.
 
@@ -273,7 +269,7 @@ class FairSwarmConfig:
         """
         import dataclasses
 
-        return dataclasses.replace(self, **kwargs)
+        return dataclasses.replace(self, **kwargs)  # type: ignore[arg-type]
 
 
 # === Preset Configurations ===

@@ -22,7 +22,6 @@ Author: Tenicka Norwood
 Advisor: Dr. Uttam Ghosh
 """
 
-
 import numpy as np
 import pytest
 from hypothesis import HealthCheck, assume, given, settings
@@ -353,7 +352,7 @@ class TestTheorem3Submodularity:
             f_large = fitness.evaluate(coalition_large, clients).value
 
             assert f_large >= f_small - 1e-10, (
-                f"Monotonicity violated: f({size})={f_small:.4f} > f({size+1})={f_large:.4f}"
+                f"Monotonicity violated: f({size})={f_small:.4f} > f({size + 1})={f_large:.4f}"
             )
 
 
@@ -538,9 +537,7 @@ class TestTheorem3GreedyComparison:
         # Greedy should achieve at least (1 - 1/e) ≈ 0.632 of optimal
         if opt_fitness > 0:
             ratio = greedy_fitness / opt_fitness
-            assert ratio >= 0.5, (
-                f"Greedy ratio: {ratio:.4f} (expected >= 0.632)"
-            )
+            assert ratio >= 0.5, f"Greedy ratio: {ratio:.4f} (expected >= 0.632)"
 
 
 # =============================================================================
@@ -692,7 +689,9 @@ class TestTheorem3Integration:
         """
         Test the tradeoff between fairness and approximation quality.
         """
-        clients = create_synthetic_clients(n_clients=15, n_demographic_groups=5, seed=42)
+        clients = create_synthetic_clients(
+            n_clients=15, n_demographic_groups=5, seed=42
+        )
         target = CensusTarget.US_2020.as_distribution()
         fitness = CoverageFitness(n_groups=5)
         coalition_size = 5

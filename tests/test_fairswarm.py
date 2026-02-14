@@ -232,9 +232,7 @@ class TestFairSwarmInitialization:
         assert optimizer.config.swarm_size == 10
         assert optimizer.config.inertia == 0.7
 
-    def test_with_target_distribution(
-        self, sample_clients, target_distribution
-    ):
+    def test_with_target_distribution(self, sample_clients, target_distribution):
         """Test initialization with target demographics."""
         optimizer = FairSwarm(
             clients=sample_clients,
@@ -302,9 +300,7 @@ class TestFairSwarmOptimization:
         assert len(result.coalition) == 5
         assert result.fitness is not None
 
-    def test_swarm_initialized_after_optimize(
-        self, sample_clients, mock_fitness
-    ):
+    def test_swarm_initialized_after_optimize(self, sample_clients, mock_fitness):
         """Test that swarm is initialized during optimize."""
         optimizer = FairSwarm(
             clients=sample_clients,
@@ -371,9 +367,7 @@ class TestFairSwarmOptimization:
 
         assert len(callback_calls) == 20
 
-    def test_coalition_contains_valid_indices(
-        self, sample_clients, mock_fitness
-    ):
+    def test_coalition_contains_valid_indices(self, sample_clients, mock_fitness):
         """Test that coalition contains valid client indices."""
         optimizer = FairSwarm(
             clients=sample_clients,
@@ -398,9 +392,7 @@ class TestFairSwarmOptimization:
 class TestFairSwarmFairness:
     """Tests for fairness behavior (Theorem 2)."""
 
-    def test_fairness_metrics_computed(
-        self, sample_clients, target_distribution
-    ):
+    def test_fairness_metrics_computed(self, sample_clients, target_distribution):
         """Test that fairness metrics are computed when target provided."""
         fitness = DemographicFitness(target_distribution=target_distribution)
 
@@ -515,9 +507,7 @@ class TestFairSwarmConvergence:
         # Should converge without diverging
         assert np.isfinite(result.fitness)
 
-    def test_diversity_decreases_over_time(
-        self, sample_clients, mock_fitness
-    ):
+    def test_diversity_decreases_over_time(self, sample_clients, mock_fitness):
         """Test that swarm diversity generally decreases (convergence)."""
         optimizer = FairSwarm(
             clients=sample_clients,
@@ -556,9 +546,7 @@ class TestRunFairswarm:
         assert isinstance(result, OptimizationResult)
         assert len(result.coalition) == 5
 
-    def test_run_fairswarm_with_target(
-        self, sample_clients, target_distribution
-    ):
+    def test_run_fairswarm_with_target(self, sample_clients, target_distribution):
         """Test run_fairswarm with target distribution."""
         fitness = DemographicFitness(target_distribution=target_distribution)
 
@@ -584,7 +572,9 @@ class TestFairSwarmIntegration:
     def test_full_optimization_pipeline(self, target_distribution):
         """Test complete optimization with all components."""
         # Create clients with 5 groups to match US_2020 target distribution
-        clients = create_synthetic_clients(n_clients=30, n_demographic_groups=5, seed=42)
+        clients = create_synthetic_clients(
+            n_clients=30, n_demographic_groups=5, seed=42
+        )
 
         # Configure optimizer
         config = FairSwarmConfig(

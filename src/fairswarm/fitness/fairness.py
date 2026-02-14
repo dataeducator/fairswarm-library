@@ -88,7 +88,8 @@ def compute_coalition_demographics(
 
     # Compute average: δ_S = (1/|S|) Σ_{i∈S} δ_i
     stacked = np.vstack(demo_vectors)
-    return np.mean(stacked, axis=0)
+    result: NDArray[np.float64] = np.mean(stacked, axis=0)
+    return result
 
 
 def compute_fairness_gradient(
@@ -193,7 +194,9 @@ def compute_fairness_gradient(
             client_demo = demo_matrix[i]
             # Softmax-style derivative: how changing position_i affects coalition_demo
             # ∂coalition_demo_k/∂position_i = (δ_ik - coalition_demo_k * w_i) / position_sum
-            d_coalition_d_pos = (client_demo - coalition_demo * weights[i]) / position_sum
+            d_coalition_d_pos = (
+                client_demo - coalition_demo * weights[i]
+            ) / position_sum
 
             # Chain rule: gradient of divergence w.r.t. position_i
             # We want to REDUCE divergence, so negate
@@ -355,7 +358,11 @@ class DemographicFitness(FitnessFunction):
         """Get configuration for reproducibility."""
         return {
             "class": self.__class__.__name__,
-            "target_distribution": self.target_distribution.as_dict() if self.target_distribution.labels else self.target_distribution.values.tolist(),
+            "target_distribution": (
+                self.target_distribution.as_dict()
+                if self.target_distribution.labels
+                else self.target_distribution.values.tolist()
+            ),
             "divergence_weight": self.divergence_weight,
         }
 
@@ -441,7 +448,9 @@ class AccuracyFairnessFitness(FitnessFunction):
             if dataset_sizes:
                 # Normalize to [0, 1] range based on total possible data
                 max_possible = sum(c.dataset_size for c in clients)
-                accuracy = sum(dataset_sizes) / max_possible if max_possible > 0 else 0.0
+                accuracy = (
+                    sum(dataset_sizes) / max_possible if max_possible > 0 else 0.0
+                )
             else:
                 accuracy = 0.0
 
@@ -498,7 +507,11 @@ class AccuracyFairnessFitness(FitnessFunction):
         """Get configuration for reproducibility."""
         return {
             "class": self.__class__.__name__,
-            "target_distribution": self.target_distribution.as_dict() if self.target_distribution.labels else self.target_distribution.values.tolist(),
+            "target_distribution": (
+                self.target_distribution.as_dict()
+                if self.target_distribution.labels
+                else self.target_distribution.values.tolist()
+            ),
             "fairness_weight": self.fairness_weight,
             "has_accuracy_fn": self.accuracy_fn is not None,
         }

@@ -21,9 +21,15 @@ Research Foundation:
 
 from __future__ import annotations
 
+import sys
 from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import NewType
+
+if sys.version_info >= (3, 10):
+    from typing import TypeAlias
+else:
+    from typing_extensions import TypeAlias
 
 import numpy as np
 from numpy.typing import NDArray
@@ -57,10 +63,11 @@ class Demographics:
         arr = np.array([self.age, self.gender, self.race], dtype=np.float64)
         total = arr.sum()
         if total > 0:
-            return arr / total
+            result: NDArray[np.float64] = arr / total
+            return result
         return np.ones(3, dtype=np.float64) / 3  # uniform if all zeros
 
-    def to_labels(self) -> tuple:
+    def to_labels(self) -> tuple[str, str, str]:
         """Return the demographic group labels."""
         return ("age", "gender", "race")
 
@@ -73,21 +80,21 @@ class Demographics:
 ClientId = NewType("ClientId", str)
 
 # Coalition as a list of client indices (positions in the client array)
-Coalition = list[int]
+Coalition: TypeAlias = list[int]
 
 # Demographic vector: probability distribution over k demographic groups
 # Must sum to 1.0 and contain non-negative values
-DemographicVector = NDArray[np.float64]
+DemographicVector: TypeAlias = NDArray[np.float64]
 
 # Fitness value: scalar result of fitness function evaluation
-FitnessValue = float
+FitnessValue: TypeAlias = float
 
 # Position vector in PSO: continuous values in [0, 1]^n representing
 # selection probabilities for each client
-PositionVector = NDArray[np.float64]
+PositionVector: TypeAlias = NDArray[np.float64]
 
 # Velocity vector in PSO: continuous values representing rate of change
-VelocityVector = NDArray[np.float64]
+VelocityVector: TypeAlias = NDArray[np.float64]
 
 
 # =============================================================================
@@ -208,7 +215,7 @@ def normalize_to_distribution(
     arr = np.asarray(values, dtype=np.float64)
     if np.any(arr < 0):
         raise ValueError("Values must be non-negative")
-    total = np.sum(arr)
+    total: float = float(np.sum(arr))
     if total == 0:
         raise ValueError("Values must have positive sum")
     return arr / total

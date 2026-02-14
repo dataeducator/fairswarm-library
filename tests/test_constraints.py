@@ -311,8 +311,12 @@ class TestDivergenceConstraint:
         """Test that tighter epsilon leads to more violations."""
         coalition = [0, 1]
 
-        lenient = DivergenceConstraint(target_distribution=target_demographics, epsilon=10.0)
-        strict = DivergenceConstraint(target_distribution=target_demographics, epsilon=0.001)
+        lenient = DivergenceConstraint(
+            target_distribution=target_demographics, epsilon=10.0
+        )
+        strict = DivergenceConstraint(
+            target_distribution=target_demographics, epsilon=0.001
+        )
 
         lenient_result = lenient.evaluate(coalition, sample_clients)
         strict_result = strict.evaluate(coalition, sample_clients)
@@ -621,10 +625,12 @@ class TestConstraintSet:
 
     def test_all_satisfied(self, sample_clients):
         """Test all constraints satisfied."""
-        constraints = ConstraintSet([
-            MinSizeConstraint(min_size=2),
-            MaxSizeConstraint(max_size=5),
-        ])
+        constraints = ConstraintSet(
+            [
+                MinSizeConstraint(min_size=2),
+                MaxSizeConstraint(max_size=5),
+            ]
+        )
         coalition = [0, 1, 2]
 
         result = constraints.evaluate(coalition, sample_clients)
@@ -632,10 +638,12 @@ class TestConstraintSet:
 
     def test_one_violated(self, sample_clients):
         """Test one constraint violated."""
-        constraints = ConstraintSet([
-            MinSizeConstraint(min_size=2),
-            MaxSizeConstraint(max_size=2),  # Will be violated
-        ])
+        constraints = ConstraintSet(
+            [
+                MinSizeConstraint(min_size=2),
+                MaxSizeConstraint(max_size=2),  # Will be violated
+            ]
+        )
         coalition = [0, 1, 2]  # 3 clients
 
         result = constraints.evaluate(coalition, sample_clients)
@@ -643,9 +651,11 @@ class TestConstraintSet:
 
     def test_hard_constraints_checked(self, sample_clients):
         """Test hard constraints are checked."""
-        constraints = ConstraintSet([
-            MinSizeConstraint(min_size=5),  # Hard, will fail
-        ])
+        constraints = ConstraintSet(
+            [
+                MinSizeConstraint(min_size=5),  # Hard, will fail
+            ]
+        )
         coalition = [0, 1, 2]
 
         result = constraints.evaluate_hard_only(coalition, sample_clients)
@@ -653,10 +663,12 @@ class TestConstraintSet:
 
     def test_total_violation(self, sample_clients):
         """Test total violation computation."""
-        constraints = ConstraintSet([
-            MinSizeConstraint(min_size=5),  # Violation = 2
-            MaxCostConstraint(max_cost=0.1),  # Will have some violation
-        ])
+        constraints = ConstraintSet(
+            [
+                MinSizeConstraint(min_size=5),  # Violation = 2
+                MaxCostConstraint(max_cost=0.1),  # Will have some violation
+            ]
+        )
         coalition = [0, 1, 2]  # Size 3, cost 0.6
 
         result = constraints.evaluate(coalition, sample_clients)
@@ -698,8 +710,12 @@ class TestConstraintProperties:
         coalition_size=st.integers(min_value=0, max_value=5),
         min_size=st.integers(min_value=1, max_value=5),
     )
-    @settings(max_examples=50, suppress_health_check=[HealthCheck.function_scoped_fixture])
-    def test_min_size_violation_nonnegative(self, coalition_size, min_size, sample_clients):
+    @settings(
+        max_examples=50, suppress_health_check=[HealthCheck.function_scoped_fixture]
+    )
+    def test_min_size_violation_nonnegative(
+        self, coalition_size, min_size, sample_clients
+    ):
         """Violation is always non-negative."""
         constraint = MinSizeConstraint(min_size=min_size)
         coalition = list(range(min(coalition_size, len(sample_clients))))
@@ -711,7 +727,9 @@ class TestConstraintProperties:
         epsilon=st.floats(min_value=0.01, max_value=10.0),
         n_queries=st.integers(min_value=0, max_value=20),
     )
-    @settings(max_examples=30, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(
+        max_examples=30, suppress_health_check=[HealthCheck.function_scoped_fixture]
+    )
     def test_privacy_budget_monotonic(self, epsilon, n_queries, sample_clients):
         """Privacy consumption increases monotonically."""
         constraint = PrivacyBudgetConstraint(epsilon_budget=100.0)
@@ -728,7 +746,9 @@ class TestConstraintProperties:
         eps_per_query=st.floats(min_value=0.01, max_value=1.0),
         n_queries=st.integers(min_value=1, max_value=50),
     )
-    @settings(max_examples=30, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(
+        max_examples=30, suppress_health_check=[HealthCheck.function_scoped_fixture]
+    )
     def test_basic_composition_linear(self, eps_per_query, n_queries, sample_clients):
         """Basic composition is linear in number of queries."""
         constraint = CompositionConstraint(

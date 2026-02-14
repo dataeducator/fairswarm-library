@@ -142,7 +142,7 @@ class Swarm:
 
         return decode_coalition(self.g_best, coalition_size)
 
-    def get_statistics(self) -> dict:
+    def get_statistics(self) -> dict[str, object]:
         """
         Get statistics about the current swarm state.
 
@@ -162,12 +162,12 @@ class Swarm:
             "size": self.size,
             "iteration": self.iteration,
             "g_best_fitness": self.g_best_fitness,
-            "mean_p_best_fitness": np.mean(valid_fitnesses)
-            if valid_fitnesses
-            else float("-inf"),
-            "std_p_best_fitness": np.std(valid_fitnesses)
-            if len(valid_fitnesses) > 1
-            else 0.0,
+            "mean_p_best_fitness": (
+                np.mean(valid_fitnesses) if valid_fitnesses else float("-inf")
+            ),
+            "std_p_best_fitness": (
+                np.std(valid_fitnesses) if len(valid_fitnesses) > 1 else 0.0
+            ),
             "position_mean": float(np.mean(positions)),
             "position_std": float(np.std(positions)),
             "velocity_mean": float(np.mean(np.abs(velocities))),
@@ -224,9 +224,7 @@ class Swarm:
         """
         rng = np.random.default_rng()
         for particle in self.particles:
-            particle.velocity = rng.uniform(
-                -scale, scale, size=particle.n_clients
-            )
+            particle.velocity = rng.uniform(-scale, scale, size=particle.n_clients)
 
     def inject_diversity(
         self,
@@ -290,8 +288,7 @@ class Swarm:
             rng = np.random.default_rng(seed)
 
         particles = [
-            Particle.initialize(n_clients=n_clients, rng=rng)
-            for _ in range(swarm_size)
+            Particle.initialize(n_clients=n_clients, rng=rng) for _ in range(swarm_size)
         ]
 
         return cls(particles=particles)
@@ -386,10 +383,10 @@ class SwarmHistory:
         """Number of recorded iterations."""
         return len(self.fitness_history)
 
-    def as_arrays(self) -> dict:
+    def as_arrays(self) -> dict[str, NDArray[np.float64]]:
         """Convert histories to numpy arrays."""
         return {
-            "fitness": np.array(self.fitness_history),
-            "fairness": np.array(self.fairness_history),
-            "diversity": np.array(self.diversity_history),
+            "fitness": np.array(self.fitness_history, dtype=np.float64),
+            "fairness": np.array(self.fairness_history, dtype=np.float64),
+            "diversity": np.array(self.diversity_history, dtype=np.float64),
         }

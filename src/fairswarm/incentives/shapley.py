@@ -32,6 +32,7 @@ from fairswarm.types import Coalition
 
 if TYPE_CHECKING:
     from fairswarm.core.client import Client
+    from fairswarm.fitness.base import FitnessFunction
 
 
 @dataclass
@@ -60,7 +61,7 @@ class ShapleyResult:
 
     def get_ranking(self) -> list[int]:
         """Get player indices sorted by contribution (descending)."""
-        return list(np.argsort(self.values)[::-1])
+        return [int(x) for x in np.argsort(self.values)[::-1]]
 
 
 class ShapleyValue(ABC):
@@ -142,6 +143,7 @@ class ExactShapley(ShapleyValue):
             ShapleyResult with exact Shapley values
         """
         import time
+
         start_time = time.time()
 
         n = len(coalition)
@@ -174,7 +176,7 @@ class ExactShapley(ShapleyValue):
 
         for perm in permutations(range(n)):
             n_permutations += 1
-            predecessors = set()
+            predecessors: set[int] = set()
 
             for player_local in perm:
                 coalition[player_local]
@@ -269,6 +271,7 @@ class MonteCarloShapley(ShapleyValue):
             ShapleyResult with estimated Shapley values and variance
         """
         import time
+
         start_time = time.time()
 
         n = len(coalition)
@@ -286,7 +289,7 @@ class MonteCarloShapley(ShapleyValue):
         for sample in range(self.n_samples):
             # Random permutation
             perm = self.rng.permutation(n)
-            predecessors = set()
+            predecessors: set[int] = set()
 
             for _pos, player_local in enumerate(perm):
                 coalition[player_local]
@@ -369,6 +372,7 @@ class StratifiedShapley(ShapleyValue):
             ShapleyResult with estimated values
         """
         import time
+
         start_time = time.time()
 
         n = len(coalition)
@@ -470,6 +474,7 @@ def compute_shapley_values(
         # Use exact for small coalitions, Monte Carlo for large
         method = "exact" if n <= 10 else "monte_carlo"
 
+    computer: ShapleyValue
     if method == "exact":
         computer = ExactShapley(max_size=max(n, 12))
     else:
@@ -481,7 +486,7 @@ def compute_shapley_values(
 def shapley_from_fitness(
     coalition: Coalition,
     clients: list[Client],
-    fitness_fn,
+    fitness_fn: FitnessFunction,
 ) -> ShapleyResult:
     """
     Compute Shapley values using a fitness function.

@@ -264,6 +264,9 @@ class FairSwarmSelector:
             )
 
         # Run optimization
+        assert fitness_fn is not None, (
+            "fitness_fn must be set (either provided or built from target_distribution)"
+        )
         self.result_ = optimizer.optimize(
             fitness_fn=fitness_fn,
             n_iterations=self.max_iterations,
@@ -299,7 +302,7 @@ class FairSwarmSelector:
         RuntimeError
             If selector has not been fitted.
         """
-        if not self.is_fitted_:
+        if not self.is_fitted_ or self.selected_indices_ is None:
             raise RuntimeError(
                 "FairSwarmSelector has not been fitted. Call fit() first."
             )
@@ -357,7 +360,7 @@ class FairSwarmSelector:
         mask : ndarray of shape (n_clients,)
             Boolean mask where True indicates selection.
         """
-        if not self.is_fitted_:
+        if not self.is_fitted_ or self.selected_indices_ is None:
             raise RuntimeError("Selector has not been fitted")
 
         mask = np.zeros(n_clients, dtype=bool)
@@ -394,7 +397,7 @@ class FairSwarmSelector:
         score : float
             Fitness score of the coalition.
         """
-        if not self.is_fitted_:
+        if not self.is_fitted_ or self.selected_indices_ is None:
             raise RuntimeError("Selector has not been fitted")
 
         # If we have a stored result, use its fitness

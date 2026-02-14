@@ -62,7 +62,7 @@ from __future__ import annotations
 
 import dataclasses
 import logging
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING, Any, Callable
 
 import numpy as np
 
@@ -186,7 +186,7 @@ class FairSwarm:
         # Adaptive fairness state
         self._current_fairness_weight = self.config.fairness_weight
         self._adaptive_alpha = 0.5  # Rate of increase when behind target
-        self._adaptive_beta = 0.3   # Rate of decrease when at target
+        self._adaptive_beta = 0.3  # Rate of decrease when at target
 
     def optimize(
         self,
@@ -218,6 +218,7 @@ class FairSwarm:
 
         # Initialize swarm (Algorithm 1: Initialization)
         self._initialize_swarm()
+        assert self.swarm is not None
 
         # Track convergence
         fitness_history: list[float] = []
@@ -246,7 +247,7 @@ class FairSwarm:
             diversity_history.append(self.swarm.get_diversity())
 
             # Record in history
-            if self.history:
+            if self.history and self.swarm.g_best is not None:
                 g_best_coalition = decode_coalition(
                     self.swarm.g_best, self.coalition_size
                 )
@@ -256,6 +257,7 @@ class FairSwarm:
                     from fairswarm.fitness.fairness import (
                         compute_coalition_demographics,
                     )
+
                     coalition_demo = compute_coalition_demographics(
                         g_best_coalition, self.clients
                     )
@@ -270,7 +272,7 @@ class FairSwarm:
                 )
 
             # Callback
-            if callback:
+            if callback and self.swarm.g_best is not None:
                 g_best_coalition = decode_coalition(
                     self.swarm.g_best, self.coalition_size
                 )
@@ -306,6 +308,7 @@ class FairSwarm:
                     break
 
         # Extract final coalition
+        assert self.swarm.g_best is not None
         final_coalition = decode_coalition(self.swarm.g_best, self.coalition_size)
         final_result = fitness_fn.evaluate(final_coalition, self.clients)
 
@@ -323,7 +326,7 @@ class FairSwarm:
         fairness_metrics = self._compute_fairness_metrics(final_coalition)
 
         # Build result
-        result = OptimizationResult(
+        opt_result = OptimizationResult(
             coalition=final_coalition,
             fitness=final_result.value,
             fitness_components=final_result.components,
@@ -339,7 +342,7 @@ class FairSwarm:
             },
         )
 
-        return result
+        return opt_result
 
     def _initialize_swarm(self) -> None:
         """
@@ -378,6 +381,7 @@ class FairSwarm:
             particle: The particle to update
             fitness_fn: Fitness function for evaluation
         """
+        assert self.swarm is not None
         # Compute fairness gradient (NOVEL contribution)
         if self.target_distribution is not None:
             gradient_result = compute_fairness_gradient(
@@ -398,7 +402,9 @@ class FairSwarm:
             base_weight = self.config.fairness_weight
             if base_weight > 0:
                 adaptive_scale = self._current_fairness_weight / base_weight
-                effective_fairness_coeff = self.config.fairness_coefficient * adaptive_scale
+                effective_fairness_coeff = (
+                    self.config.fairness_coefficient * adaptive_scale
+                )
 
         # Velocity update (Algorithm 1: Lines 554-567)
         particle.apply_velocity_update(
@@ -480,10 +486,12 @@ class FairSwarm:
             adjustment = 1.0 - self._adaptive_beta * progress
 
         # Update the current fairness weight with bounds
-        self._current_fairness_weight = np.clip(
-            base_weight * adjustment,
-            0.1,  # Minimum: always consider some fairness
-            0.9,  # Maximum: always consider some accuracy
+        self._current_fairness_weight = float(
+            np.clip(
+                base_weight * adjustment,
+                0.1,  # Minimum: always consider some fairness
+                0.9,  # Maximum: always consider some accuracy
+            )
         )
 
         logger.debug(
@@ -517,16 +525,16 @@ class FairSwarm:
         divergence = kl_divergence(coalition_demo, target)
 
         # Build distribution dictionaries for reporting
-        labels = self.target_distribution.labels or [f"group_{i}" for i in range(len(target))]
+        labels = self.target_distribution.labels or [
+            f"group_{i}" for i in range(len(target))
+        ]
         coalition_dist = {
             cat: float(coalition_demo[i])
             for i, cat in enumerate(labels)
             if i < len(coalition_demo)
         }
         target_dist = {
-            cat: float(target[i])
-            for i, cat in enumerate(labels)
-            if i < len(target)
+            cat: float(target[i]) for i, cat in enumerate(labels) if i < len(target)
         }
 
         # Check ε-fairness (Theorem 2)
@@ -547,7 +555,7 @@ class FairSwarm:
             group_representation=group_representation,
         )
 
-    def get_swarm_state(self) -> dict:
+    def get_swarm_state(self) -> dict[str, Any]:
         """
         Get current swarm state for debugging/visualization.
 
@@ -561,11 +569,11 @@ class FairSwarm:
             "initialized": True,
             "n_particles": len(self.swarm.particles),
             "g_best_fitness": self.swarm.g_best_fitness,
-            "g_best_coalition": decode_coalition(
-                self.swarm.g_best, self.coalition_size
-            )
-            if self.swarm.g_best is not None
-            else None,
+            "g_best_coalition": (
+                decode_coalition(self.swarm.g_best, self.coalition_size)
+                if self.swarm.g_best is not None
+                else None
+            ),
             "diversity": self.swarm.get_diversity(),
             "iteration": self._iteration,
         }

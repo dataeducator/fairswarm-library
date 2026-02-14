@@ -135,17 +135,20 @@ class CensusTarget(Enum):
         Returns:
             Dictionary mapping group names to proportions
         """
-        return dict(self.value)
+        data: dict[str, float] = self.value
+        return dict(data)
 
     @property
     def labels(self) -> tuple[str, ...]:
         """Get the demographic group labels."""
-        return tuple(self.value.keys())
+        data: dict[str, float] = self.value
+        return tuple(data.keys())
 
     @property
     def n_groups(self) -> int:
         """Number of demographic groups."""
-        return len(self.value)
+        data: dict[str, float] = self.value
+        return len(data)
 
 
 # =============================================================================
@@ -220,9 +223,7 @@ def get_regional_target(region: str) -> DemographicDistribution:
     region_lower = region.lower()
     if region_lower not in regional_data:
         available = list(regional_data.keys())
-        raise ValueError(
-            f"Unknown region '{region}'. Available: {available}"
-        )
+        raise ValueError(f"Unknown region '{region}'. Available: {available}")
 
     return DemographicDistribution.from_dict(regional_data[region_lower])
 

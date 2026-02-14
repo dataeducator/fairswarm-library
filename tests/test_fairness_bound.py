@@ -212,9 +212,9 @@ class TestTheorem2CoalitionDemographics:
         """
         Property: Coalition with one client has that client's demographics.
         """
-        demo = DemographicDistribution.from_dict({
-            "white": 0.6, "black": 0.2, "hispanic": 0.2
-        })
+        demo = DemographicDistribution.from_dict(
+            {"white": 0.6, "black": 0.2, "hispanic": 0.2}
+        )
         client = Client(
             id="test",
             demographics=demo,
@@ -238,16 +238,20 @@ class TestTheorem2CoalitionDemographics:
         # Create clients with known demographics
         clients = []
         for i in range(n_clients):
-            demo = DemographicDistribution.from_dict({
-                "a": 0.5 + 0.1 * (i % 2),
-                "b": 0.5 - 0.1 * (i % 2),
-            })
-            clients.append(Client(
-                id=f"client_{i}",
-                demographics=demo,
-                num_samples=1000,
-                data_quality=0.8,
-            ))
+            demo = DemographicDistribution.from_dict(
+                {
+                    "a": 0.5 + 0.1 * (i % 2),
+                    "b": 0.5 - 0.1 * (i % 2),
+                }
+            )
+            clients.append(
+                Client(
+                    id=f"client_{i}",
+                    demographics=demo,
+                    num_samples=1000,
+                    data_quality=0.8,
+                )
+            )
 
         # Full coalition
         coalition = list(range(n_clients))
@@ -287,7 +291,9 @@ class TestTheorem2FairnessGradient:
         """
         Property: Fairness gradient has unit norm.
         """
-        clients = create_synthetic_clients(n_clients=10, n_demographic_groups=5, seed=42)
+        clients = create_synthetic_clients(
+            n_clients=10, n_demographic_groups=5, seed=42
+        )
         target = CensusTarget.US_2020.as_distribution()
         position = np.random.default_rng(42).random(10)
 
@@ -309,7 +315,9 @@ class TestTheorem2FairnessGradient:
         """
         Property: Gradient dimension equals number of clients.
         """
-        clients = create_synthetic_clients(n_clients=n_clients, n_demographic_groups=5, seed=42)
+        clients = create_synthetic_clients(
+            n_clients=n_clients, n_demographic_groups=5, seed=42
+        )
         target = CensusTarget.US_2020.as_distribution()
         position = np.random.default_rng(42).random(n_clients)
 
@@ -339,10 +347,15 @@ class TestTheorem2FairnessGradient:
             ),
             Client(
                 id="different",
-                demographics=DemographicDistribution.from_dict({
-                    "white": 0.96, "black": 0.01, "hispanic": 0.01,
-                    "asian": 0.01, "other": 0.01,
-                }),
+                demographics=DemographicDistribution.from_dict(
+                    {
+                        "white": 0.96,
+                        "black": 0.01,
+                        "hispanic": 0.01,
+                        "asian": 0.01,
+                        "other": 0.01,
+                    }
+                ),
                 num_samples=1000,
                 data_quality=0.8,
             ),
@@ -384,7 +397,9 @@ class TestTheorem2EpsilonFairness:
         """
         Property: Divergence is always finite and bounded.
         """
-        clients = create_synthetic_clients(n_clients=15, n_demographic_groups=5, seed=42)
+        clients = create_synthetic_clients(
+            n_clients=15, n_demographic_groups=5, seed=42
+        )
         target = CensusTarget.US_2020.as_distribution()
         fitness = DemographicFitness(target_distribution=target)
 
@@ -411,7 +426,9 @@ class TestTheorem2EpsilonFairness:
         """
         Property: Higher fairness coefficient leads to lower divergence.
         """
-        clients = create_synthetic_clients(n_clients=20, n_demographic_groups=5, seed=42)
+        clients = create_synthetic_clients(
+            n_clients=20, n_demographic_groups=5, seed=42
+        )
         target = CensusTarget.US_2020.as_distribution()
         fitness = DemographicFitness(target_distribution=target)
 
@@ -467,12 +484,14 @@ class TestTheorem2EpsilonFairness:
             total = sum(demo.values())
             demo = {k: v / total for k, v in demo.items()}
 
-            clients.append(Client(
-                id=f"client_{i}",
-                demographics=DemographicDistribution.from_dict(demo),
-                num_samples=1000,
-                data_quality=0.8,
-            ))
+            clients.append(
+                Client(
+                    id=f"client_{i}",
+                    demographics=DemographicDistribution.from_dict(demo),
+                    num_samples=1000,
+                    data_quality=0.8,
+                )
+            )
 
         fitness = DemographicFitness(target_distribution=target)
 
@@ -521,7 +540,9 @@ class TestTheorem2ProbabilityBound:
         epsilon = 1.0  # Loose threshold for testing
         successes = 0
 
-        clients = create_synthetic_clients(n_clients=20, n_demographic_groups=5, seed=42)
+        clients = create_synthetic_clients(
+            n_clients=20, n_demographic_groups=5, seed=42
+        )
         fitness = DemographicFitness(target_distribution=target)
 
         config = FairSwarmConfig(
@@ -627,7 +648,9 @@ class TestTheorem2Integration:
         """
         Test that fairness (lower divergence) improves over iterations.
         """
-        clients = create_synthetic_clients(n_clients=20, n_demographic_groups=5, seed=42)
+        clients = create_synthetic_clients(
+            n_clients=20, n_demographic_groups=5, seed=42
+        )
         target = CensusTarget.US_2020.as_distribution()
         fitness = DemographicFitness(target_distribution=target)
 
@@ -665,7 +688,9 @@ class TestTheorem2Integration:
         """
         Test that all fairness metrics are properly computed.
         """
-        clients = create_synthetic_clients(n_clients=15, n_demographic_groups=5, seed=42)
+        clients = create_synthetic_clients(
+            n_clients=15, n_demographic_groups=5, seed=42
+        )
         target = CensusTarget.US_2020.as_distribution()
         fitness = DemographicFitness(target_distribution=target)
 

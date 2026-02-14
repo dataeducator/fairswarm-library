@@ -31,6 +31,7 @@ from fairswarm.privacy.accountant import RDPAccountant, SimpleAccountant
 def sample_clients():
     """Create sample clients for testing with 5 demographic groups."""
     from fairswarm.core.client import create_synthetic_clients
+
     return create_synthetic_clients(n_clients=10, n_demographic_groups=5, seed=42)
 
 
@@ -38,6 +39,7 @@ def sample_clients():
 def target_distribution():
     """Target demographic distribution (5 groups matching US Census 2020)."""
     from fairswarm.demographics.targets import CensusTarget
+
     return CensusTarget.US_2020.as_distribution()
 
 
@@ -54,7 +56,9 @@ def simple_fitness():
                     coalition=coalition,
                 )
             # Sum of data qualities
-            value = sum(clients[i].data_quality for i in coalition if 0 <= i < len(clients))
+            value = sum(
+                clients[i].data_quality for i in coalition if 0 <= i < len(clients)
+            )
             return FitnessResult(
                 value=value,
                 components={"quality": value},
@@ -315,9 +319,7 @@ class TestFairSwarmDPInit:
 class TestFairSwarmDPOptimize:
     """Tests for FairSwarmDP optimization."""
 
-    def test_basic_optimization(
-        self, sample_clients, simple_fitness, basic_dp_config
-    ):
+    def test_basic_optimization(self, sample_clients, simple_fitness, basic_dp_config):
         """Test basic optimization runs."""
         optimizer = FairSwarmDP(
             clients=sample_clients,
@@ -423,9 +425,7 @@ class TestFairSwarmDPOptimize:
         # Should stop early due to budget
         assert result.convergence.iterations < 1000
 
-    def test_queries_recorded(
-        self, sample_clients, simple_fitness, basic_dp_config
-    ):
+    def test_queries_recorded(self, sample_clients, simple_fitness, basic_dp_config):
         """Test queries are recorded."""
         optimizer = FairSwarmDP(
             clients=sample_clients,
@@ -604,7 +604,9 @@ class TestFairSwarmDPProperties:
         noise_multiplier=st.floats(min_value=0.1, max_value=5.0),
         max_grad_norm=st.floats(min_value=0.1, max_value=5.0),
     )
-    @settings(max_examples=20, suppress_health_check=[HealthCheck.function_scoped_fixture])
+    @settings(
+        max_examples=20, suppress_health_check=[HealthCheck.function_scoped_fixture]
+    )
     def test_optimizer_with_varying_noise(
         self, noise_multiplier, max_grad_norm, sample_clients
     ):

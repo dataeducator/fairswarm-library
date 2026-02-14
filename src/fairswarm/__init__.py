@@ -49,24 +49,30 @@ from fairswarm.types import (
 
 
 # Lazy imports for optional modules
-def __getattr__(name: str):
+def __getattr__(name: str) -> type:
     """Lazy loading for optional integration and digital twin modules."""
     if name == "FairSwarmStrategy":
         from fairswarm.integrations.flower import FairSwarmStrategy
+
         return FairSwarmStrategy
     elif name == "BentleyDigitalTwin":
         from fairswarm.digital_twin.twin import BentleyDigitalTwin
+
         return BentleyDigitalTwin
     elif name == "VirtualEnvironment":
         from fairswarm.digital_twin.simulator import VirtualEnvironment
+
         return VirtualEnvironment
     elif name == "DriftDetector":
         from fairswarm.digital_twin.drift import DriftDetector
+
         return DriftDetector
     elif name == "SimToRealAdapter":
         from fairswarm.digital_twin.adapter import SimToRealAdapter
+
         return SimToRealAdapter
     raise AttributeError(f"module 'fairswarm' has no attribute {name!r}")
+
 
 __all__ = [
     # Version

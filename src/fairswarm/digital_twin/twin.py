@@ -42,7 +42,7 @@ from fairswarm.core.client import Client
 from fairswarm.core.config import FairSwarmConfig
 from fairswarm.demographics.distribution import DemographicDistribution
 from fairswarm.fitness.base import FitnessFunction
-from fairswarm.types import Coalition
+from fairswarm.types import ClientId, Coalition
 
 logger = logging.getLogger(__name__)
 
@@ -301,7 +301,7 @@ class BentleyDigitalTwin:
         for client in self._physical_state.clients:
             # Create virtual copy of client
             virtual_client = Client(
-                id=f"virtual_{client.id}",
+                id=ClientId(f"virtual_{client.id}"),
                 num_samples=client.dataset_size,
                 demographics=client.demographics,
                 data_quality=client.data_quality,
@@ -311,9 +311,7 @@ class BentleyDigitalTwin:
         self._virtual_state.timestamp = datetime.now()
         self._state = TwinState.SYNCHRONIZED
 
-        logger.debug(
-            f"Initialized {len(self._virtual_state.clients)} virtual clients"
-        )
+        logger.debug(f"Initialized {len(self._virtual_state.clients)} virtual clients")
 
     def sync_physical_to_virtual(
         self,
@@ -359,7 +357,9 @@ class BentleyDigitalTwin:
                     if key not in self._physical_state.performance_metrics:
                         self._physical_state.performance_metrics[key] = []
                     if isinstance(value, (int, float)):
-                        self._physical_state.performance_metrics[key].append(float(value))
+                        self._physical_state.performance_metrics[key].append(
+                            float(value)
+                        )
                         metrics_transferred += 1
 
                     # Copy to virtual state
@@ -390,7 +390,11 @@ class BentleyDigitalTwin:
                 metrics_transferred=metrics_transferred,
                 drift_detected=drift_detected,
                 drift_magnitude=drift_magnitude,
-                details={"physical_round": physical_metrics.get("round", 0) if physical_metrics else 0},
+                details={
+                    "physical_round": (
+                        physical_metrics.get("round", 0) if physical_metrics else 0
+                    )
+                },
             )
 
             self._sync_history.append(result)
@@ -528,10 +532,13 @@ class BentleyDigitalTwin:
         if self._optimizer is None:
             self._optimizer = FairSwarm(
                 clients=self._virtual_state.clients,
-                coalition_size=min(self.coalition_size, len(self._virtual_state.clients)),
+                coalition_size=min(
+                    self.coalition_size, len(self._virtual_state.clients)
+                ),
                 config=self.fairswarm_config,
                 target_distribution=self.target_distribution,
             )
+        optimizer = self._optimizer
 
         # Use default fitness if none provided
         if fitness_fn is None:
@@ -543,16 +550,17 @@ class BentleyDigitalTwin:
                 )
             else:
                 from fairswarm.fitness.mock import MockFitness
+
                 fitness_fn = MockFitness(mode="mean_quality")
 
         # Run optimization
-        best_result = None
+        best_result: OptimizationResult | None = None
 
         for round_num in range(n_rounds):
             if verbose:
                 logger.info(f"Simulation round {round_num + 1}/{n_rounds}")
 
-            result = self._optimizer.optimize(
+            result = optimizer.optimize(
                 fitness_fn=fitness_fn,
                 n_iterations=n_iterations,
                 verbose=verbose,
@@ -562,11 +570,12 @@ class BentleyDigitalTwin:
                 best_result = result
 
             # Reset optimizer for next round
-            self._optimizer.reset()
+            optimizer.reset()
 
             # Update virtual state
             self._virtual_state.simulation_round = round_num + 1
 
+        assert best_result is not None, "No optimization rounds were executed"
         self._optimization_history.append(best_result)
         self._state = TwinState.SYNCHRONIZED
 
@@ -588,12 +597,12 @@ class BentleyDigitalTwin:
             return 0.0
 
         # Compute demographic drift
-        physical_demos = np.array([
-            np.asarray(c.demographics) for c in self._physical_state.clients
-        ])
-        virtual_demos = np.array([
-            np.asarray(c.demographics) for c in self._virtual_state.clients
-        ])
+        physical_demos = np.array(
+            [np.asarray(c.demographics) for c in self._physical_state.clients]
+        )
+        virtual_demos = np.array(
+            [np.asarray(c.demographics) for c in self._virtual_state.clients]
+        )
 
         # Average demographics
         physical_mean = np.mean(physical_demos, axis=0)

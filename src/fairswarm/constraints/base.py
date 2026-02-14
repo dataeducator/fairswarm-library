@@ -11,6 +11,7 @@ Advisor: Dr. Uttam Ghosh
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from collections.abc import Iterator
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 
@@ -339,7 +340,7 @@ class ConstraintSet:
     def __len__(self) -> int:
         return len(self.constraints)
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[Constraint]:
         return iter(self.constraints)
 
     def get_config(self) -> dict[str, Any]:

@@ -160,7 +160,9 @@ class TestGaussianMechanism:
         # σ = Δf * √(2ln(1.25/δ)) / ε
         expected_sigma = sensitivity * np.sqrt(2 * np.log(1.25 / delta)) / epsilon
 
-        assert mechanism.get_sigma(sensitivity) == pytest.approx(expected_sigma, rel=1e-5)
+        assert mechanism.get_sigma(sensitivity) == pytest.approx(
+            expected_sigma, rel=1e-5
+        )
 
     def test_higher_epsilon_lower_sigma(self):
         """Test that higher epsilon means lower sigma."""
@@ -207,10 +209,13 @@ class TestExponentialMechanism:
 
     def test_basic_selection(self, rng):
         """Test basic element selection."""
+
         def utility(x):
             return -abs(x - 5)  # Peak at 5
 
-        mechanism = ExponentialMechanism(epsilon=10.0, utility_fn=utility, sensitivity=1.0)
+        mechanism = ExponentialMechanism(
+            epsilon=10.0, utility_fn=utility, sensitivity=1.0
+        )
         candidates = list(range(10))
 
         selected = mechanism.select(candidates, rng=rng)
@@ -218,10 +223,13 @@ class TestExponentialMechanism:
 
     def test_high_epsilon_near_optimal(self, rng):
         """Test high epsilon selects near-optimal."""
+
         def utility(x):
             return -abs(x - 5)
 
-        mechanism = ExponentialMechanism(epsilon=100.0, utility_fn=utility, sensitivity=1.0)
+        mechanism = ExponentialMechanism(
+            epsilon=100.0, utility_fn=utility, sensitivity=1.0
+        )
         candidates = list(range(10))
 
         # With very high epsilon, should almost always select 5
@@ -230,10 +238,13 @@ class TestExponentialMechanism:
 
     def test_low_epsilon_more_random(self, rng):
         """Test low epsilon gives more uniform selection."""
+
         def utility(x):
             return -abs(x - 5)
 
-        mechanism = ExponentialMechanism(epsilon=0.01, utility_fn=utility, sensitivity=1.0)
+        mechanism = ExponentialMechanism(
+            epsilon=0.01, utility_fn=utility, sensitivity=1.0
+        )
         candidates = list(range(10))
 
         selections = [mechanism.select(candidates, rng=rng) for _ in range(1000)]
@@ -250,7 +261,9 @@ class TestExponentialMechanism:
         def utility(x):
             return float(x)  # Utility = value itself
 
-        mechanism = ExponentialMechanism(epsilon=epsilon, utility_fn=utility, sensitivity=sensitivity)
+        mechanism = ExponentialMechanism(
+            epsilon=epsilon, utility_fn=utility, sensitivity=sensitivity
+        )
         candidates = [0, 1, 2]
 
         # Sample many times
@@ -270,7 +283,9 @@ class TestExponentialMechanism:
 
     def test_empty_candidates_raises(self, rng):
         """Test empty candidates raises error."""
-        mechanism = ExponentialMechanism(epsilon=1.0, utility_fn=lambda x: x, sensitivity=1.0)
+        mechanism = ExponentialMechanism(
+            epsilon=1.0, utility_fn=lambda x: x, sensitivity=1.0
+        )
 
         with pytest.raises(ValueError):
             mechanism.select([], rng=rng)
@@ -350,8 +365,12 @@ class TestAddNoiseToGradient:
         rng1 = np.random.default_rng(42)
         rng2 = np.random.default_rng(42)
 
-        noisy_low = add_noise_to_gradient(gradient, noise_multiplier=0.1, max_norm=1.0, rng=rng1)
-        noisy_high = add_noise_to_gradient(gradient, noise_multiplier=10.0, max_norm=1.0, rng=rng2)
+        noisy_low = add_noise_to_gradient(
+            gradient, noise_multiplier=0.1, max_norm=1.0, rng=rng1
+        )
+        noisy_high = add_noise_to_gradient(
+            gradient, noise_multiplier=10.0, max_norm=1.0, rng=rng2
+        )
 
         assert np.var(noisy_high) > np.var(noisy_low)
 
@@ -601,10 +620,9 @@ class TestAdvancedCompositionAccountant:
         composed = accountant.get_epsilon(delta)
 
         # ε' = √(2k·ln(1/δ))·ε + k·ε·(e^ε - 1)
-        expected = (
-            np.sqrt(2 * k * np.log(1 / delta)) * epsilon_per_step
-            + k * epsilon_per_step * (np.exp(epsilon_per_step) - 1)
-        )
+        expected = np.sqrt(
+            2 * k * np.log(1 / delta)
+        ) * epsilon_per_step + k * epsilon_per_step * (np.exp(epsilon_per_step) - 1)
 
         assert composed == pytest.approx(expected, rel=1e-5)
 
@@ -741,7 +759,9 @@ class TestPrivacyProperties:
 
     @given(
         gradient=st.lists(
-            st.floats(min_value=-10.0, max_value=10.0, allow_nan=False, allow_infinity=False),
+            st.floats(
+                min_value=-10.0, max_value=10.0, allow_nan=False, allow_infinity=False
+            ),
             min_size=1,
             max_size=10,
         ),

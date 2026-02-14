@@ -66,7 +66,7 @@ from fairswarm.core.client import Client
 from fairswarm.core.config import FairSwarmConfig
 from fairswarm.demographics.distribution import DemographicDistribution
 from fairswarm.fitness.base import FitnessFunction, FitnessResult
-from fairswarm.types import Coalition
+from fairswarm.types import ClientId, Coalition
 
 logger = logging.getLogger(__name__)
 
@@ -149,10 +149,11 @@ class ClientInfo:
 
     def to_fairswarm_client(self, idx: int) -> Client:
         """Convert to FairSwarm Client object."""
+        demo = self.demographics or DemographicDistribution.uniform(4)
         return Client(
-            id=self.cid,
+            id=ClientId(self.cid),
             num_samples=self.num_samples,
-            demographics=self.demographics or DemographicDistribution.uniform(4),
+            demographics=demo.as_array(),
             data_quality=self.data_quality,
         )
 
@@ -198,9 +199,9 @@ class FairSwarmClient:
     def to_client(self) -> Client:
         """Convert to FairSwarm Client."""
         return Client(
-            id=self.cid,
+            id=ClientId(self.cid),
             num_samples=self.num_samples,
-            demographics=self.demographics,
+            demographics=self.demographics.as_array(),
             data_quality=self.data_quality,
         )
 
@@ -274,7 +275,7 @@ class FlowerFitness(FitnessFunction):
             )
 
         # Data quality component
-        avg_quality = np.mean([c.data_quality for c in coalition_clients])
+        avg_quality = float(np.mean([c.data_quality for c in coalition_clients]))
 
         # Sample size component (normalized)
         total_samples = sum(c.dataset_size for c in coalition_clients)
@@ -286,11 +287,11 @@ class FlowerFitness(FitnessFunction):
             [np.asarray(c.demographics) for c in coalition_clients], axis=0
         )
         target = self.target_distribution.as_array()
-        divergence = np.sum((coalition_demo - target) ** 2)
+        divergence = float(np.sum((coalition_demo - target) ** 2))
         fairness_score = 1.0 / (1.0 + divergence)  # Higher is better
 
         # Combined fitness
-        fitness = (
+        fitness = float(
             self.quality_weight * avg_quality
             + self.size_weight * size_score
             + self.fairness_weight * fairness_score
@@ -342,7 +343,7 @@ class FlowerFitness(FitnessFunction):
         }
 
 
-class FairSwarmStrategy(Strategy if FLOWER_AVAILABLE else object):
+class FairSwarmStrategy(Strategy if FLOWER_AVAILABLE else object):  # type: ignore[misc]
     """
     Flower strategy using FairSwarm for fair client selection.
 
@@ -405,7 +406,13 @@ class FairSwarmStrategy(Strategy if FLOWER_AVAILABLE else object):
         on_evaluate_config_fn: Callable[[int], dict[str, Scalar]] | None = None,
         accept_failures: bool = True,
         initial_parameters: Parameters | None = None,
-        evaluate_fn: Callable[[int, NDArray[np.float64], dict[str, Scalar]], tuple[float, dict[str, Scalar]] | None] | None = None,
+        evaluate_fn: (
+            Callable[
+                [int, NDArray[np.float64], dict[str, Scalar]],
+                tuple[float, dict[str, Scalar]] | None,
+            ]
+            | None
+        ) = None,
     ):
         """
         Initialize FairSwarmStrategy.
@@ -462,9 +469,7 @@ class FairSwarmStrategy(Strategy if FLOWER_AVAILABLE else object):
             f"target_distribution={target_distribution is not None}"
         )
 
-    def initialize_parameters(
-        self, client_manager: ClientManager
-    ) -> Parameters | None:
+    def initialize_parameters(self, client_manager: ClientManager) -> Parameters | None:
         """
         Initialize global model parameters.
 
@@ -571,6 +576,7 @@ class FairSwarmStrategy(Strategy if FLOWER_AVAILABLE else object):
         coalition_size = min(coalition_size, len(fairswarm_clients))
 
         # Create fitness function
+        assert self.target_distribution is not None
         fitness_fn = FlowerFitness(
             target_distribution=self.target_distribution,
             fairness_weight=0.3,
@@ -594,9 +600,14 @@ class FairSwarmStrategy(Strategy if FLOWER_AVAILABLE else object):
         if result.fairness:
             self._fairness_history.append(result.fairness.demographic_divergence)
 
+        divergence_str = (
+            f"{result.fairness.demographic_divergence:.4f}"
+            if result.fairness
+            else "N/A"
+        )
         logger.info(
             f"FairSwarm optimization: fitness={result.fitness:.4f}, "
-            f"divergence={result.fairness.demographic_divergence if result.fairness else 'N/A':.4f}"
+            f"divergence={divergence_str}"
         )
 
         return list(result.coalition)
@@ -669,9 +680,7 @@ class FairSwarmStrategy(Strategy if FLOWER_AVAILABLE else object):
 
         # Track failures
         if failures and not self.accept_failures:
-            logger.warning(
-                f"Round {server_round}: {len(failures)} failures, aborting"
-            )
+            logger.warning(f"Round {server_round}: {len(failures)} failures, aborting")
             return None, {}
 
         # Extract parameters and weights
@@ -697,8 +706,12 @@ class FairSwarmStrategy(Strategy if FLOWER_AVAILABLE else object):
         if self._selection_history:
             last_result = self._selection_history[-1]
             if last_result.fairness:
-                metrics["demographic_divergence"] = last_result.fairness.demographic_divergence
-                metrics["epsilon_satisfied"] = float(last_result.fairness.epsilon_satisfied)
+                metrics["demographic_divergence"] = (
+                    last_result.fairness.demographic_divergence
+                )
+                metrics["epsilon_satisfied"] = float(
+                    last_result.fairness.epsilon_satisfied
+                )
 
         logger.info(
             f"Round {server_round}: Aggregated {len(results)} clients, "
@@ -724,9 +737,7 @@ class FairSwarmStrategy(Strategy if FLOWER_AVAILABLE else object):
         total_examples = sum(num_examples for _, num_examples in weights_results)
 
         # Weighted average
-        aggregated = [
-            np.zeros_like(layer) for layer in weights_results[0][0]
-        ]
+        aggregated = [np.zeros_like(layer) for layer in weights_results[0][0]]
 
         for parameters, num_examples in weights_results:
             weight = num_examples / total_examples
@@ -821,7 +832,7 @@ class FairSwarmStrategy(Strategy if FLOWER_AVAILABLE else object):
                     all_metrics[key].append(float(value))
 
         for key, values in all_metrics.items():
-            metrics[f"avg_{key}"] = np.mean(values)
+            metrics[f"avg_{key}"] = float(np.mean(values))
 
         return loss_aggregated, metrics
 

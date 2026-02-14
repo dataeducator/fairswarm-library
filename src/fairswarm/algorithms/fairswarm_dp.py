@@ -21,7 +21,7 @@ from __future__ import annotations
 import dataclasses
 import logging
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Callable
 
 import numpy as np
 from numpy.typing import NDArray
@@ -32,7 +32,9 @@ from fairswarm.algorithms.result import (
     OptimizationResult,
 )
 from fairswarm.core.config import FairSwarmConfig
+from fairswarm.core.particle import Particle
 from fairswarm.core.position import decode_coalition
+from fairswarm.core.swarm import Swarm
 from fairswarm.demographics.distribution import DemographicDistribution
 from fairswarm.fitness.base import FitnessFunction, FitnessResult
 from fairswarm.fitness.fairness import compute_fairness_gradient
@@ -73,7 +75,7 @@ class DPConfig:
     mechanism: str = "gaussian"
     accountant_type: str = "rdp"
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.epsilon <= 0:
             raise ValueError("epsilon must be positive")
         if not 0 < self.delta < 1:
@@ -83,7 +85,7 @@ class DPConfig:
         if self.max_grad_norm <= 0:
             raise ValueError("max_grad_norm must be positive")
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "epsilon": self.epsilon,
             "delta": self.delta,
@@ -110,7 +112,7 @@ class DPResult:
     delta: float
     n_queries: int
     privacy_satisfied: bool
-    accountant_config: dict = field(default_factory=dict)
+    accountant_config: dict[str, Any] = field(default_factory=dict)
 
 
 class FairSwarmDP(FairSwarm):
@@ -200,6 +202,7 @@ class FairSwarmDP(FairSwarm):
             return RDPAccountant()
         else:
             from fairswarm.privacy.accountant import SimpleAccountant
+
             return SimpleAccountant()
 
     def optimize(
@@ -208,7 +211,7 @@ class FairSwarmDP(FairSwarm):
         n_iterations: int | None = None,
         convergence_threshold: float = 1e-6,
         convergence_window: int = 20,
-        callback=None,
+        callback: Callable[[int, Swarm, FitnessResult], None] | None = None,
         verbose: bool = False,
     ) -> OptimizationResult:
         """
@@ -236,6 +239,7 @@ class FairSwarmDP(FairSwarm):
 
         # Initialize swarm
         self._initialize_swarm()
+        assert self.swarm is not None
 
         # Track metrics
         fitness_history: list[float] = []
@@ -269,7 +273,7 @@ class FairSwarmDP(FairSwarm):
             diversity_history.append(self.swarm.get_diversity())
 
             # Callback
-            if callback:
+            if callback and self.swarm.g_best is not None:
                 g_best_coalition = decode_coalition(
                     self.swarm.g_best, self.coalition_size
                 )
@@ -294,6 +298,7 @@ class FairSwarmDP(FairSwarm):
                     break
 
         # Final result
+        assert self.swarm.g_best is not None
         final_coalition = decode_coalition(self.swarm.g_best, self.coalition_size)
         final_result = fitness_fn.evaluate(final_coalition, self.clients)
 
@@ -321,7 +326,7 @@ class FairSwarmDP(FairSwarm):
         )
 
         # Build result
-        result = OptimizationResult(
+        opt_result = OptimizationResult(
             coalition=final_coalition,
             fitness=final_result.value,
             fitness_components=final_result.components,
@@ -342,11 +347,11 @@ class FairSwarmDP(FairSwarm):
             },
         )
 
-        return result
+        return opt_result
 
     def _update_particle_dp(
         self,
-        particle,
+        particle: Particle,
         fitness_fn: FitnessFunction,
     ) -> None:
         """
@@ -357,6 +362,7 @@ class FairSwarmDP(FairSwarm):
         2. Add noise to gradient
         3. Add noise to fitness evaluation
         """
+        assert self.swarm is not None
         # Compute fairness gradient
         if self.target_distribution is not None:
             gradient_result = compute_fairness_gradient(
@@ -413,6 +419,7 @@ class FairSwarmDP(FairSwarm):
         clipped, _ = clip_gradient(gradient, self.dp_config.max_grad_norm)
 
         # Add noise
+        private_grad: NDArray[np.float64]
         if isinstance(self.mechanism, GaussianMechanism):
             private_grad = add_noise_to_gradient(
                 gradient=clipped,
@@ -422,11 +429,12 @@ class FairSwarmDP(FairSwarm):
             )
         else:
             # Laplace noise
-            private_grad = self.mechanism.add_noise(
+            noisy = self.mechanism.add_noise(
                 clipped,
                 sensitivity=self.dp_config.max_grad_norm,
                 rng=self.rng,
             )
+            private_grad = np.asarray(noisy, dtype=np.float64)
 
         # Record privacy cost
         self._record_gradient_query()
@@ -452,10 +460,12 @@ class FairSwarmDP(FairSwarm):
         result = fitness_fn.evaluate(coalition, self.clients)
 
         # Add noise to fitness value
-        noisy_value = self.mechanism.add_noise(
-            result.value,
-            sensitivity=self._fitness_sensitivity,
-            rng=self.rng,
+        noisy_value = float(
+            self.mechanism.add_noise(
+                result.value,
+                sensitivity=self._fitness_sensitivity,
+                rng=self.rng,
+            )
         )
 
         # Record privacy cost
@@ -530,7 +540,7 @@ class FairSwarmDP(FairSwarm):
     def get_remaining_budget(self) -> float:
         """Get remaining privacy budget."""
         spent = self.accountant.get_epsilon(self.dp_config.delta)
-        return max(0, self.dp_config.epsilon - spent)
+        return max(0.0, self.dp_config.epsilon - spent)
 
     def reset(self, seed: int | None = None) -> None:
         """Reset optimizer state including privacy accountant."""

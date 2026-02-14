@@ -53,7 +53,7 @@ class PrivacyParams:
     delta: float = 0.0
     sensitivity: float = 1.0
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.epsilon <= 0:
             raise ValueError("epsilon must be positive")
         if self.delta < 0 or self.delta >= 1:
@@ -108,6 +108,10 @@ class NoiseMechanism(ABC):
     def name(self) -> str:
         """Mechanism name."""
         pass
+
+    def get_config(self) -> dict[str, Any]:
+        """Get mechanism configuration."""
+        return {"mechanism": self.name}
 
 
 class LaplaceMechanism(NoiseMechanism):
@@ -164,11 +168,11 @@ class LaplaceMechanism(NoiseMechanism):
         scale = sensitivity / self.epsilon
 
         if isinstance(value, np.ndarray):
-            noise = rng.laplace(0, scale, value.shape)
-            return value + noise
+            arr_noise = rng.laplace(0, scale, value.shape)
+            return value + arr_noise
         else:
-            noise = rng.laplace(0, scale)
-            return value + noise
+            scalar_noise: float = float(rng.laplace(0, scale))
+            return float(value + scalar_noise)
 
     def get_epsilon(self, sensitivity: float) -> float:
         """Get effective epsilon (same as configured for Laplace)."""
@@ -247,11 +251,11 @@ class GaussianMechanism(NoiseMechanism):
         sigma = self.get_sigma(sensitivity)
 
         if isinstance(value, np.ndarray):
-            noise = rng.normal(0, sigma, value.shape)
-            return value + noise
+            arr_noise = rng.normal(0, sigma, value.shape)
+            return value + arr_noise
         else:
-            noise = rng.normal(0, sigma)
-            return value + noise
+            scalar_noise: float = float(rng.normal(0, sigma))
+            return float(value + scalar_noise)
 
     def get_sigma(self, sensitivity: float) -> float:
         """
@@ -265,7 +269,9 @@ class GaussianMechanism(NoiseMechanism):
         Returns:
             Standard deviation for Gaussian noise
         """
-        return sensitivity * np.sqrt(2 * np.log(1.25 / self.delta)) / self.epsilon
+        return float(
+            sensitivity * np.sqrt(2 * np.log(1.25 / self.delta)) / self.epsilon
+        )
 
     def get_epsilon(self, sensitivity: float) -> float:
         """Get effective epsilon."""
@@ -346,11 +352,11 @@ class ExponentialMechanism(NoiseMechanism):
         if utilities is None:
             utilities = [self.utility_fn(opt) for opt in options]
 
-        utilities = np.array(utilities)
+        utilities_arr = np.array(utilities)
 
         # Compute selection probabilities
         # P(option) ∝ exp(ε · u(option) / (2Δu))
-        scores = self.epsilon * utilities / (2 * self.sensitivity)
+        scores = self.epsilon * utilities_arr / (2 * self.sensitivity)
         scores = scores - np.max(scores)  # Numerical stability
         probs = np.exp(scores)
         probs = probs / np.sum(probs)
@@ -409,13 +415,13 @@ def clip_gradient(
     Example:
         >>> clipped, scale = clip_gradient(gradient, max_norm=1.0)
     """
-    norm = np.linalg.norm(gradient)
+    norm = float(np.linalg.norm(gradient))
 
     if norm <= max_norm:
         return gradient, 1.0
     else:
         scale = max_norm / norm
-        return gradient * scale, scale
+        return gradient * scale, float(scale)
 
 
 def add_noise_to_gradient(

@@ -68,15 +68,15 @@ class DemographicDistribution:
             )
 
         # Check non-negative
-        if np.any(self.values < 0):
+        if bool(np.any(self.values < 0)):
             raise ValueError(
                 "Demographic distribution values must be non-negative. "
-                f"Got minimum value: {np.min(self.values)}"
+                f"Got minimum value: {float(np.min(self.values))}"
             )
 
         # Check sum to 1 (with tolerance)
-        total = np.sum(self.values)
-        if not np.isclose(total, 1.0, atol=1e-6):
+        total = float(np.sum(self.values))
+        if not bool(np.isclose(total, 1.0, atol=1e-6)):
             raise ValueError(
                 f"Demographic distribution must sum to 1.0, got {total:.6f}. "
                 "Use DemographicDistribution.from_counts() for unnormalized data."
@@ -227,7 +227,7 @@ class DemographicDistribution:
         values = np.array(list(data.values()), dtype=np.float64)
 
         if normalize:
-            total = np.sum(values)
+            total = float(np.sum(values))
             if total <= 0:
                 raise ValueError("Cannot normalize: sum is zero or negative")
             values = values / total
@@ -264,7 +264,7 @@ class DemographicDistribution:
             )
         else:
             values = np.array(counts, dtype=np.float64)
-            total = np.sum(values)
+            total = float(np.sum(values))
             if total <= 0:
                 raise ValueError("Cannot normalize: sum is zero or negative")
             values = values / total
@@ -412,11 +412,11 @@ def combine_distributions(
                 f"Number of weights ({len(weights)}) must match "
                 f"number of distributions ({len(distributions)})"
             )
-        if not np.isclose(sum(weights), 1.0, atol=1e-6):
+        if not bool(np.isclose(sum(weights), 1.0, atol=1e-6)):
             raise ValueError(f"Weights must sum to 1, got {sum(weights)}")
 
     # Weighted combination
-    combined = np.zeros(n_groups, dtype=np.float64)
+    combined: NDArray[np.float64] = np.zeros(n_groups, dtype=np.float64)
     for dist, weight in zip(distributions, weights):
         combined += weight * dist.values
 

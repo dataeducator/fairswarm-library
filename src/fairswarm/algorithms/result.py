@@ -72,10 +72,8 @@ class ConvergenceMetrics:
         if len(recent) < 2:
             return 0.0
 
-        improvements = [
-            recent[i] - recent[i - 1] for i in range(1, len(recent))
-        ]
-        return np.mean(improvements)
+        improvements = [recent[i] - recent[i - 1] for i in range(1, len(recent))]
+        return float(np.mean(improvements))
 
 
 @dataclass
@@ -118,10 +116,7 @@ class FairnessMetrics:
         if not self.target_distribution:
             return 0.0
 
-        gaps = [
-            self.representation_gap(group)
-            for group in self.target_distribution
-        ]
+        gaps = [self.representation_gap(group) for group in self.target_distribution]
         return max(gaps) if gaps else 0.0
 
 

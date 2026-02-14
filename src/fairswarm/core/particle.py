@@ -167,9 +167,7 @@ class Particle:
         v_fairness = fairness_coeff * fairness_gradient
 
         # Combined velocity update
-        self.velocity = (
-            inertia * self.velocity + v_cognitive + v_social + v_fairness
-        )
+        self.velocity = inertia * self.velocity + v_cognitive + v_social + v_fairness
 
         # Clamp velocity to [-v_max, v_max]
         self.velocity = np.clip(self.velocity, -velocity_max, velocity_max)
@@ -285,9 +283,9 @@ class Particle:
             velocity=self.velocity.copy(),
             p_best=self.p_best.copy(),
             p_best_fitness=self.p_best_fitness,
-            p_best_coalition=list(self.p_best_coalition)
-            if self.p_best_coalition
-            else None,
+            p_best_coalition=(
+                list(self.p_best_coalition) if self.p_best_coalition else None
+            ),
         )
 
     def __repr__(self) -> str:

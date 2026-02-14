@@ -175,9 +175,7 @@ class TestDemographicFitness:
         assert fitness.target_distribution == target_distribution
         assert fitness.divergence_weight == 1.0
 
-    def test_evaluate_returns_fitness_result(
-        self, sample_clients, target_distribution
-    ):
+    def test_evaluate_returns_fitness_result(self, sample_clients, target_distribution):
         """Test that evaluate returns FitnessResult."""
         fitness = DemographicFitness(target_distribution=target_distribution)
 
@@ -186,9 +184,7 @@ class TestDemographicFitness:
         assert isinstance(result, FitnessResult)
         assert "divergence" in result.components
 
-    def test_fitness_is_negative_divergence(
-        self, diverse_clients, target_distribution
-    ):
+    def test_fitness_is_negative_divergence(self, diverse_clients, target_distribution):
         """Test that fitness equals negative weighted divergence."""
         fitness = DemographicFitness(
             target_distribution=target_distribution,
@@ -200,9 +196,7 @@ class TestDemographicFitness:
 
         # Compute expected divergence
         coalition_demo = compute_coalition_demographics(coalition, diverse_clients)
-        expected_div = kl_divergence(
-            coalition_demo, target_distribution.as_array()
-        )
+        expected_div = kl_divergence(coalition_demo, target_distribution.as_array())
 
         assert result.value == pytest.approx(-expected_div, rel=1e-5)
 
@@ -286,9 +280,7 @@ class TestFairnessGradient:
         norm = np.linalg.norm(result.gradient)
         assert norm == pytest.approx(1.0, rel=1e-5)
 
-    def test_gradient_favors_underrepresented_groups(
-        self, target_distribution
-    ):
+    def test_gradient_favors_underrepresented_groups(self, target_distribution):
         """Test that gradient pushes toward underrepresented demographics."""
         # Create two clients: one matching target, one not
         target_labels = target_distribution.labels
@@ -364,8 +356,10 @@ class TestMockFitness:
 
     def test_custom_mode(self, sample_clients):
         """Test custom mode with user function."""
+
         def custom_fn(coalition, clients):
             return len(coalition) * 10.0
+
         fitness = MockFitness(mode="custom", custom_fn=custom_fn)
 
         result = fitness.evaluate([0, 1], sample_clients)
@@ -443,10 +437,12 @@ class TestWeightedFitness:
         )
         cost = CommunicationCostFitness()
 
-        composite = WeightedFitness([
-            ("fairness", fairness, 0.7),
-            ("cost", cost, 0.3),
-        ])
+        composite = WeightedFitness(
+            [
+                ("fairness", fairness, 0.7),
+                ("cost", cost, 0.3),
+            ]
+        )
 
         result = composite.evaluate([0, 1], diverse_clients)
 
@@ -459,10 +455,12 @@ class TestWeightedFitness:
         fitness1 = MockFitness(mode="size")
         fitness2 = ConstantFitness(value=1.0)
 
-        composite = WeightedFitness([
-            ("size", fitness1, 0.5),
-            ("constant", fitness2, 0.5),
-        ])
+        composite = WeightedFitness(
+            [
+                ("size", fitness1, 0.5),
+                ("constant", fitness2, 0.5),
+            ]
+        )
 
         result = composite.evaluate([0, 1, 2], sample_clients)
 
@@ -560,6 +558,7 @@ class TestAccuracyFairnessFitness:
 
     def test_with_accuracy_function(self, diverse_clients, target_distribution):
         """Test with custom accuracy function."""
+
         def mock_accuracy(coalition, clients):
             return 0.85
 
@@ -639,9 +638,7 @@ class TestDataQualityFitness:
 class TestFitnessIntegration:
     """Integration tests for fitness functions."""
 
-    def test_full_evaluation_pipeline(
-        self, diverse_clients, target_distribution
-    ):
+    def test_full_evaluation_pipeline(self, diverse_clients, target_distribution):
         """Test complete fitness evaluation with all components."""
         # Create composite fitness matching paper formulation
         # F(S) = ValAcc(S) - λ·DemDiv(S) - μ·CommCost(S)
@@ -652,11 +649,13 @@ class TestFitnessIntegration:
         cost = CommunicationCostFitness()
         quality = MockFitness(mode="mean_quality")
 
-        composite = WeightedFitness([
-            ("accuracy", quality, 0.5),
-            ("fairness", fairness, 0.3),
-            ("cost", cost, 0.2),
-        ])
+        composite = WeightedFitness(
+            [
+                ("accuracy", quality, 0.5),
+                ("fairness", fairness, 0.3),
+                ("cost", cost, 0.2),
+            ]
+        )
 
         # Evaluate a coalition
         coalition = [0, 2, 4]
@@ -679,9 +678,7 @@ class TestFitnessIntegration:
         position = np.array([0.7, 0.3, 0.5, 0.4, 0.6])
 
         # Compute gradient
-        gradient = fitness.compute_gradient(
-            position, diverse_clients, coalition_size=3
-        )
+        gradient = fitness.compute_gradient(position, diverse_clients, coalition_size=3)
 
         # Simulate velocity update (Algorithm 1)
         fairness_coeff = 0.2

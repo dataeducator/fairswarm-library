@@ -49,6 +49,7 @@ Advisor: Dr. Uttam Ghosh
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from typing import TYPE_CHECKING, Any
 
 import numpy as np
@@ -369,7 +370,7 @@ class ClientDissimilarityFitness(FitnessFunction):
 
     def __init__(
         self,
-        accuracy_fn: Any | None = None,
+        accuracy_fn: Callable[[Coalition, list[Client]], list[float]] | None = None,
         dissimilarity_weight: float = 1.0,
     ):
         """
@@ -543,7 +544,7 @@ class ClientDissimilarityFitness(FitnessFunction):
         # grad[i] = -(normalized_size_i - weighted_mean)^2
         # Negated because we want to REDUCE dissimilarity
         deviations = normalized_sizes - weighted_mean
-        gradient = -(deviations ** 2)
+        gradient = -(deviations**2)
 
         # Shift so the client with smallest deviation has highest gradient
         gradient = gradient - np.min(gradient)
