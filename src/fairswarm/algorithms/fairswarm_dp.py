@@ -318,12 +318,10 @@ class FairSwarmDP(FairSwarm):
                     f"ε_spent={eps_spent:.4f}"
                 )
 
-            # Check convergence
+            # Check convergence: no meaningful improvement over recent window
             if len(fitness_history) >= convergence_window:
                 recent = fitness_history[-convergence_window:]
-                # Use variance-based detection: more robust than range
-                # to single outliers in the fitness history
-                improvement = float(np.var(recent))
+                improvement = abs(recent[-1] - recent[0])
                 if improvement < convergence_threshold:
                     converged = True
                     convergence_iteration = iteration
@@ -572,6 +570,12 @@ class FairSwarmDP(FairSwarm):
                 lo = mid  # Need more noise to stay within budget
             else:
                 hi = mid  # Can use less noise
+
+        # Verify calibration: ensure returned σ stays within budget
+        final_eps = self._compute_rdp_epsilon(total_queries, hi, delta)
+        if final_eps > total_budget:
+            # Use slightly more noise to guarantee budget compliance
+            hi = lo
         return hi
 
     def _estimate_sensitivity(self, fitness_fn: FitnessFunction) -> float:

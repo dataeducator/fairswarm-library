@@ -115,11 +115,11 @@ def kl_divergence(
             f"Pass a valid probability distribution or normalize before calling."
         )
 
-    # Add smoothing to avoid log(0) - as specified in CLAUDE.md
-    p_smooth = np.clip(p_arr, eps, 1.0)
-    q_smooth = np.clip(q_arr, eps, 1.0)
+    # Additive smoothing to avoid log(0) while preserving relative proportions
+    p_smooth = p_arr + eps
+    q_smooth = q_arr + eps
 
-    # Renormalize ONLY to account for the slight change introduced by smoothing
+    # Renormalize to valid distributions
     p_smooth = p_smooth / np.sum(p_smooth)
     q_smooth = q_smooth / np.sum(q_smooth)
 

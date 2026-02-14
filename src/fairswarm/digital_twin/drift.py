@@ -247,8 +247,8 @@ class DriftDetector:
         self.on_drift = on_drift
 
         # Reference distribution
-        self._reference_features: NDArray[np.float64] | None
-        self._reference_distribution: NDArray[np.float64] | None
+        self._reference_features: NDArray[np.float64] | None = None
+        self._reference_distribution: NDArray[np.float64] | None = None
         if reference_clients:
             self._reference_features = self._extract_features(reference_clients)
             self._reference_distribution = self._compute_aggregate_demographics(

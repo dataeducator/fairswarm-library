@@ -293,12 +293,10 @@ class FairSwarm:
                     current_fairness=current_fairness,
                 )
 
-            # Check convergence
+            # Check convergence: no meaningful improvement over recent window
             if len(fitness_history) >= convergence_window:
                 recent = fitness_history[-convergence_window:]
-                # Use variance-based detection: more robust than range
-                # to single outliers in the fitness history
-                improvement = float(np.var(recent))
+                improvement = abs(recent[-1] - recent[0])
                 if improvement < convergence_threshold:
                     converged = True
                     convergence_iteration = iteration
