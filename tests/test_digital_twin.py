@@ -26,18 +26,25 @@ def create_test_clients(n_clients: int = 10) -> list[Client]:
         asian = 0.15 + 0.05 * (i / n_clients)
         other = 1.0 - white - black - hispanic - asian
 
-        demographics = DemographicDistribution.from_dict({
+        # Clamp all values to minimum 0.01
+        raw = {
             "white": max(0.01, white),
             "black": max(0.01, black),
             "hispanic": max(0.01, hispanic),
             "asian": max(0.01, asian),
             "other": max(0.01, other),
-        })
+        }
+
+        # Normalize to ensure sum == 1.0
+        total = sum(raw.values())
+        normalized = {k: v / total for k, v in raw.items()}
+
+        demographics = DemographicDistribution.from_dict(normalized)
 
         client = Client(
             id=f"hospital_{i}",
             num_samples=500 + i * 50,
-            demographics=demographics,
+            demographics=demographics.as_array(),
             data_quality=0.7 + 0.02 * i,
         )
         clients.append(client)
@@ -300,7 +307,7 @@ class TestVirtualEnvironment:
 
         clients = create_test_clients(10)
         target = CensusTarget.US_2020.as_distribution()
-        config = SimulationConfig(n_rounds=3, n_iterations=5, coalition_size=3)
+        config = SimulationConfig(n_rounds=3, n_iterations=5, coalition_size=3, seed=42)
 
         env = VirtualEnvironment(
             clients=clients,
@@ -319,7 +326,7 @@ class TestVirtualEnvironment:
         from fairswarm.digital_twin.simulator import VirtualEnvironment, SimulationConfig
 
         clients = create_test_clients(10)
-        config = SimulationConfig(n_rounds=3, coalition_size=3)
+        config = SimulationConfig(n_rounds=3, coalition_size=3, seed=42)
 
         env = VirtualEnvironment(clients=clients, config=config)
 
@@ -332,7 +339,7 @@ class TestVirtualEnvironment:
         from fairswarm.digital_twin.simulator import VirtualEnvironment, SimulationConfig
 
         clients = create_test_clients(10)
-        config = SimulationConfig(n_rounds=2, coalition_size=3)
+        config = SimulationConfig(n_rounds=2, coalition_size=3, seed=42)
 
         env = VirtualEnvironment(clients=clients, config=config)
         env.run_simulation()
@@ -538,7 +545,7 @@ class TestDriftDetector:
             client = Client(
                 id=f"new_hospital_{i}",
                 num_samples=1000,
-                demographics=demographics,
+                demographics=demographics.as_array(),
             )
             current.append(client)
 

@@ -192,12 +192,12 @@ class SimToRealAdapter:
             return np.array([]).reshape(0, 0)
 
         features = []
-        max_samples = max(c.num_samples for c in clients) if clients else 1
+        max_samples = max(c.dataset_size for c in clients) if clients else 1
 
         for client in clients:
-            demo = client.demographics.as_array()
+            demo = np.asarray(client.demographics)
             quality = np.array([client.data_quality])
-            size = np.array([client.num_samples / max_samples])
+            size = np.array([client.dataset_size / max_samples])
             client_features = np.concatenate([demo, quality, size])
             features.append(client_features)
 
@@ -557,7 +557,7 @@ class SimToRealAdapter:
         if not self.target_clients:
             return source_distribution
 
-        target_demos = [c.demographics.as_array() for c in self.target_clients]
+        target_demos = [np.asarray(c.demographics) for c in self.target_clients]
         target_mean = np.mean(target_demos, axis=0)
 
         source_array = source_distribution.as_array()
@@ -570,14 +570,12 @@ class SimToRealAdapter:
         adapted_array = adapted_array / adapted_array.sum()
 
         # Create new distribution
-        categories = source_distribution.categories
-        adapted_categories = {
-            cat: float(adapted_array[i])
-            for i, cat in enumerate(categories)
-            if i < len(adapted_array)
-        }
+        if source_distribution.labels:
+            labels = source_distribution.labels
+        else:
+            labels = None
 
-        return DemographicDistribution(categories=adapted_categories)
+        return DemographicDistribution(values=adapted_array, labels=labels)
 
     def __repr__(self) -> str:
         return (

@@ -177,7 +177,7 @@ class VirtualClient:
     @property
     def num_samples(self) -> int:
         """Number of local samples."""
-        return self.client.num_samples
+        return self.client.dataset_size
 
     def simulate_update(
         self,
@@ -515,7 +515,7 @@ class VirtualEnvironment:
         demo_vectors = []
         for idx in coalition:
             if 0 <= idx < len(self.clients):
-                demo_vectors.append(self.clients[idx].demographics.as_array())
+                demo_vectors.append(np.asarray(self.clients[idx].demographics))
 
         if not demo_vectors:
             return float("inf")

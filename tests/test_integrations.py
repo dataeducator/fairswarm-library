@@ -27,13 +27,20 @@ def create_test_clients(n_clients: int = 10) -> list[Client]:
         asian = 0.1 + 0.05 * (i / n_clients)
         other = 1.0 - white - black - hispanic - asian
 
-        demographics = DemographicDistribution.from_dict({
+        # Clamp all values to minimum 0.01
+        raw = {
             "white": max(0.01, white),
             "black": max(0.01, black),
             "hispanic": max(0.01, hispanic),
             "asian": max(0.01, asian),
             "other": max(0.01, other),
-        })
+        }
+
+        # Normalize to ensure sum == 1.0
+        total = sum(raw.values())
+        normalized = {k: v / total for k, v in raw.items()}
+
+        demographics = DemographicDistribution.from_dict(normalized)
 
         client = Client(
             id=f"client_{i}",

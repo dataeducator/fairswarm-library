@@ -277,13 +277,13 @@ class FlowerFitness(FitnessFunction):
         avg_quality = np.mean([c.data_quality for c in coalition_clients])
 
         # Sample size component (normalized)
-        total_samples = sum(c.num_samples for c in coalition_clients)
-        max_possible = sum(c.num_samples for c in clients)
+        total_samples = sum(c.dataset_size for c in coalition_clients)
+        max_possible = sum(c.dataset_size for c in clients)
         size_score = total_samples / max_possible if max_possible > 0 else 0.0
 
         # Fairness component (negative divergence)
         coalition_demo = np.mean(
-            [c.demographics.as_array() for c in coalition_clients], axis=0
+            [np.asarray(c.demographics) for c in coalition_clients], axis=0
         )
         target = self.target_distribution.as_array()
         divergence = np.sum((coalition_demo - target) ** 2)
@@ -322,7 +322,7 @@ class FlowerFitness(FitnessFunction):
             # Favor high-quality, high-sample clients
             gradient[i] = (
                 self.quality_weight * client.data_quality
-                + self.size_weight * (client.num_samples / 10000)
+                + self.size_weight * (client.dataset_size / 10000)
             )
 
         # Normalize

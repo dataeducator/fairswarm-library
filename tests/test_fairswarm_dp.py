@@ -9,7 +9,7 @@ Advisor: Dr. Uttam Ghosh
 
 import pytest
 import numpy as np
-from hypothesis import given, settings, assume
+from hypothesis import given, settings, assume, HealthCheck
 from hypothesis import strategies as st
 
 from fairswarm.algorithms.fairswarm_dp import (
@@ -19,9 +19,7 @@ from fairswarm.algorithms.fairswarm_dp import (
     run_fairswarm_dp,
 )
 from fairswarm.algorithms.result import OptimizationResult
-from fairswarm.core.client import Client
 from fairswarm.core.config import FairSwarmConfig
-from fairswarm.types import Demographics
 from fairswarm.demographics.distribution import DemographicDistribution
 from fairswarm.fitness.base import FitnessFunction, FitnessResult
 from fairswarm.privacy.accountant import RDPAccountant, SimpleAccountant
@@ -34,31 +32,16 @@ from fairswarm.privacy.accountant import RDPAccountant, SimpleAccountant
 
 @pytest.fixture
 def sample_clients():
-    """Create sample clients for testing."""
-    clients = []
-    for i in range(10):
-        demo = Demographics(
-            age=0.3 + 0.05 * i,
-            gender=0.5,
-            race=0.2 + 0.06 * i,
-        )
-        client = Client(
-            id=f"client_{i}",
-            num_samples=100 * (i + 1),
-            demographics=demo,
-            data_quality=0.7 + 0.03 * i,
-            communication_cost=0.1 * (i + 1),
-        )
-        clients.append(client)
-    return clients
+    """Create sample clients for testing with 5 demographic groups."""
+    from fairswarm.core.client import create_synthetic_clients
+    return create_synthetic_clients(n_clients=10, n_demographic_groups=5, seed=42)
 
 
 @pytest.fixture
 def target_distribution():
-    """Target demographic distribution."""
-    return DemographicDistribution.from_demographics(
-        Demographics(age=0.5, gender=0.5, race=0.4)
-    )
+    """Target demographic distribution (5 groups matching US Census 2020)."""
+    from fairswarm.demographics.targets import CensusTarget
+    return CensusTarget.US_2020.as_distribution()
 
 
 @pytest.fixture
@@ -80,6 +63,9 @@ def simple_fitness():
                 components={"quality": value},
                 coalition=coalition,
             )
+
+        def compute_gradient(self, position, clients, coalition_size):
+            return np.zeros(len(clients))
 
         @property
         def name(self):
@@ -621,7 +607,7 @@ class TestFairSwarmDPProperties:
         noise_multiplier=st.floats(min_value=0.1, max_value=5.0),
         max_grad_norm=st.floats(min_value=0.1, max_value=5.0),
     )
-    @settings(max_examples=20)
+    @settings(max_examples=20, suppress_health_check=[HealthCheck.function_scoped_fixture])
     def test_optimizer_with_varying_noise(
         self, noise_multiplier, max_grad_norm, sample_clients
     ):

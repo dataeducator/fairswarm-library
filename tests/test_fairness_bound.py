@@ -91,13 +91,13 @@ def epsilon_strategy(draw):
 def fairness_config_strategy(draw):
     """Generate FairSwarm config with varying fairness coefficients."""
     return FairSwarmConfig(
-        n_particles=draw(st.integers(min_value=10, max_value=30)),
+        swarm_size=draw(st.integers(min_value=10, max_value=30)),
         max_iterations=100,
         inertia=0.5,
         cognitive=1.0,
         social=1.0,
-        fairness_coeff=draw(st.floats(min_value=0.0, max_value=1.0)),
-        epsilon=draw(st.floats(min_value=0.1, max_value=1.0)),
+        fairness_coefficient=draw(st.floats(min_value=0.0, max_value=1.0)),
+        epsilon_fair=draw(st.floats(min_value=0.1, max_value=1.0)),
     )
 
 
@@ -288,7 +288,7 @@ class TestTheorem2FairnessGradient:
         """
         Property: Fairness gradient has unit norm.
         """
-        clients = create_synthetic_clients(n_clients=10, seed=42)
+        clients = create_synthetic_clients(n_clients=10, n_demographic_groups=5, seed=42)
         target = CensusTarget.US_2020.as_distribution()
         position = np.random.default_rng(42).random(10)
 
@@ -310,7 +310,7 @@ class TestTheorem2FairnessGradient:
         """
         Property: Gradient dimension equals number of clients.
         """
-        clients = create_synthetic_clients(n_clients=n_clients, seed=42)
+        clients = create_synthetic_clients(n_clients=n_clients, n_demographic_groups=5, seed=42)
         target = CensusTarget.US_2020.as_distribution()
         position = np.random.default_rng(42).random(n_clients)
 
@@ -330,7 +330,7 @@ class TestTheorem2FairnessGradient:
         target = CensusTarget.US_2020.as_distribution()
 
         # Client 0: matches target
-        # Client 1: very different from target
+        # Client 1: very different from target (heavily white, 5 groups to match target)
         clients = [
             Client(
                 id="matching",
@@ -340,7 +340,10 @@ class TestTheorem2FairnessGradient:
             ),
             Client(
                 id="different",
-                demographics=DemographicDistribution.from_dict({"white": 1.0}),
+                demographics=DemographicDistribution.from_dict({
+                    "white": 0.96, "black": 0.01, "hispanic": 0.01,
+                    "asian": 0.01, "other": 0.01,
+                }),
                 num_samples=1000,
                 data_quality=0.8,
             ),
@@ -382,14 +385,14 @@ class TestTheorem2EpsilonFairness:
         """
         Property: Divergence is always finite and bounded.
         """
-        clients = create_synthetic_clients(n_clients=15, seed=42)
+        clients = create_synthetic_clients(n_clients=15, n_demographic_groups=5, seed=42)
         target = CensusTarget.US_2020.as_distribution()
         fitness = DemographicFitness(target_distribution=target)
 
         config = FairSwarmConfig(
-            n_particles=15,
-            fairness_coeff=0.5,
-            epsilon=epsilon,
+            swarm_size=15,
+            fairness_coefficient=0.5,
+            epsilon_fair=epsilon,
         )
 
         optimizer = FairSwarm(
@@ -409,12 +412,12 @@ class TestTheorem2EpsilonFairness:
         """
         Property: Higher fairness coefficient leads to lower divergence.
         """
-        clients = create_synthetic_clients(n_clients=20, seed=42)
+        clients = create_synthetic_clients(n_clients=20, n_demographic_groups=5, seed=42)
         target = CensusTarget.US_2020.as_distribution()
         fitness = DemographicFitness(target_distribution=target)
 
         # Low fairness coefficient
-        config_low = FairSwarmConfig(fairness_coeff=0.0, n_particles=20)
+        config_low = FairSwarmConfig(fairness_coefficient=0.0, swarm_size=20)
         optimizer_low = FairSwarm(
             clients=clients,
             coalition_size=10,
@@ -425,7 +428,7 @@ class TestTheorem2EpsilonFairness:
         result_low = optimizer_low.optimize(fitness, n_iterations=100)
 
         # High fairness coefficient
-        config_high = FairSwarmConfig(fairness_coeff=0.8, n_particles=20)
+        config_high = FairSwarmConfig(fairness_coefficient=0.8, swarm_size=20)
         optimizer_high = FairSwarm(
             clients=clients,
             coalition_size=10,
@@ -454,12 +457,12 @@ class TestTheorem2EpsilonFairness:
 
         # Create clients that can match target when combined appropriately
         clients = []
-        categories = list(target.categories.keys())
+        categories = list(target.labels)
         for i in range(30):
             # Vary client demographics
             demo = {}
             for j, cat in enumerate(categories):
-                base = target.categories[cat]
+                base = target[cat]
                 noise = 0.1 * np.sin(i + j)  # Deterministic variation
                 demo[cat] = max(0.01, base + noise)
             total = sum(demo.values())
@@ -476,9 +479,9 @@ class TestTheorem2EpsilonFairness:
 
         epsilon = 0.5  # Reasonable threshold
         config = FairSwarmConfig(
-            n_particles=30,
-            fairness_coeff=0.7,
-            epsilon=epsilon,
+            swarm_size=30,
+            fairness_coefficient=0.7,
+            epsilon_fair=epsilon,
         )
 
         optimizer = FairSwarm(
@@ -519,13 +522,13 @@ class TestTheorem2ProbabilityBound:
         epsilon = 1.0  # Loose threshold for testing
         successes = 0
 
-        clients = create_synthetic_clients(n_clients=20, seed=42)
+        clients = create_synthetic_clients(n_clients=20, n_demographic_groups=5, seed=42)
         fitness = DemographicFitness(target_distribution=target)
 
         config = FairSwarmConfig(
-            n_particles=20,
-            fairness_coeff=0.5,
-            epsilon=epsilon,
+            swarm_size=20,
+            fairness_coefficient=0.5,
+            epsilon_fair=epsilon,
         )
 
         for seed in range(n_runs):
@@ -625,13 +628,13 @@ class TestTheorem2Integration:
         """
         Test that fairness (lower divergence) improves over iterations.
         """
-        clients = create_synthetic_clients(n_clients=20, seed=42)
+        clients = create_synthetic_clients(n_clients=20, n_demographic_groups=5, seed=42)
         target = CensusTarget.US_2020.as_distribution()
         fitness = DemographicFitness(target_distribution=target)
 
         config = FairSwarmConfig(
-            n_particles=20,
-            fairness_coeff=0.5,
+            swarm_size=20,
+            fairness_coefficient=0.5,
         )
 
         # Short run
@@ -663,7 +666,7 @@ class TestTheorem2Integration:
         """
         Test that all fairness metrics are properly computed.
         """
-        clients = create_synthetic_clients(n_clients=15, seed=42)
+        clients = create_synthetic_clients(n_clients=15, n_demographic_groups=5, seed=42)
         target = CensusTarget.US_2020.as_distribution()
         fitness = DemographicFitness(target_distribution=target)
 

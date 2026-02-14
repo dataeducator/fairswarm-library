@@ -355,7 +355,7 @@ class DemographicFitness(FitnessFunction):
         """Get configuration for reproducibility."""
         return {
             "class": self.__class__.__name__,
-            "target_distribution": self.target_distribution.categories,
+            "target_distribution": self.target_distribution.as_dict() if self.target_distribution.labels else self.target_distribution.values.tolist(),
             "divergence_weight": self.divergence_weight,
         }
 
@@ -498,7 +498,7 @@ class AccuracyFairnessFitness(FitnessFunction):
         """Get configuration for reproducibility."""
         return {
             "class": self.__class__.__name__,
-            "target_distribution": self.target_distribution.categories,
+            "target_distribution": self.target_distribution.as_dict() if self.target_distribution.labels else self.target_distribution.values.tolist(),
             "fairness_weight": self.fairness_weight,
             "has_accuracy_fn": self.accuracy_fn is not None,
         }

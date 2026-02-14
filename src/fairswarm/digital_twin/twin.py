@@ -302,7 +302,7 @@ class BentleyDigitalTwin:
             # Create virtual copy of client
             virtual_client = Client(
                 id=f"virtual_{client.id}",
-                num_samples=client.num_samples,
+                num_samples=client.dataset_size,
                 demographics=client.demographics,
                 data_quality=client.data_quality,
             )
@@ -589,10 +589,10 @@ class BentleyDigitalTwin:
 
         # Compute demographic drift
         physical_demos = np.array([
-            c.demographics.as_array() for c in self._physical_state.clients
+            np.asarray(c.demographics) for c in self._physical_state.clients
         ])
         virtual_demos = np.array([
-            c.demographics.as_array() for c in self._virtual_state.clients
+            np.asarray(c.demographics) for c in self._virtual_state.clients
         ])
 
         # Average demographics

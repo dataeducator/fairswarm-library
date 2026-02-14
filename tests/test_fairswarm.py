@@ -37,7 +37,7 @@ from fairswarm.fitness.mock import MockFitness, ConstantFitness
 @pytest.fixture
 def sample_clients():
     """Create sample clients for testing."""
-    return create_synthetic_clients(n_clients=20, seed=42)
+    return create_synthetic_clients(n_clients=20, n_demographic_groups=5, seed=42)
 
 
 @pytest.fixture
@@ -50,12 +50,12 @@ def target_distribution():
 def default_config():
     """Create default FairSwarm configuration."""
     return FairSwarmConfig(
-        n_particles=10,
+        swarm_size=10,
         max_iterations=50,
         inertia=0.7,
         cognitive=1.5,
         social=1.5,
-        fairness_coeff=0.2,
+        fairness_coefficient=0.2,
     )
 
 
@@ -230,7 +230,7 @@ class TestFairSwarmInitialization:
             config=default_config,
         )
 
-        assert optimizer.config.n_particles == 10
+        assert optimizer.config.swarm_size == 10
         assert optimizer.config.inertia == 0.7
 
     def test_with_target_distribution(
@@ -433,14 +433,18 @@ class TestFairSwarmFairness:
     def test_fairness_gradient_reduces_divergence(self, target_distribution):
         """Test that fairness gradient helps reduce divergence."""
         # Create clients with diverse demographics
+        # Build an "all white" distribution with the same groups as the target
+        all_white = {label: 0.0 for label in target_distribution.labels}
+        all_white["white"] = 1.0
+
         clients = []
         for i in range(20):
             if i < 10:
                 # Half match target approximately
                 demo = target_distribution
             else:
-                # Half are very different
-                demo = DemographicDistribution.from_dict({"white": 1.0})
+                # Half are very different (all white)
+                demo = DemographicDistribution.from_dict(all_white)
 
             clients.append(
                 Client(
@@ -458,7 +462,7 @@ class TestFairSwarmFairness:
             clients=clients,
             coalition_size=10,
             target_distribution=target_distribution,
-            config=FairSwarmConfig(fairness_coeff=0.5),
+            config=FairSwarmConfig(fairness_coefficient=0.5),
             seed=42,
         )
 
@@ -467,7 +471,7 @@ class TestFairSwarmFairness:
             clients=clients,
             coalition_size=10,
             target_distribution=target_distribution,
-            config=FairSwarmConfig(fairness_coeff=0.0),
+            config=FairSwarmConfig(fairness_coefficient=0.0),
             seed=42,
         )
 
@@ -493,11 +497,11 @@ class TestFairSwarmConvergence:
         # ω + (c₁+c₂)/2 < 2
         config = FairSwarmConfig(
             inertia=0.7,
-            cognitive=1.5,
-            social=1.5,
+            cognitive=1.0,
+            social=1.0,
         )
 
-        # Verify condition
+        # Verify condition: ω + (c₁+c₂)/2 < 2
         stability = config.inertia + (config.cognitive + config.social) / 2
         assert stability < 2, "Theorem 1 stability condition"
 
@@ -580,18 +584,18 @@ class TestFairSwarmIntegration:
 
     def test_full_optimization_pipeline(self, target_distribution):
         """Test complete optimization with all components."""
-        # Create clients
-        clients = create_synthetic_clients(n_clients=30, seed=42)
+        # Create clients with 5 groups to match US_2020 target distribution
+        clients = create_synthetic_clients(n_clients=30, n_demographic_groups=5, seed=42)
 
         # Configure optimizer
         config = FairSwarmConfig(
-            n_particles=20,
+            swarm_size=20,
             max_iterations=100,
             inertia=0.7,
             cognitive=1.5,
             social=1.5,
-            fairness_coeff=0.3,
-            epsilon=0.5,  # ε-fairness threshold
+            fairness_coefficient=0.3,
+            epsilon_fair=0.5,  # ε-fairness threshold
         )
 
         # Create fitness function

@@ -167,7 +167,7 @@ class DivergenceConstraint(FairnessConstraint):
         return {
             "name": self.name,
             "epsilon": self.epsilon,
-            "target": self.target_distribution.categories,
+            "target": self.target_distribution.as_dict() if self.target_distribution.labels else self.target_distribution.values.tolist(),
         }
 
 
@@ -248,7 +248,7 @@ class RepresentationConstraint(FairnessConstraint):
         return {
             "name": self.name,
             "threshold": self.threshold,
-            "target": self.target_distribution.categories,
+            "target": self.target_distribution.as_dict() if self.target_distribution.labels else self.target_distribution.values.tolist(),
         }
 
 
@@ -284,11 +284,18 @@ class MinorityRepresentationConstraint(FairnessConstraint):
 
         if minority_groups is None:
             # Auto-detect minority groups (< 10% in target)
-            minority_groups = [
-                group
-                for group, value in target_distribution.categories.items()
-                if value < 0.10
-            ]
+            if target_distribution.labels:
+                minority_groups = [
+                    group
+                    for group, value in target_distribution.items()
+                    if value < 0.10
+                ]
+            else:
+                minority_groups = [
+                    str(i)
+                    for i, value in enumerate(target_distribution.values)
+                    if value < 0.10
+                ]
 
         self.minority_groups = minority_groups
         self.min_representation = min_representation
@@ -296,7 +303,10 @@ class MinorityRepresentationConstraint(FairnessConstraint):
 
     def _compute_group_indices(self) -> Dict[str, int]:
         """Map group names to array indices."""
-        categories = list(self.target_distribution.categories.keys())
+        if self.target_distribution.labels:
+            categories = list(self.target_distribution.labels)
+        else:
+            categories = [str(i) for i in range(len(self.target_distribution.values))]
         return {group: i for i, group in enumerate(categories)}
 
     def evaluate(
@@ -365,7 +375,7 @@ class MinorityRepresentationConstraint(FairnessConstraint):
         gradient = np.zeros(n_clients)
 
         for i, client in enumerate(clients):
-            demo = client.demographics.as_array()
+            demo = np.asarray(client.demographics)
             # Boost clients who represent minority groups
             for group in self.minority_groups:
                 if group in self._group_indices:
@@ -460,5 +470,5 @@ class TotalVariationConstraint(FairnessConstraint):
         return {
             "name": self.name,
             "threshold": self.threshold,
-            "target": self.target_distribution.categories,
+            "target": self.target_distribution.as_dict() if self.target_distribution.labels else self.target_distribution.values.tolist(),
         }

@@ -122,10 +122,9 @@ class MockFitness(FitnessFunction):
             for i in coalition:
                 if 0 <= i < len(clients):
                     # Use the dominant demographic group
-                    demo = clients[i].demographics
-                    if demo.categories:
-                        dominant = max(demo.categories.items(), key=lambda x: x[1])[0]
-                        groups.add(dominant)
+                    demo = np.asarray(clients[i].demographics)
+                    dominant = int(np.argmax(demo))
+                    groups.add(dominant)
             fitness = float(len(groups))
 
         elif self.mode == "custom" and self.custom_fn is not None:
@@ -428,7 +427,7 @@ class DataQualityFitness(FitnessFunction):
             if 0 <= idx < len(clients):
                 client = clients[idx]
                 qualities.append(client.data_quality)
-                sizes.append(client.num_samples)
+                sizes.append(client.dataset_size)
                 stalenesses.append(getattr(client, "staleness", 0))
 
         if not qualities:
@@ -488,10 +487,10 @@ class DataQualityFitness(FitnessFunction):
 
         # Compute quality score for each client
         gradient = np.zeros(n_clients)
-        max_samples = max(c.num_samples for c in clients) if clients else 1
+        max_samples = max(c.dataset_size for c in clients) if clients else 1
 
         for i, client in enumerate(clients):
-            normalized_size = client.num_samples / max_samples if max_samples > 0 else 0
+            normalized_size = client.dataset_size / max_samples if max_samples > 0 else 0
             staleness = getattr(client, "staleness", 0)
 
             gradient[i] = (

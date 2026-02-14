@@ -286,7 +286,7 @@ class DriftDetector:
 
         features = []
         for client in clients:
-            demo = client.demographics.as_array()
+            demo = np.asarray(client.demographics)
             features.append(demo)
 
         return np.array(features)
@@ -306,7 +306,7 @@ class DriftDetector:
         if not clients:
             return np.array([])
 
-        demos = [c.demographics.as_array() for c in clients]
+        demos = [np.asarray(c.demographics) for c in clients]
         return np.mean(demos, axis=0)
 
     def detect(

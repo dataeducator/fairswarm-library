@@ -46,9 +46,10 @@ from fairswarm.fitness.mock import (
 
 @pytest.fixture
 def sample_clients():
-    """Create sample clients for testing."""
+    """Create sample clients for testing with 5 groups matching US_2020 target."""
     return create_synthetic_clients(
         n_clients=10,
+        n_demographic_groups=5,
         seed=42,
     )
 
@@ -61,14 +62,14 @@ def target_distribution():
 
 @pytest.fixture
 def diverse_clients():
-    """Create clients with diverse demographics."""
+    """Create clients with diverse demographics (5 groups matching US_2020)."""
     clients = []
     demographics_list = [
-        {"white": 0.9, "black": 0.1},
-        {"white": 0.1, "black": 0.9},
-        {"white": 0.5, "hispanic": 0.5},
-        {"asian": 0.8, "other": 0.2},
-        {"white": 0.3, "black": 0.3, "hispanic": 0.4},
+        {"white": 0.70, "black": 0.10, "hispanic": 0.10, "asian": 0.05, "other": 0.05},
+        {"white": 0.10, "black": 0.70, "hispanic": 0.10, "asian": 0.05, "other": 0.05},
+        {"white": 0.20, "black": 0.10, "hispanic": 0.50, "asian": 0.10, "other": 0.10},
+        {"white": 0.05, "black": 0.05, "hispanic": 0.05, "asian": 0.80, "other": 0.05},
+        {"white": 0.20, "black": 0.30, "hispanic": 0.30, "asian": 0.10, "other": 0.10},
     ]
 
     for i, demo in enumerate(demographics_list):
@@ -139,7 +140,7 @@ class TestCoalitionDemographics:
         demo = compute_coalition_demographics([0], diverse_clients)
 
         # Should match client 0's demographics
-        expected = diverse_clients[0].demographics.as_array()
+        expected = np.asarray(diverse_clients[0].demographics)
         np.testing.assert_array_almost_equal(demo, expected)
 
     def test_average_demographics(self, diverse_clients):
@@ -147,8 +148,8 @@ class TestCoalitionDemographics:
         # Coalition of clients 0 and 1 with opposite demographics
         demo = compute_coalition_demographics([0, 1], diverse_clients)
 
-        # Average of [white: 0.9, black: 0.1] and [white: 0.1, black: 0.9]
-        # Should be approximately [white: 0.5, black: 0.5]
+        # Average of clients 0 and 1 demographics
+        # Should sum to 1.0 (valid probability distribution)
         assert demo.sum() == pytest.approx(1.0, rel=1e-5)
 
     def test_empty_coalition_raises(self, diverse_clients):
@@ -291,10 +292,14 @@ class TestFairnessGradient:
     ):
         """Test that gradient pushes toward underrepresented demographics."""
         # Create two clients: one matching target, one not
-        target = target_distribution.categories
+        target_labels = target_distribution.labels
 
         # Client 0: matches target well
-        # Client 1: very different from target
+        # Client 1: very different from target (all "white")
+        different_demo = {label: 0.0 for label in target_labels}
+        different_demo["white"] = 1.0
+        # Normalize to sum to 1 (already does since only white=1.0)
+
         clients = [
             Client(
                 id="matching",
@@ -304,7 +309,7 @@ class TestFairnessGradient:
             ),
             Client(
                 id="different",
-                demographics=DemographicDistribution.from_dict({"white": 1.0}),
+                demographics=DemographicDistribution.from_dict(different_demo),
                 num_samples=1000,
                 data_quality=0.8,
             ),
@@ -571,10 +576,10 @@ class TestAccuracyFairnessFitness:
         # Fitness = accuracy - weight * divergence
         assert result.value < 0.85  # Fairness penalty reduces fitness
 
-    def test_without_accuracy_function_uses_quality(
+    def test_without_accuracy_function_uses_dataset_size(
         self, diverse_clients, target_distribution
     ):
-        """Test that without accuracy_fn, data quality is used."""
+        """Test that without accuracy_fn, normalized dataset size is used."""
         fitness = AccuracyFairnessFitness(
             target_distribution=target_distribution,
             accuracy_fn=None,
@@ -583,9 +588,12 @@ class TestAccuracyFairnessFitness:
 
         result = fitness.evaluate([0, 1], diverse_clients)
 
-        # Should use average of client data qualities
-        expected_quality = (0.5 + 0.6) / 2
-        assert result.components["accuracy"] == pytest.approx(expected_quality)
+        # Should use normalized dataset size as accuracy proxy
+        # diverse_clients have num_samples: 1000, 2000, 3000, 4000, 5000
+        coalition_size_sum = 1000 + 2000  # clients 0 and 1
+        total_size = sum(c.dataset_size for c in diverse_clients)
+        expected_accuracy = coalition_size_sum / total_size
+        assert result.components["accuracy"] == pytest.approx(expected_accuracy)
 
 
 # =============================================================================

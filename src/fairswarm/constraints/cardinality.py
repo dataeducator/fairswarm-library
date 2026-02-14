@@ -263,7 +263,7 @@ class MinDataConstraint(Constraint):
         clients: List[Client],
     ) -> ConstraintResult:
         total_samples = sum(
-            clients[i].num_samples for i in coalition if 0 <= i < len(clients)
+            clients[i].dataset_size for i in coalition if 0 <= i < len(clients)
         )
 
         satisfied = total_samples >= self.min_samples
@@ -285,7 +285,7 @@ class MinDataConstraint(Constraint):
         """
         Gradient proportional to client sample sizes.
         """
-        gradient = np.array([c.num_samples for c in clients], dtype=np.float64)
+        gradient = np.array([c.dataset_size for c in clients], dtype=np.float64)
         norm = np.linalg.norm(gradient)
         if norm > 1e-10:
             gradient = gradient / norm

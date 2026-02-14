@@ -120,7 +120,7 @@ class TestLaplaceMechanism:
         config = mechanism.get_config()
 
         assert config["epsilon"] == 2.5
-        assert config["name"] == "Laplace"
+        assert config["mechanism"] == "Laplace"
 
 
 # =============================================================================
@@ -212,10 +212,10 @@ class TestExponentialMechanism:
         def utility(x):
             return -abs(x - 5)  # Peak at 5
 
-        mechanism = ExponentialMechanism(epsilon=10.0)  # High epsilon = nearly deterministic
+        mechanism = ExponentialMechanism(epsilon=10.0, utility_fn=utility, sensitivity=1.0)
         candidates = list(range(10))
 
-        selected = mechanism.select(candidates, utility, sensitivity=1.0, rng=rng)
+        selected = mechanism.select(candidates, rng=rng)
         assert selected in candidates
 
     def test_high_epsilon_near_optimal(self, rng):
@@ -223,11 +223,11 @@ class TestExponentialMechanism:
         def utility(x):
             return -abs(x - 5)
 
-        mechanism = ExponentialMechanism(epsilon=100.0)
+        mechanism = ExponentialMechanism(epsilon=100.0, utility_fn=utility, sensitivity=1.0)
         candidates = list(range(10))
 
         # With very high epsilon, should almost always select 5
-        selections = [mechanism.select(candidates, utility, 1.0, rng) for _ in range(100)]
+        selections = [mechanism.select(candidates, rng=rng) for _ in range(100)]
         assert sum(1 for s in selections if s == 5) > 90  # Most should be 5
 
     def test_low_epsilon_more_random(self, rng):
@@ -235,10 +235,10 @@ class TestExponentialMechanism:
         def utility(x):
             return -abs(x - 5)
 
-        mechanism = ExponentialMechanism(epsilon=0.01)
+        mechanism = ExponentialMechanism(epsilon=0.01, utility_fn=utility, sensitivity=1.0)
         candidates = list(range(10))
 
-        selections = [mechanism.select(candidates, utility, 1.0, rng) for _ in range(1000)]
+        selections = [mechanism.select(candidates, rng=rng) for _ in range(1000)]
         unique_selections = len(set(selections))
 
         # With low epsilon, should select many different values
@@ -252,14 +252,14 @@ class TestExponentialMechanism:
         def utility(x):
             return float(x)  # Utility = value itself
 
-        mechanism = ExponentialMechanism(epsilon=epsilon)
+        mechanism = ExponentialMechanism(epsilon=epsilon, utility_fn=utility, sensitivity=sensitivity)
         candidates = [0, 1, 2]
 
         # Sample many times
         counts = {0: 0, 1: 0, 2: 0}
         n_samples = 10000
         for _ in range(n_samples):
-            selected = mechanism.select(candidates, utility, sensitivity, rng)
+            selected = mechanism.select(candidates, rng=rng)
             counts[selected] += 1
 
         # Check relative frequencies match expected ratios
@@ -272,10 +272,10 @@ class TestExponentialMechanism:
 
     def test_empty_candidates_raises(self, rng):
         """Test empty candidates raises error."""
-        mechanism = ExponentialMechanism(epsilon=1.0)
+        mechanism = ExponentialMechanism(epsilon=1.0, utility_fn=lambda x: x, sensitivity=1.0)
 
         with pytest.raises(ValueError):
-            mechanism.select([], lambda x: x, 1.0, rng)
+            mechanism.select([], rng=rng)
 
 
 # =============================================================================
@@ -291,15 +291,16 @@ class TestGradientClipping:
         gradient = np.array([0.3, 0.4])  # Norm = 0.5
         max_norm = 1.0
 
-        clipped = clip_gradient(gradient, max_norm)
+        clipped, scale = clip_gradient(gradient, max_norm)
         np.testing.assert_array_almost_equal(clipped, gradient)
+        assert scale == 1.0
 
     def test_clip_gradient_exceeds_norm(self):
         """Test gradient exceeding norm is clipped."""
         gradient = np.array([3.0, 4.0])  # Norm = 5.0
         max_norm = 1.0
 
-        clipped = clip_gradient(gradient, max_norm)
+        clipped, scale = clip_gradient(gradient, max_norm)
 
         # Should have norm = max_norm
         assert np.linalg.norm(clipped) == pytest.approx(max_norm, rel=1e-5)
@@ -310,10 +311,13 @@ class TestGradientClipping:
             gradient / np.linalg.norm(gradient),
         )
 
+        # Scale should be max_norm / original_norm
+        assert scale == pytest.approx(max_norm / 5.0, rel=1e-5)
+
     def test_clip_zero_gradient(self):
         """Test zero gradient stays zero."""
         gradient = np.zeros(5)
-        clipped = clip_gradient(gradient, 1.0)
+        clipped, scale = clip_gradient(gradient, 1.0)
         np.testing.assert_array_equal(clipped, gradient)
 
     def test_clip_multidimensional(self):
@@ -321,40 +325,37 @@ class TestGradientClipping:
         gradient = np.ones((3, 4)) * 2.0  # Large values
         max_norm = 1.0
 
-        clipped = clip_gradient(gradient, max_norm)
+        clipped, scale = clip_gradient(gradient, max_norm)
         assert np.linalg.norm(clipped) == pytest.approx(max_norm, rel=1e-5)
 
 
 class TestAddNoiseToGradient:
     """Tests for add_noise_to_gradient utility."""
 
-    def test_adds_laplace_noise(self, rng):
-        """Test Laplace noise addition."""
+    def test_adds_noise(self, rng):
+        """Test Gaussian noise addition (DP-SGD style)."""
         gradient = np.zeros(100)
         noisy = add_noise_to_gradient(
             gradient,
-            mechanism="laplace",
-            epsilon=1.0,
-            sensitivity=1.0,
+            noise_multiplier=1.0,
+            max_norm=1.0,
             rng=rng,
         )
 
         # Should have noise
         assert not np.allclose(noisy, gradient)
 
-    def test_adds_gaussian_noise(self, rng):
-        """Test Gaussian noise addition."""
-        gradient = np.zeros(100)
-        noisy = add_noise_to_gradient(
-            gradient,
-            mechanism="gaussian",
-            epsilon=1.0,
-            delta=1e-5,
-            sensitivity=1.0,
-            rng=rng,
-        )
+    def test_noise_scale_proportional_to_multiplier(self, rng):
+        """Test that higher noise multiplier means more noise."""
+        gradient = np.zeros(1000)
 
-        assert not np.allclose(noisy, gradient)
+        rng1 = np.random.default_rng(42)
+        rng2 = np.random.default_rng(42)
+
+        noisy_low = add_noise_to_gradient(gradient, noise_multiplier=0.1, max_norm=1.0, rng=rng1)
+        noisy_high = add_noise_to_gradient(gradient, noise_multiplier=10.0, max_norm=1.0, rng=rng2)
+
+        assert np.var(noisy_high) > np.var(noisy_low)
 
     def test_clips_before_noise(self, rng):
         """Test gradient is clipped before adding noise."""
@@ -364,9 +365,7 @@ class TestAddNoiseToGradient:
         # The function should clip to max_norm before adding noise
         noisy = add_noise_to_gradient(
             gradient,
-            mechanism="laplace",
-            epsilon=1.0,
-            sensitivity=1.0,
+            noise_multiplier=1.0,
             max_norm=max_norm,
             rng=rng,
         )
@@ -374,6 +373,7 @@ class TestAddNoiseToGradient:
         # Original direction should be preserved (roughly)
         # but magnitude should be close to max_norm + noise
         # Since noise can be large, just check the function runs
+        assert noisy.shape == gradient.shape
 
 
 # =============================================================================
@@ -753,7 +753,7 @@ class TestPrivacyProperties:
     def test_clipped_gradient_bounded(self, gradient, max_norm):
         """Test clipped gradient has norm <= max_norm."""
         gradient_array = np.array(gradient)
-        clipped = clip_gradient(gradient_array, max_norm)
+        clipped, scale = clip_gradient(gradient_array, max_norm)
 
         assert np.linalg.norm(clipped) <= max_norm + 1e-6  # Small tolerance
 

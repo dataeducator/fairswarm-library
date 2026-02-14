@@ -239,14 +239,14 @@ class ProportionalAllocator(RewardAllocator):
         metrics = {}
 
         # Get normalization factors
-        max_samples = max(clients[i].num_samples for i in coalition)
+        max_samples = max(clients[i].dataset_size for i in coalition)
         max_cost = max(clients[i].communication_cost for i in coalition)
 
         for idx in coalition:
             client = clients[idx]
 
             # Normalize contributions
-            data_score = client.num_samples / max_samples if max_samples > 0 else 0
+            data_score = client.dataset_size / max_samples if max_samples > 0 else 0
             quality_score = client.data_quality
             efficiency_score = 1 - (client.communication_cost / max_cost) if max_cost > 0 else 1
 
@@ -264,7 +264,7 @@ class ProportionalAllocator(RewardAllocator):
                 communication_contribution=efficiency_score,
                 total_contribution=total_score,
                 details={
-                    "num_samples": client.num_samples,
+                    "num_samples": client.dataset_size,
                     "data_quality": client.data_quality,
                     "communication_cost": client.communication_cost,
                 },
@@ -493,7 +493,7 @@ class FairnessAwareAllocator(RewardAllocator):
                 if others:
                     # Average demographics without client
                     demos_without = np.mean(
-                        [clients[i].demographics.as_array() for i in others],
+                        [np.asarray(clients[i].demographics) for i in others],
                         axis=0,
                     )
                 else:
@@ -501,7 +501,7 @@ class FairnessAwareAllocator(RewardAllocator):
 
                 # Average demographics with client
                 demos_with = np.mean(
-                    [clients[i].demographics.as_array() for i in coalition],
+                    [np.asarray(clients[i].demographics) for i in coalition],
                     axis=0,
                 )
 

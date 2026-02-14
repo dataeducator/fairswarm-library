@@ -71,7 +71,7 @@ class CoverageFitness(FitnessFunction):
 
         for idx in coalition:
             if 0 <= idx < len(clients):
-                demo = clients[idx].demographics.as_array()
+                demo = np.asarray(clients[idx].demographics)
                 # A group is "covered" if client has > 10% representation
                 for g, val in enumerate(demo):
                     if val > 0.1:
@@ -90,7 +90,7 @@ class CoverageFitness(FitnessFunction):
         gradient = np.zeros(n_clients)
 
         for i, client in enumerate(clients):
-            demo = client.demographics.as_array()
+            demo = np.asarray(client.demographics)
             # Higher gradient for clients with diverse coverage
             gradient[i] = np.sum(demo > 0.1)
 
@@ -122,7 +122,7 @@ class DiversityFitness(FitnessFunction):
         demos = []
         for idx in coalition:
             if 0 <= idx < len(clients):
-                demos.append(clients[idx].demographics.as_array())
+                demos.append(np.asarray(clients[idx].demographics))
 
         if not demos:
             return FitnessResult(value=0.0, components={"entropy": 0.0}, coalition=[])
@@ -181,7 +181,7 @@ class FacilityLocationFitness(FitnessFunction):
         for idx in coalition:
             if 0 <= idx < len(clients):
                 client = clients[idx]
-                demo = client.demographics.as_array()
+                demo = np.asarray(client.demographics)
                 quality = client.data_quality
 
                 # Quality contribution to each group
@@ -384,7 +384,7 @@ class TestTheorem3ApproximationRatio:
         )
 
         # FairSwarm solution
-        config = FairSwarmConfig(n_particles=20, fairness_coeff=0.0)
+        config = FairSwarmConfig(swarm_size=20, fairness_coefficient=0.0)
         optimizer = FairSwarm(
             clients=clients,
             coalition_size=coalition_size,
@@ -421,7 +421,7 @@ class TestTheorem3ApproximationRatio:
         )
 
         # FairSwarm solution
-        config = FairSwarmConfig(n_particles=15, fairness_coeff=0.0)
+        config = FairSwarmConfig(swarm_size=15, fairness_coefficient=0.0)
         optimizer = FairSwarm(
             clients=clients,
             coalition_size=coalition_size,
@@ -453,7 +453,7 @@ class TestTheorem3ApproximationRatio:
             clients, coalition_size, fitness
         )
 
-        config = FairSwarmConfig(n_particles=15, fairness_coeff=0.0)
+        config = FairSwarmConfig(swarm_size=15, fairness_coefficient=0.0)
 
         # Short run
         optimizer_short = FairSwarm(
@@ -506,7 +506,7 @@ class TestTheorem3GreedyComparison:
         )
 
         # FairSwarm
-        config = FairSwarmConfig(n_particles=15, fairness_coeff=0.0)
+        config = FairSwarmConfig(swarm_size=15, fairness_coefficient=0.0)
         optimizer = FairSwarm(
             clients=clients,
             coalition_size=coalition_size,
@@ -564,7 +564,7 @@ class TestTheorem3Monotonicity:
         """
         clients = create_synthetic_clients(n_clients=12, seed=42)
 
-        config = FairSwarmConfig(n_particles=10, fairness_coeff=0.0)
+        config = FairSwarmConfig(swarm_size=10, fairness_coefficient=0.0)
         optimizer = FairSwarm(
             clients=clients,
             coalition_size=4,
@@ -631,7 +631,7 @@ class TestTheorem3Statistical:
         )
 
         for seed in range(n_runs):
-            config = FairSwarmConfig(n_particles=15, fairness_coeff=0.0)
+            config = FairSwarmConfig(swarm_size=15, fairness_coefficient=0.0)
             optimizer = FairSwarm(
                 clients=clients,
                 coalition_size=coalition_size,
@@ -664,7 +664,7 @@ class TestTheorem3Statistical:
         )
 
         for seed in range(n_runs):
-            config = FairSwarmConfig(n_particles=10, fairness_coeff=0.0)
+            config = FairSwarmConfig(swarm_size=10, fairness_coefficient=0.0)
             optimizer = FairSwarm(
                 clients=clients,
                 coalition_size=coalition_size,
@@ -695,13 +695,13 @@ class TestTheorem3Integration:
         """
         Test the tradeoff between fairness and approximation quality.
         """
-        clients = create_synthetic_clients(n_clients=15, seed=42)
+        clients = create_synthetic_clients(n_clients=15, n_demographic_groups=5, seed=42)
         target = CensusTarget.US_2020.as_distribution()
         fitness = CoverageFitness(n_groups=5)
         coalition_size = 5
 
         # Pure optimization (no fairness)
-        config_opt = FairSwarmConfig(n_particles=15, fairness_coeff=0.0)
+        config_opt = FairSwarmConfig(swarm_size=15, fairness_coefficient=0.0)
         optimizer_opt = FairSwarm(
             clients=clients,
             coalition_size=coalition_size,
@@ -712,7 +712,7 @@ class TestTheorem3Integration:
         result_opt = optimizer_opt.optimize(fitness, n_iterations=100)
 
         # With fairness
-        config_fair = FairSwarmConfig(n_particles=15, fairness_coeff=0.5)
+        config_fair = FairSwarmConfig(swarm_size=15, fairness_coefficient=0.5)
         optimizer_fair = FairSwarm(
             clients=clients,
             coalition_size=coalition_size,
@@ -747,7 +747,7 @@ class TestTheorem3Integration:
             _, greedy_fitness = greedy_maximize(clients, coalition_size, fitness)
 
             # FairSwarm
-            config = FairSwarmConfig(n_particles=15, fairness_coeff=0.0)
+            config = FairSwarmConfig(swarm_size=15, fairness_coefficient=0.0)
             optimizer = FairSwarm(
                 clients=clients,
                 coalition_size=coalition_size,
