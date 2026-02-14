@@ -693,11 +693,13 @@ class TestFairSwarmDPIntegration:
         low_noise_config = DPConfig(
             epsilon=10.0,
             noise_multiplier=0.5,
+            auto_calibrate=False,
         )
 
         high_noise_config = DPConfig(
             epsilon=10.0,
             noise_multiplier=2.0,
+            auto_calibrate=False,
         )
 
         # Run with low noise

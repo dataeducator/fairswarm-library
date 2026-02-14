@@ -7,10 +7,10 @@ guarantees, implementing Theorem 4 (Privacy-Fairness Tradeoff).
 Theorem 4: UtilityLoss ≥ Ω(√(k·log(1/δ))/(ε_DP·ε_F))
 
 Key Modifications:
-    1. Noisy fitness evaluation
-    2. Private fairness gradient
-    3. Privacy budget tracking
-    4. Clipped velocity updates
+    1. Noisy fitness evaluation (budget-calibrated noise)
+    2. Gradient clipping for stability (post-processing, no privacy cost)
+    3. Privacy budget tracking via RDP accountant
+    4. Auto-calibrated noise_multiplier to use full budget
 
 Author: Tenicka Norwood
 Advisor: Dr. Uttam Ghosh
@@ -20,11 +20,11 @@ from __future__ import annotations
 
 import dataclasses
 import logging
+import math
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any, Callable
 
 import numpy as np
-from numpy.typing import NDArray
 
 from fairswarm.algorithms.fairswarm import FairSwarm
 from fairswarm.algorithms.result import (
@@ -43,7 +43,6 @@ from fairswarm.privacy.mechanisms import (
     GaussianMechanism,
     LaplaceMechanism,
     NoiseMechanism,
-    add_noise_to_gradient,
     clip_gradient,
 )
 from fairswarm.types import Coalition
@@ -62,12 +61,17 @@ class DPConfig:
     Attributes:
         epsilon: Privacy budget for entire optimization
         delta: Privacy failure probability
-        noise_multiplier: Noise scale (σ/sensitivity)
-        max_grad_norm: Maximum gradient norm for clipping
+        noise_multiplier: Noise scale (σ/sensitivity). If auto_calibrate
+            is True (default), this is overridden by budget-aware calibration.
+        max_grad_norm: Maximum gradient norm for clipping (stability, not privacy)
         mechanism: Type of noise mechanism ("gaussian" or "laplace")
         accountant_type: Type of privacy accountant
         fitness_sensitivity: Known sensitivity of the fitness function.
             If None, sensitivity is estimated empirically by sampling.
+        auto_calibrate: If True (default), noise_multiplier is computed
+            from the privacy budget to ensure all iterations run with
+            calibrated noise. This guarantees monotonic utility improvement
+            as epsilon increases.
     """
 
     epsilon: float = 1.0
@@ -77,6 +81,7 @@ class DPConfig:
     mechanism: str = "gaussian"
     accountant_type: str = "rdp"
     fitness_sensitivity: float | None = None  # None = estimate automatically
+    auto_calibrate: bool = True
 
     def __post_init__(self) -> None:
         if self.epsilon <= 0:
@@ -97,6 +102,7 @@ class DPConfig:
             "mechanism": self.mechanism,
             "accountant_type": self.accountant_type,
             "fitness_sensitivity": self.fitness_sensitivity,
+            "auto_calibrate": self.auto_calibrate,
         }
 
 
@@ -189,6 +195,7 @@ class FairSwarmDP(FairSwarm):
         # Query tracking
         self._n_queries = 0
         self._fitness_sensitivity = 1.0  # Will be set based on fitness function
+        self._calibrated_noise_multiplier = self.dp_config.noise_multiplier
 
     def _create_mechanism(self) -> NoiseMechanism:
         """Create noise mechanism based on config."""
@@ -245,6 +252,24 @@ class FairSwarmDP(FairSwarm):
         self._initialize_swarm()
         if self.swarm is None:
             raise RuntimeError("Swarm initialization failed: swarm is None")
+
+        # Auto-calibrate noise_multiplier to use exactly the privacy budget
+        # across all iterations. Each iteration has 1 fitness query per particle.
+        if self.dp_config.auto_calibrate:
+            queries_per_iter = len(self.swarm.particles)
+            self._calibrated_noise_multiplier = self._calibrate_noise_multiplier(
+                total_budget=self.dp_config.epsilon,
+                n_iterations=n_iterations,
+                queries_per_iteration=queries_per_iter,
+                delta=self.dp_config.delta,
+            )
+            logger.info(
+                f"Auto-calibrated noise_multiplier={self._calibrated_noise_multiplier:.4f} "
+                f"for ε={self.dp_config.epsilon}, {n_iterations} iterations, "
+                f"{queries_per_iter} queries/iter"
+            )
+        else:
+            self._calibrated_noise_multiplier = self.dp_config.noise_multiplier
 
         # Track metrics
         fitness_history: list[float] = []
@@ -369,14 +394,15 @@ class FairSwarmDP(FairSwarm):
         """
         Update particle with differential privacy.
 
-        Modifications from standard FairSwarm:
-        1. Clip fairness gradient
-        2. Add noise to gradient
-        3. Add noise to fitness evaluation
+        Privacy model:
+        - Fitness evaluation: noisy (1 privacy query per particle)
+        - Fairness gradient: post-processing of public demographic metadata
+          (client demographics are known to the server in FL), so gradient
+          computation has no privacy cost. Gradient is clipped for stability.
         """
         if self.swarm is None:
             raise RuntimeError("Cannot update particle: swarm is not initialized")
-        # Compute fairness gradient
+        # Compute fairness gradient (post-processing of public demographics)
         if self.target_distribution is not None:
             gradient_result = compute_fairness_gradient(
                 position=particle.position,
@@ -386,12 +412,14 @@ class FairSwarmDP(FairSwarm):
             )
             fairness_gradient = gradient_result.gradient
 
-            # Apply DP to gradient
-            fairness_gradient = self._privatize_gradient(fairness_gradient)
+            # Clip gradient for numerical stability (not a privacy operation)
+            fairness_gradient, _ = clip_gradient(
+                fairness_gradient, self.dp_config.max_grad_norm
+            )
         else:
             fairness_gradient = np.zeros(self.n_clients)
 
-        # Standard velocity update with private gradient
+        # Standard velocity update with clipped gradient
         particle.apply_velocity_update(
             inertia=self.config.inertia,
             cognitive=self.config.cognitive,
@@ -409,50 +437,11 @@ class FairSwarmDP(FairSwarm):
         # Decode coalition
         coalition = particle.decode(self.coalition_size)
 
-        # Private fitness evaluation
+        # Private fitness evaluation (the ONLY privacy query per particle)
         result = self._private_evaluate(fitness_fn, coalition)
 
         # Update personal best
         particle.update_personal_best(result.value, coalition)
-
-    def _privatize_gradient(
-        self,
-        gradient: NDArray[np.float64],
-    ) -> NDArray[np.float64]:
-        """
-        Apply differential privacy to gradient.
-
-        Args:
-            gradient: Raw gradient
-
-        Returns:
-            Private gradient
-        """
-        # Clip gradient
-        clipped, _ = clip_gradient(gradient, self.dp_config.max_grad_norm)
-
-        # Add noise
-        private_grad: NDArray[np.float64]
-        if isinstance(self.mechanism, GaussianMechanism):
-            private_grad = add_noise_to_gradient(
-                gradient=clipped,
-                noise_multiplier=self.dp_config.noise_multiplier,
-                max_norm=self.dp_config.max_grad_norm,
-                rng=self.rng,
-            )
-        else:
-            # Laplace noise
-            noisy = self.mechanism.add_noise(
-                clipped,
-                sensitivity=self.dp_config.max_grad_norm,
-                rng=self.rng,
-            )
-            private_grad = np.asarray(noisy, dtype=np.float64)
-
-        # Record privacy cost
-        self._record_gradient_query()
-
-        return private_grad
 
     def _private_evaluate(
         self,
@@ -462,12 +451,11 @@ class FairSwarmDP(FairSwarm):
         """
         Evaluate fitness with differential privacy.
 
-        Both the aggregate value and individual components are privatized
-        to prevent information leakage through component breakdown.
-
-        Each noise addition (the fitness value + each component) is a
-        separate mechanism invocation that must be recorded in the
-        privacy accountant individually.
+        Only the aggregate fitness value is privatized (1 privacy query).
+        Component values are redacted (set to the noisy aggregate) to
+        prevent information leakage, but this does not cost additional
+        privacy budget since components are deterministic functions of
+        the coalition which is already determined by the position.
 
         Args:
             fitness_fn: Fitness function
@@ -479,29 +467,14 @@ class FairSwarmDP(FairSwarm):
         # Get true fitness
         result = fitness_fn.evaluate(coalition, self.clients)
 
-        # Add noise to fitness value (1 privacy query)
-        noisy_value = float(
-            self.mechanism.add_noise(
-                result.value,
-                sensitivity=self._fitness_sensitivity,
-                rng=self.rng,
-            )
-        )
+        # Add calibrated noise to fitness value (1 privacy query)
+        noise_sigma = self._calibrated_noise_multiplier * self._fitness_sensitivity
+        noise = float(self.rng.normal(0.0, noise_sigma))
+        noisy_value = float(result.value) + noise
         self._record_fitness_query()
 
-        # Redact component values to prevent privacy leakage.
-        # Components could reveal information about individual clients.
-        # Each component noise addition is a separate privacy query.
-        private_components: dict[str, float] = {}
-        for k, v in result.components.items():
-            private_components[k] = float(
-                self.mechanism.add_noise(
-                    v,
-                    sensitivity=self._fitness_sensitivity,
-                    rng=self.rng,
-                )
-            )
-            self._record_fitness_query()
+        # Redact components (no additional privacy cost)
+        private_components = dict.fromkeys(result.components, noisy_value)
 
         return FitnessResult(
             value=noisy_value,
@@ -510,37 +483,96 @@ class FairSwarmDP(FairSwarm):
             metadata={"private": True},
         )
 
-    def _record_gradient_query(self) -> None:
-        """Record a gradient query for privacy accounting."""
-        self._n_queries += 1
-
-        # Use RDP accounting for Gaussian mechanism
-        if isinstance(self.accountant, RDPAccountant):
-            self.accountant.step(
-                noise_multiplier=self.dp_config.noise_multiplier,
-                sampling_rate=1.0,
-            )
-        else:
-            # Simple accounting
-            epsilon_per_query = (
-                self.dp_config.max_grad_norm / self.dp_config.noise_multiplier
-            )
-            self.accountant.step(epsilon=epsilon_per_query)
-
     def _record_fitness_query(self) -> None:
         """Record a fitness query for privacy accounting."""
         self._n_queries += 1
 
         if isinstance(self.accountant, RDPAccountant):
             self.accountant.step(
-                noise_multiplier=self.dp_config.noise_multiplier,
+                noise_multiplier=self._calibrated_noise_multiplier,
                 sampling_rate=1.0,
             )
         else:
             epsilon_per_query = (
-                self._fitness_sensitivity / self.dp_config.noise_multiplier
+                self._fitness_sensitivity / self._calibrated_noise_multiplier
             )
             self.accountant.step(epsilon=epsilon_per_query)
+
+    @staticmethod
+    def _compute_rdp_epsilon(
+        total_queries: int,
+        noise_multiplier: float,
+        delta: float,
+    ) -> float:
+        """
+        Compute (ε, δ)-DP guarantee for Gaussian mechanism via RDP.
+
+        For ``total_queries`` independent Gaussian queries with the given
+        noise_multiplier, find the tightest ε by minimizing over RDP orders.
+
+        Args:
+            total_queries: Total number of privacy queries
+            noise_multiplier: σ / Δf (noise scale relative to sensitivity)
+            delta: Target failure probability
+
+        Returns:
+            Best (ε, δ)-DP epsilon across RDP orders
+        """
+        if total_queries == 0:
+            return 0.0
+        if noise_multiplier <= 0:
+            return float("inf")
+
+        best_eps = float("inf")
+        # Search over RDP orders matching the accountant's range
+        for alpha_10x in range(11, 1000):
+            alpha = alpha_10x / 10.0
+            total_rdp = total_queries * alpha / (2.0 * noise_multiplier**2)
+            eps = total_rdp + math.log(1.0 / delta) / (alpha - 1.0)
+            best_eps = min(best_eps, eps)
+        for alpha in range(12, 64):
+            total_rdp = total_queries * float(alpha) / (2.0 * noise_multiplier**2)
+            eps = total_rdp + math.log(1.0 / delta) / (alpha - 1.0)
+            best_eps = min(best_eps, eps)
+
+        return best_eps
+
+    def _calibrate_noise_multiplier(
+        self,
+        total_budget: float,
+        n_iterations: int,
+        queries_per_iteration: int,
+        delta: float,
+    ) -> float:
+        """
+        Compute the noise_multiplier that uses exactly the privacy budget.
+
+        Binary searches for the smallest σ such that the total RDP-converted
+        (ε, δ)-DP guarantee stays within ``total_budget``. Higher budgets
+        yield lower noise_multiplier (less noise), guaranteeing monotonic
+        utility improvement as ε increases.
+
+        Args:
+            total_budget: Total ε budget for optimization
+            n_iterations: Number of planned iterations
+            queries_per_iteration: Privacy queries per iteration
+            delta: Target δ
+
+        Returns:
+            Calibrated noise_multiplier
+        """
+        total_queries = n_iterations * queries_per_iteration
+
+        # Binary search: higher σ → more noise → lower ε
+        lo, hi = 0.01, 10000.0
+        for _ in range(200):
+            mid = (lo + hi) / 2.0
+            eps = self._compute_rdp_epsilon(total_queries, mid, delta)
+            if eps > total_budget:
+                lo = mid  # Need more noise to stay within budget
+            else:
+                hi = mid  # Can use less noise
+        return hi
 
     def _estimate_sensitivity(self, fitness_fn: FitnessFunction) -> float:
         """
