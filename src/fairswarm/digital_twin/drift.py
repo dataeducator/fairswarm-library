@@ -31,7 +31,7 @@ import logging
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Any, Callable
 
 import numpy as np
 from numpy.typing import NDArray
@@ -97,7 +97,7 @@ class DriftMetrics:
         ]
         return max(normalized)
 
-    def to_dict(self) -> Dict[str, float]:
+    def to_dict(self) -> dict[str, float]:
         """Convert to dictionary."""
         return {
             "kl_divergence": self.kl_divergence,
@@ -130,9 +130,9 @@ class DriftResult:
     severity: DriftSeverity = DriftSeverity.NONE
     metrics: DriftMetrics = field(default_factory=DriftMetrics)
     confidence: float = 0.0
-    affected_dimensions: List[str] = field(default_factory=list)
+    affected_dimensions: list[str] = field(default_factory=list)
     timestamp: datetime = field(default_factory=datetime.now)
-    recommendations: List[str] = field(default_factory=list)
+    recommendations: list[str] = field(default_factory=list)
 
     def summary(self) -> str:
         """Generate summary string."""
@@ -229,10 +229,10 @@ class DriftDetector:
 
     def __init__(
         self,
-        reference_clients: Optional[List[Client]] = None,
-        reference_distribution: Optional[DemographicDistribution] = None,
-        config: Optional[DriftDetectorConfig] = None,
-        on_drift: Optional[Callable[[DriftResult], None]] = None,
+        reference_clients: list[Client] | None = None,
+        reference_distribution: DemographicDistribution | None = None,
+        config: DriftDetectorConfig | None = None,
+        on_drift: Callable[[DriftResult], None] | None = None,
     ):
         """
         Initialize DriftDetector.
@@ -260,18 +260,18 @@ class DriftDetector:
             self._reference_features = None
 
         # Sliding window
-        self._observation_window: List[NDArray[np.float64]] = []
-        self._demographic_window: List[NDArray[np.float64]] = []
+        self._observation_window: list[NDArray[np.float64]] = []
+        self._demographic_window: list[NDArray[np.float64]] = []
 
         # History
-        self._drift_history: List[DriftResult] = []
-        self._metric_history: List[DriftMetrics] = []
+        self._drift_history: list[DriftResult] = []
+        self._metric_history: list[DriftMetrics] = []
 
         logger.info(
             f"Initialized DriftDetector with window_size={self.config.window_size}"
         )
 
-    def _extract_features(self, clients: List[Client]) -> NDArray[np.float64]:
+    def _extract_features(self, clients: list[Client]) -> NDArray[np.float64]:
         """
         Extract feature matrix from clients.
 
@@ -292,7 +292,7 @@ class DriftDetector:
         return np.array(features)
 
     def _compute_aggregate_demographics(
-        self, clients: List[Client]
+        self, clients: list[Client]
     ) -> NDArray[np.float64]:
         """
         Compute aggregate demographics from clients.
@@ -311,8 +311,8 @@ class DriftDetector:
 
     def detect(
         self,
-        current_clients: Optional[List[Client]] = None,
-        current_distribution: Optional[NDArray[np.float64]] = None,
+        current_clients: list[Client] | None = None,
+        current_distribution: NDArray[np.float64] | None = None,
     ) -> DriftResult:
         """
         Detect drift between reference and current distributions.
@@ -334,10 +334,9 @@ class DriftDetector:
         # Get current distribution
         if current_clients:
             current = self._compute_aggregate_demographics(current_clients)
-            current_features = self._extract_features(current_clients)
+            self._extract_features(current_clients)
         elif current_distribution is not None:
             current = current_distribution
-            current_features = None
         else:
             return DriftResult(
                 drift_detected=False,
@@ -456,7 +455,7 @@ class DriftDetector:
     def _evaluate_drift(
         self,
         metrics: DriftMetrics,
-    ) -> Tuple[bool, DriftType, DriftSeverity]:
+    ) -> tuple[bool, DriftType, DriftSeverity]:
         """
         Evaluate if drift is significant.
 
@@ -501,7 +500,7 @@ class DriftDetector:
         self,
         reference: NDArray[np.float64],
         current: NDArray[np.float64],
-    ) -> List[str]:
+    ) -> list[str]:
         """
         Identify which dimensions have drifted most.
 
@@ -530,8 +529,8 @@ class DriftDetector:
         drift_detected: bool,
         drift_type: DriftType,
         severity: DriftSeverity,
-        affected: List[str],
-    ) -> List[str]:
+        affected: list[str],
+    ) -> list[str]:
         """
         Generate action recommendations.
 
@@ -608,8 +607,8 @@ class DriftDetector:
 
     def add_observation(
         self,
-        clients: Optional[List[Client]] = None,
-        distribution: Optional[NDArray[np.float64]] = None,
+        clients: list[Client] | None = None,
+        distribution: NDArray[np.float64] | None = None,
     ) -> None:
         """
         Add observation to sliding window.
@@ -634,8 +633,8 @@ class DriftDetector:
 
     def reset_reference(
         self,
-        clients: Optional[List[Client]] = None,
-        distribution: Optional[NDArray[np.float64]] = None,
+        clients: list[Client] | None = None,
+        distribution: NDArray[np.float64] | None = None,
     ) -> None:
         """
         Reset reference distribution.
@@ -657,15 +656,15 @@ class DriftDetector:
 
         logger.info("Reference distribution reset")
 
-    def get_drift_history(self) -> List[DriftResult]:
+    def get_drift_history(self) -> list[DriftResult]:
         """Get history of drift detections."""
         return self._drift_history.copy()
 
-    def get_metric_history(self) -> List[DriftMetrics]:
+    def get_metric_history(self) -> list[DriftMetrics]:
         """Get history of drift metrics."""
         return self._metric_history.copy()
 
-    def get_current_window_stats(self) -> Dict[str, Any]:
+    def get_current_window_stats(self) -> dict[str, Any]:
         """
         Get statistics about current observation window.
 

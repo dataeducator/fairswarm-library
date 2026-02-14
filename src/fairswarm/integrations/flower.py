@@ -23,14 +23,14 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Callable
 
 import numpy as np
 from numpy.typing import NDArray
 
 # Flower imports - use try/except for optional dependency
 try:
-    from flwr.common import (
+    from flwr.common import (  # noqa: F401
         Code,
         EvaluateIns,
         EvaluateRes,
@@ -95,11 +95,11 @@ class FairSwarmFitConfig:
     epochs: int = 1
     batch_size: int = 32
     learning_rate: float = 0.01
-    extra_config: Dict[str, Scalar] = field(default_factory=dict)
+    extra_config: dict[str, Scalar] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Scalar]:
+    def to_dict(self) -> dict[str, Scalar]:
         """Convert to Flower config dict."""
-        config: Dict[str, Scalar] = {
+        config: dict[str, Scalar] = {
             "epochs": self.epochs,
             "batch_size": self.batch_size,
             "learning_rate": self.learning_rate,
@@ -119,11 +119,11 @@ class FairSwarmEvaluateConfig:
     """
 
     batch_size: int = 32
-    extra_config: Dict[str, Scalar] = field(default_factory=dict)
+    extra_config: dict[str, Scalar] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Scalar]:
+    def to_dict(self) -> dict[str, Scalar]:
         """Convert to Flower config dict."""
-        config: Dict[str, Scalar] = {"batch_size": self.batch_size}
+        config: dict[str, Scalar] = {"batch_size": self.batch_size}
         config.update(self.extra_config)
         return config
 
@@ -143,9 +143,9 @@ class ClientInfo:
 
     cid: str
     num_samples: int = 1000
-    demographics: Optional[DemographicDistribution] = None
+    demographics: DemographicDistribution | None = None
     data_quality: float = 1.0
-    proxy: Optional[ClientProxy] = None
+    proxy: ClientProxy | None = None
 
     def to_fairswarm_client(self, idx: int) -> Client:
         """Convert to FairSwarm Client object."""
@@ -177,7 +177,7 @@ class FairSwarmClient:
     def __init__(
         self,
         cid: str,
-        demographics: Optional[DemographicDistribution] = None,
+        demographics: DemographicDistribution | None = None,
         num_samples: int = 1000,
         data_quality: float = 1.0,
     ):
@@ -245,7 +245,7 @@ class FlowerFitness(FitnessFunction):
     def evaluate(
         self,
         coalition: Coalition,
-        clients: List[Client],
+        clients: list[Client],
     ) -> FitnessResult:
         """
         Evaluate coalition fitness.
@@ -310,7 +310,7 @@ class FlowerFitness(FitnessFunction):
     def compute_gradient(
         self,
         position: NDArray[np.float64],
-        clients: List[Client],
+        clients: list[Client],
         coalition_size: int,
     ) -> NDArray[np.float64]:
         """Compute gradient for position update."""
@@ -332,7 +332,7 @@ class FlowerFitness(FitnessFunction):
 
         return gradient
 
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         """Get configuration for reproducibility."""
         return {
             "class": self.__class__.__name__,
@@ -394,27 +394,18 @@ class FairSwarmStrategy(Strategy if FLOWER_AVAILABLE else object):
         min_fit_clients: int = 2,
         min_evaluate_clients: int = 2,
         min_available_clients: int = 2,
-        coalition_size: Optional[int] = None,
-        target_distribution: Optional[DemographicDistribution] = None,
-        fairswarm_config: Optional[FairSwarmConfig] = None,
+        coalition_size: int | None = None,
+        target_distribution: DemographicDistribution | None = None,
+        fairswarm_config: FairSwarmConfig | None = None,
         fairswarm_iterations: int = 50,
-        fit_config: Optional[FairSwarmFitConfig] = None,
-        evaluate_config: Optional[FairSwarmEvaluateConfig] = None,
-        client_demographics: Optional[Dict[str, DemographicDistribution]] = None,
-        on_fit_config_fn: Optional[
-            Callable[[int], Dict[str, Scalar]]
-        ] = None,
-        on_evaluate_config_fn: Optional[
-            Callable[[int], Dict[str, Scalar]]
-        ] = None,
+        fit_config: FairSwarmFitConfig | None = None,
+        evaluate_config: FairSwarmEvaluateConfig | None = None,
+        client_demographics: dict[str, DemographicDistribution] | None = None,
+        on_fit_config_fn: Callable[[int], dict[str, Scalar]] | None = None,
+        on_evaluate_config_fn: Callable[[int], dict[str, Scalar]] | None = None,
         accept_failures: bool = True,
-        initial_parameters: Optional[Parameters] = None,
-        evaluate_fn: Optional[
-            Callable[
-                [int, NDArray[np.float64], Dict[str, Scalar]],
-                Optional[Tuple[float, Dict[str, Scalar]]],
-            ]
-        ] = None,
+        initial_parameters: Parameters | None = None,
+        evaluate_fn: Callable[[int, NDArray[np.float64], dict[str, Scalar]], tuple[float, dict[str, Scalar]] | None] | None = None,
     ):
         """
         Initialize FairSwarmStrategy.
@@ -460,11 +451,11 @@ class FairSwarmStrategy(Strategy if FLOWER_AVAILABLE else object):
 
         # Round tracking
         self._round = 0
-        self._selection_history: List[OptimizationResult] = []
-        self._fairness_history: List[float] = []
+        self._selection_history: list[OptimizationResult] = []
+        self._fairness_history: list[float] = []
 
         # Client registry
-        self._client_registry: Dict[str, ClientInfo] = {}
+        self._client_registry: dict[str, ClientInfo] = {}
 
         logger.info(
             f"Initialized FairSwarmStrategy with coalition_size={coalition_size}, "
@@ -473,7 +464,7 @@ class FairSwarmStrategy(Strategy if FLOWER_AVAILABLE else object):
 
     def initialize_parameters(
         self, client_manager: ClientManager
-    ) -> Optional[Parameters]:
+    ) -> Parameters | None:
         """
         Initialize global model parameters.
 
@@ -490,7 +481,7 @@ class FairSwarmStrategy(Strategy if FLOWER_AVAILABLE else object):
         server_round: int,
         parameters: Parameters,
         client_manager: ClientManager,
-    ) -> List[Tuple[ClientProxy, FitIns]]:
+    ) -> list[tuple[ClientProxy, FitIns]]:
         """
         Configure fit round using FairSwarm for client selection.
 
@@ -551,8 +542,8 @@ class FairSwarmStrategy(Strategy if FLOWER_AVAILABLE else object):
         return [(client, fit_ins) for client in selected_clients]
 
     def _run_fairswarm_selection(
-        self, available_clients: List[ClientProxy]
-    ) -> List[int]:
+        self, available_clients: list[ClientProxy]
+    ) -> list[int]:
         """
         Run FairSwarm optimization for client selection.
 
@@ -610,7 +601,7 @@ class FairSwarmStrategy(Strategy if FLOWER_AVAILABLE else object):
 
         return list(result.coalition)
 
-    def _update_client_registry(self, clients: List[ClientProxy]) -> None:
+    def _update_client_registry(self, clients: list[ClientProxy]) -> None:
         """
         Update registry with client information.
 
@@ -630,7 +621,7 @@ class FairSwarmStrategy(Strategy if FLOWER_AVAILABLE else object):
 
     def _compute_sample_sizes(
         self, client_manager: ClientManager, is_fit: bool
-    ) -> Tuple[int, int]:
+    ) -> tuple[int, int]:
         """
         Compute sample sizes for client selection.
 
@@ -656,9 +647,9 @@ class FairSwarmStrategy(Strategy if FLOWER_AVAILABLE else object):
     def aggregate_fit(
         self,
         server_round: int,
-        results: List[Tuple[ClientProxy, FitRes]],
-        failures: List[Union[Tuple[ClientProxy, FitRes], BaseException]],
-    ) -> Tuple[Optional[Parameters], Dict[str, Scalar]]:
+        results: list[tuple[ClientProxy, FitRes]],
+        failures: list[tuple[ClientProxy, FitRes] | BaseException],
+    ) -> tuple[Parameters | None, dict[str, Scalar]]:
         """
         Aggregate training results with fairness monitoring.
 
@@ -695,7 +686,7 @@ class FairSwarmStrategy(Strategy if FLOWER_AVAILABLE else object):
 
         # Compute metrics
         total_examples = sum(num_examples for _, num_examples in weights_results)
-        metrics: Dict[str, Scalar] = {
+        metrics: dict[str, Scalar] = {
             "round": server_round,
             "num_clients": len(results),
             "total_examples": total_examples,
@@ -718,8 +709,8 @@ class FairSwarmStrategy(Strategy if FLOWER_AVAILABLE else object):
 
     def _aggregate_fedavg(
         self,
-        weights_results: List[Tuple[List[NDArray[np.float64]], int]],
-    ) -> List[NDArray[np.float64]]:
+        weights_results: list[tuple[list[NDArray[np.float64]], int]],
+    ) -> list[NDArray[np.float64]]:
         """
         Aggregate using FedAvg algorithm.
 
@@ -749,7 +740,7 @@ class FairSwarmStrategy(Strategy if FLOWER_AVAILABLE else object):
         server_round: int,
         parameters: Parameters,
         client_manager: ClientManager,
-    ) -> List[Tuple[ClientProxy, EvaluateIns]]:
+    ) -> list[tuple[ClientProxy, EvaluateIns]]:
         """
         Configure evaluation round.
 
@@ -786,9 +777,9 @@ class FairSwarmStrategy(Strategy if FLOWER_AVAILABLE else object):
     def aggregate_evaluate(
         self,
         server_round: int,
-        results: List[Tuple[ClientProxy, EvaluateRes]],
-        failures: List[Union[Tuple[ClientProxy, EvaluateRes], BaseException]],
-    ) -> Tuple[Optional[float], Dict[str, Scalar]]:
+        results: list[tuple[ClientProxy, EvaluateRes]],
+        failures: list[tuple[ClientProxy, EvaluateRes] | BaseException],
+    ) -> tuple[float | None, dict[str, Scalar]]:
         """
         Aggregate evaluation results.
 
@@ -815,13 +806,13 @@ class FairSwarmStrategy(Strategy if FLOWER_AVAILABLE else object):
             loss_aggregated /= total_examples
 
         # Aggregate metrics
-        metrics: Dict[str, Scalar] = {
+        metrics: dict[str, Scalar] = {
             "round": server_round,
             "num_clients": len(results),
         }
 
         # Average per-client metrics
-        all_metrics: Dict[str, List[float]] = {}
+        all_metrics: dict[str, list[float]] = {}
         for _, evaluate_res in results:
             for key, value in evaluate_res.metrics.items():
                 if isinstance(value, (int, float)):
@@ -838,7 +829,7 @@ class FairSwarmStrategy(Strategy if FLOWER_AVAILABLE else object):
         self,
         server_round: int,
         parameters: Parameters,
-    ) -> Optional[Tuple[float, Dict[str, Scalar]]]:
+    ) -> tuple[float, dict[str, Scalar]] | None:
         """
         Central server-side evaluation.
 
@@ -855,7 +846,7 @@ class FairSwarmStrategy(Strategy if FLOWER_AVAILABLE else object):
         parameters_ndarrays = parameters_to_ndarrays(parameters)
         return self.evaluate_fn(server_round, parameters_ndarrays, {})
 
-    def get_fairness_history(self) -> List[float]:
+    def get_fairness_history(self) -> list[float]:
         """
         Get history of demographic divergence values.
 
@@ -864,7 +855,7 @@ class FairSwarmStrategy(Strategy if FLOWER_AVAILABLE else object):
         """
         return self._fairness_history.copy()
 
-    def get_selection_history(self) -> List[OptimizationResult]:
+    def get_selection_history(self) -> list[OptimizationResult]:
         """
         Get history of FairSwarm selection results.
 

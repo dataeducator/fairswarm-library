@@ -16,8 +16,8 @@ Advisor: Dr. Uttam Ghosh
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Tuple
+from dataclasses import dataclass
+from typing import Any
 
 import numpy as np
 
@@ -92,7 +92,7 @@ class PrivacyAccountant(ABC):
         """Accountant name."""
         pass
 
-    def get_privacy_spent(self, delta: float) -> Tuple[float, float]:
+    def get_privacy_spent(self, delta: float) -> tuple[float, float]:
         """
         Get (epsilon, delta) tuple.
 
@@ -120,7 +120,7 @@ class SimpleAccountant(PrivacyAccountant):
     """
 
     def __init__(self):
-        self.history: List[PrivacySpent] = []
+        self.history: list[PrivacySpent] = []
         self._total_epsilon = 0.0
         self._total_delta = 0.0
         self._step_count = 0
@@ -177,7 +177,7 @@ class SimpleAccountant(PrivacyAccountant):
         """Number of steps recorded."""
         return self._step_count
 
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         return {
             "name": self.name,
             "total_epsilon": self._total_epsilon,
@@ -209,7 +209,7 @@ class MomentsAccountant(PrivacyAccountant):
         self,
         noise_multiplier: float = 1.0,
         sampling_rate: float = 1.0,
-        orders: Optional[List[float]] = None,
+        orders: list[float] | None = None,
     ):
         """
         Initialize MomentsAccountant.
@@ -225,7 +225,7 @@ class MomentsAccountant(PrivacyAccountant):
             range(12, 64)
         )
         self._steps = 0
-        self._step_epsilons: List[float] = []
+        self._step_epsilons: list[float] = []
 
     def step(self, epsilon: float = 0.0, delta: float = 0.0) -> None:
         """
@@ -326,7 +326,7 @@ class MomentsAccountant(PrivacyAccountant):
     def step_count(self) -> int:
         return self._steps
 
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         return {
             "name": self.name,
             "noise_multiplier": self.noise_multiplier,
@@ -352,7 +352,7 @@ class RDPAccountant(PrivacyAccountant):
         rdp_values: RDP values for each order
     """
 
-    def __init__(self, orders: Optional[List[float]] = None):
+    def __init__(self, orders: list[float] | None = None):
         """
         Initialize RDPAccountant.
 
@@ -363,14 +363,14 @@ class RDPAccountant(PrivacyAccountant):
             [1 + x / 10.0 for x in range(1, 100)]
             + list(range(12, 64))
         )
-        self._rdp_values = {order: 0.0 for order in self.orders}
+        self._rdp_values = dict.fromkeys(self.orders, 0.0)
         self._steps = 0
 
     def step(
         self,
         epsilon: float = 0.0,
         delta: float = 0.0,
-        noise_multiplier: Optional[float] = None,
+        noise_multiplier: float | None = None,
         sampling_rate: float = 1.0,
     ) -> None:
         """
@@ -457,7 +457,7 @@ class RDPAccountant(PrivacyAccountant):
 
     def reset(self) -> None:
         """Reset the accountant."""
-        self._rdp_values = {order: 0.0 for order in self.orders}
+        self._rdp_values = dict.fromkeys(self.orders, 0.0)
         self._steps = 0
 
     @property
@@ -468,7 +468,7 @@ class RDPAccountant(PrivacyAccountant):
     def step_count(self) -> int:
         return self._steps
 
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         return {
             "name": self.name,
             "n_orders": len(self.orders),
@@ -572,7 +572,7 @@ class AdvancedCompositionAccountant(PrivacyAccountant):
     def step_count(self) -> int:
         return self._steps
 
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         return {
             "name": self.name,
             "epsilon_per_step": self.epsilon_per_step,

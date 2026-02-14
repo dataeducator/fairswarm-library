@@ -49,7 +49,7 @@ Advisor: Dr. Uttam Ghosh
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 from numpy.typing import NDArray
@@ -76,7 +76,7 @@ __all__ = [
 
 
 def client_dissimilarity(
-    per_client_accuracies: List[float],
+    per_client_accuracies: list[float],
 ) -> float:
     """
     Compute client dissimilarity as the standard deviation of per-client accuracies.
@@ -369,7 +369,7 @@ class ClientDissimilarityFitness(FitnessFunction):
 
     def __init__(
         self,
-        accuracy_fn: Optional[Any] = None,
+        accuracy_fn: Any | None = None,
         dissimilarity_weight: float = 1.0,
     ):
         """
@@ -389,8 +389,8 @@ class ClientDissimilarityFitness(FitnessFunction):
     def _get_per_client_accuracies(
         self,
         coalition: Coalition,
-        clients: List[Client],
-    ) -> List[float]:
+        clients: list[Client],
+    ) -> list[float]:
         """
         Get per-client accuracy values for a coalition.
 
@@ -416,7 +416,7 @@ class ClientDissimilarityFitness(FitnessFunction):
         if max_size <= 0:
             max_size = 1
 
-        accuracies: List[float] = []
+        accuracies: list[float] = []
         for idx in coalition:
             if 0 <= idx < len(clients):
                 accuracies.append(clients[idx].dataset_size / max_size)
@@ -426,7 +426,7 @@ class ClientDissimilarityFitness(FitnessFunction):
     def evaluate(
         self,
         coalition: Coalition,
-        clients: List[Client],
+        clients: list[Client],
     ) -> FitnessResult:
         """
         Evaluate fitness based on client performance dissimilarity.
@@ -489,7 +489,7 @@ class ClientDissimilarityFitness(FitnessFunction):
     def compute_gradient(
         self,
         position: NDArray[np.float64],
-        clients: List[Client],
+        clients: list[Client],
         coalition_size: int,
     ) -> NDArray[np.float64]:
         """
@@ -557,7 +557,7 @@ class ClientDissimilarityFitness(FitnessFunction):
 
         return gradient
 
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         """Get configuration for reproducibility."""
         return {
             "class": self.__class__.__name__,

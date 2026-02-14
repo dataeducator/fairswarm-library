@@ -17,10 +17,9 @@ Advisor: Dr. Uttam Ghosh
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, Optional
+from typing import Any
 
 import numpy as np
-from numpy.typing import NDArray
 
 from fairswarm.types import (
     ClientId,
@@ -76,10 +75,10 @@ class Client:
     id: ClientId
     demographics: DemographicVector
     dataset_size: int = 1000
-    num_samples: Optional[int] = None
+    num_samples: int | None = None
     communication_cost: float = 0.5
     data_quality: float = 1.0
-    metadata: Optional[Dict[str, Any]] = field(default=None)
+    metadata: dict[str, Any] | None = field(default=None)
 
     def __post_init__(self) -> None:
         """Validate client data at construction time."""
@@ -145,8 +144,8 @@ class Client:
     @classmethod
     def from_dict(
         cls,
-        data: Dict[str, Any],
-        demographic_keys: Optional[list[str]] = None,
+        data: dict[str, Any],
+        demographic_keys: list[str] | None = None,
     ) -> Client:
         """
         Create a Client from a dictionary.
@@ -191,7 +190,7 @@ class Client:
 def create_synthetic_clients(
     n_clients: int,
     n_demographic_groups: int = 4,
-    seed: Optional[int] = None,
+    seed: int | None = None,
 ) -> list[Client]:
     """
     Create synthetic clients for testing and development.

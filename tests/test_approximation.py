@@ -22,21 +22,18 @@ Author: Tenicka Norwood
 Advisor: Dr. Uttam Ghosh
 """
 
+
 import numpy as np
 import pytest
-from hypothesis import given, settings, assume, HealthCheck
+from hypothesis import HealthCheck, assume, given, settings
 from hypothesis import strategies as st
-from typing import List, Callable
 
 from fairswarm.algorithms.fairswarm import FairSwarm
 from fairswarm.core.client import Client, create_synthetic_clients
 from fairswarm.core.config import FairSwarmConfig
-from fairswarm.demographics.distribution import DemographicDistribution
 from fairswarm.demographics.targets import CensusTarget
 from fairswarm.fitness.base import FitnessFunction, FitnessResult
-from fairswarm.fitness.mock import MockFitness
 from fairswarm.types import Coalition
-
 
 # =============================================================================
 # Submodular Fitness Functions for Testing
@@ -61,7 +58,7 @@ class CoverageFitness(FitnessFunction):
     def evaluate(
         self,
         coalition: Coalition,
-        clients: List[Client],
+        clients: list[Client],
     ) -> FitnessResult:
         if not coalition:
             return FitnessResult(value=0.0, components={"coverage": 0.0}, coalition=[])
@@ -113,7 +110,7 @@ class DiversityFitness(FitnessFunction):
     def evaluate(
         self,
         coalition: Coalition,
-        clients: List[Client],
+        clients: list[Client],
     ) -> FitnessResult:
         if not coalition:
             return FitnessResult(value=0.0, components={"entropy": 0.0}, coalition=[])
@@ -170,7 +167,7 @@ class FacilityLocationFitness(FitnessFunction):
     def evaluate(
         self,
         coalition: Coalition,
-        clients: List[Client],
+        clients: list[Client],
     ) -> FitnessResult:
         if not coalition:
             return FitnessResult(value=0.0, components={}, coalition=[])
@@ -197,7 +194,7 @@ class FacilityLocationFitness(FitnessFunction):
         )
 
     def compute_gradient(self, position, clients, coalition_size):
-        n_clients = len(clients)
+        len(clients)
         gradient = np.array([c.data_quality for c in clients])
         norm = np.linalg.norm(gradient)
         if norm > 1e-10:
@@ -234,7 +231,7 @@ def submodular_fitness_strategy(draw):
 
 
 def greedy_maximize(
-    clients: List[Client],
+    clients: list[Client],
     coalition_size: int,
     fitness_fn: FitnessFunction,
 ) -> tuple[Coalition, float]:
@@ -270,7 +267,7 @@ def greedy_maximize(
 
 
 def optimal_exhaustive(
-    clients: List[Client],
+    clients: list[Client],
     coalition_size: int,
     fitness_fn: FitnessFunction,
 ) -> tuple[Coalition, float]:

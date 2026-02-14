@@ -21,7 +21,7 @@ Advisor: Dr. Uttam Ghosh
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 from numpy.typing import NDArray
@@ -82,7 +82,7 @@ class WeightedFitness(FitnessFunction):
 
     def __init__(
         self,
-        components: List[Tuple[str, FitnessFunction, float]],
+        components: list[tuple[str, FitnessFunction, float]],
     ):
         """
         Initialize WeightedFitness.
@@ -98,7 +98,7 @@ class WeightedFitness(FitnessFunction):
     def evaluate(
         self,
         coalition: Coalition,
-        clients: List[Client],
+        clients: list[Client],
     ) -> FitnessResult:
         """
         Evaluate weighted sum of component fitness values.
@@ -118,8 +118,8 @@ class WeightedFitness(FitnessFunction):
             )
 
         total_fitness = 0.0
-        component_values: Dict[str, float] = {}
-        all_metadata: Dict[str, Any] = {}
+        component_values: dict[str, float] = {}
+        all_metadata: dict[str, Any] = {}
 
         for comp in self.components:
             result = comp.fitness.evaluate(coalition, clients)
@@ -151,7 +151,7 @@ class WeightedFitness(FitnessFunction):
     def compute_gradient(
         self,
         position: NDArray[np.float64],
-        clients: List[Client],
+        clients: list[Client],
         coalition_size: int,
     ) -> NDArray[np.float64]:
         """
@@ -181,7 +181,7 @@ class WeightedFitness(FitnessFunction):
 
         return total_gradient
 
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         """Get configuration for reproducibility."""
         return {
             "class": self.__class__.__name__,
@@ -224,7 +224,7 @@ class CompositeFitness(FitnessFunction):
 
     def __init__(
         self,
-        components: List[Tuple[str, FitnessFunction, float]],
+        components: list[tuple[str, FitnessFunction, float]],
         aggregation: str = "weighted_sum",
     ):
         """
@@ -252,7 +252,7 @@ class CompositeFitness(FitnessFunction):
     def evaluate(
         self,
         coalition: Coalition,
-        clients: List[Client],
+        clients: list[Client],
     ) -> FitnessResult:
         """
         Evaluate using specified aggregation method.
@@ -272,8 +272,8 @@ class CompositeFitness(FitnessFunction):
             )
 
         # Evaluate all components
-        component_results: Dict[str, FitnessResult] = {}
-        weighted_values: List[float] = []
+        component_results: dict[str, FitnessResult] = {}
+        weighted_values: list[float] = []
 
         for comp in self.components:
             result = comp.fitness.evaluate(coalition, clients)
@@ -300,8 +300,8 @@ class CompositeFitness(FitnessFunction):
             total_fitness = sum(weighted_values)
 
         # Build component breakdown
-        component_values: Dict[str, float] = {}
-        all_metadata: Dict[str, Any] = {"aggregation": self.aggregation}
+        component_values: dict[str, float] = {}
+        all_metadata: dict[str, Any] = {"aggregation": self.aggregation}
 
         for comp in self.components:
             result = component_results[comp.name]
@@ -318,7 +318,7 @@ class CompositeFitness(FitnessFunction):
     def compute_gradient(
         self,
         position: NDArray[np.float64],
-        clients: List[Client],
+        clients: list[Client],
         coalition_size: int,
     ) -> NDArray[np.float64]:
         """
@@ -351,7 +351,7 @@ class CompositeFitness(FitnessFunction):
 
         return total_gradient
 
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         """Get configuration for reproducibility."""
         return {
             "class": self.__class__.__name__,
@@ -399,7 +399,7 @@ class CommunicationCostFitness(FitnessFunction):
     def evaluate(
         self,
         coalition: Coalition,
-        clients: List[Client],
+        clients: list[Client],
     ) -> FitnessResult:
         """
         Evaluate communication cost fitness.
@@ -443,7 +443,7 @@ class CommunicationCostFitness(FitnessFunction):
     def compute_gradient(
         self,
         position: NDArray[np.float64],
-        clients: List[Client],
+        clients: list[Client],
         coalition_size: int,
     ) -> NDArray[np.float64]:
         """
@@ -459,7 +459,7 @@ class CommunicationCostFitness(FitnessFunction):
         Returns:
             Gradient vector (negative for high-cost clients)
         """
-        n_clients = len(clients)
+        len(clients)
         costs = np.array([c.communication_cost for c in clients])
 
         # Gradient: negative for high-cost clients
@@ -473,7 +473,7 @@ class CommunicationCostFitness(FitnessFunction):
 
         return gradient
 
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         """Get configuration for reproducibility."""
         return {
             "class": self.__class__.__name__,

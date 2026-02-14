@@ -31,7 +31,7 @@ from fairswarm.fitness.fairness import (
     FairnessGradient,
     compute_fairness_gradient,
 )
-from fairswarm.fitness.mock import MockFitness, ConstantFitness
+from fairswarm.fitness.mock import ConstantFitness, MockFitness
 
 __all__ = [
     # Base

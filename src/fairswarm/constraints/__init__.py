@@ -17,20 +17,20 @@ Advisor: Dr. Uttam Ghosh
 from fairswarm.constraints.base import Constraint, ConstraintResult, ConstraintSet
 from fairswarm.constraints.cardinality import (
     CardinalityConstraint,
-    MinSizeConstraint,
-    MaxSizeConstraint,
     ExactSizeConstraint,
+    MaxSizeConstraint,
+    MinSizeConstraint,
 )
 from fairswarm.constraints.fairness import (
-    FairnessConstraint,
     DivergenceConstraint,
-    RepresentationConstraint,
+    FairnessConstraint,
     MinorityRepresentationConstraint,
+    RepresentationConstraint,
 )
 from fairswarm.constraints.privacy import (
-    PrivacyConstraint,
-    PrivacyBudgetConstraint,
     LocalPrivacyConstraint,
+    PrivacyBudgetConstraint,
+    PrivacyConstraint,
 )
 
 __all__ = [

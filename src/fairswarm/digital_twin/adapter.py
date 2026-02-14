@@ -25,7 +25,7 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Any
 
 import numpy as np
 from numpy.typing import NDArray
@@ -91,9 +91,9 @@ class AdaptationResult:
     domain_distance_after: float = 0.0
     adaptation_loss: float = 0.0
     iterations: int = 0
-    source_weights: Optional[NDArray[np.float64]] = None
-    transform_matrix: Optional[NDArray[np.float64]] = None
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    source_weights: NDArray[np.float64] | None = None
+    transform_matrix: NDArray[np.float64] | None = None
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     @property
     def distance_reduction(self) -> float:
@@ -143,9 +143,9 @@ class SimToRealAdapter:
 
     def __init__(
         self,
-        source_clients: List[Client],
-        target_clients: List[Client],
-        config: Optional[DomainAdaptationConfig] = None,
+        source_clients: list[Client],
+        target_clients: list[Client],
+        config: DomainAdaptationConfig | None = None,
     ):
         """
         Initialize SimToRealAdapter.
@@ -164,8 +164,8 @@ class SimToRealAdapter:
         self._target_features = self._compute_features(target_clients)
 
         # Adaptation state
-        self._importance_weights: Optional[NDArray[np.float64]] = None
-        self._transform_matrix: Optional[NDArray[np.float64]] = None
+        self._importance_weights: NDArray[np.float64] | None = None
+        self._transform_matrix: NDArray[np.float64] | None = None
         self._adapted = False
 
         logger.info(
@@ -173,7 +173,7 @@ class SimToRealAdapter:
             f"{len(source_clients)} source, {len(target_clients)} target clients"
         )
 
-    def _compute_features(self, clients: List[Client]) -> NDArray[np.float64]:
+    def _compute_features(self, clients: list[Client]) -> NDArray[np.float64]:
         """
         Compute feature matrix from clients.
 
@@ -253,8 +253,8 @@ class SimToRealAdapter:
 
     def _compute_domain_distance(
         self,
-        weights: Optional[NDArray[np.float64]] = None,
-        transform: Optional[NDArray[np.float64]] = None,
+        weights: NDArray[np.float64] | None = None,
+        transform: NDArray[np.float64] | None = None,
     ) -> float:
         """
         Compute domain distance between source and target.
@@ -309,7 +309,7 @@ class SimToRealAdapter:
 
         # Compute density ratio estimation using kernel mean matching
         n_source = len(self._source_features)
-        n_target = len(self._target_features)
+        len(self._target_features)
 
         # Simple approach: weight by demographic similarity to target mean
         target_mean = np.mean(self._target_features, axis=0)
@@ -356,7 +356,7 @@ class SimToRealAdapter:
 
         # Compute transformation: (x - source_mean) / source_std * target_std + target_mean
         # This is equivalent to a diagonal transform
-        n_features = self._source_features.shape[1]
+        self._source_features.shape[1]
         transform = np.diag(target_std / source_std)
 
         # Compute weights that account for mean shift
@@ -394,7 +394,7 @@ class SimToRealAdapter:
         learning_rate = 0.01
 
         losses = []
-        for iteration in range(self.config.max_iterations):
+        for _iteration in range(self.config.max_iterations):
             # Compute gradient
             transformed_source = self._source_features @ W
             source_mean = np.mean(transformed_source, axis=0)
@@ -479,7 +479,7 @@ class SimToRealAdapter:
             metadata={"transport_cost": np.sum(cost_matrix * T)},
         )
 
-    def get_importance_weights(self) -> Optional[NDArray[np.float64]]:
+    def get_importance_weights(self) -> NDArray[np.float64] | None:
         """
         Get importance weights for source samples.
 
@@ -488,7 +488,7 @@ class SimToRealAdapter:
         """
         return self._importance_weights
 
-    def get_transform_matrix(self) -> Optional[NDArray[np.float64]]:
+    def get_transform_matrix(self) -> NDArray[np.float64] | None:
         """
         Get feature transformation matrix.
 
@@ -499,8 +499,8 @@ class SimToRealAdapter:
 
     def reweight_coalition(
         self,
-        coalition: List[int],
-    ) -> List[Tuple[int, float]]:
+        coalition: list[int],
+    ) -> list[tuple[int, float]]:
         """
         Reweight coalition members using adaptation weights.
 

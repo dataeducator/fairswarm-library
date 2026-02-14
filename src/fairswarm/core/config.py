@@ -17,8 +17,8 @@ Advisor: Dr. Uttam Ghosh
 from __future__ import annotations
 
 import warnings
-from dataclasses import dataclass, field
-from typing import Literal, Optional
+from dataclasses import dataclass
+from typing import Literal
 
 
 @dataclass
@@ -91,7 +91,7 @@ class FairSwarmConfig:
 
     # === Fairness & Privacy Targets ===
     epsilon_fair: float = 0.05  # Target ε-fairness (Theorem 2)
-    epsilon_dp: Optional[float] = None  # DP budget (Theorem 4), None = no DP
+    epsilon_dp: float | None = None  # DP budget (Theorem 4), None = no DP
 
     # === Fitness Weights ===
     weight_accuracy: float = 0.5  # w₁ in fitness function
@@ -99,7 +99,7 @@ class FairSwarmConfig:
     weight_cost: float = 0.2  # w₃ in fitness function
 
     # === Reproducibility ===
-    seed: Optional[int] = None
+    seed: int | None = None
 
     def __post_init__(self) -> None:
         """Validate configuration against theoretical requirements."""
@@ -257,7 +257,7 @@ class FairSwarmConfig:
         t_min = (n**2 * math.log(self.swarm_size / delta)) / (epsilon**2 * lambda_**2)
         return int(math.ceil(t_min))
 
-    def with_updates(self, **kwargs) -> "FairSwarmConfig":
+    def with_updates(self, **kwargs) -> FairSwarmConfig:
         """
         Create a new config with updated values.
 

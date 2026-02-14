@@ -10,11 +10,8 @@ Advisor: Dr. Uttam Ghosh
 
 from __future__ import annotations
 
-from typing import Tuple
-
 import numpy as np
 from numpy.typing import NDArray
-
 
 # Default epsilon for numerical stability
 DEFAULT_EPS = 1e-10
@@ -86,7 +83,7 @@ def safe_divide(
 def check_distribution(
     p: NDArray[np.float64],
     eps: float = 1e-6,
-) -> Tuple[bool, str]:
+) -> tuple[bool, str]:
     """
     Check if an array is a valid probability distribution.
 
@@ -158,7 +155,7 @@ def repair_distribution(
 def check_gradient(
     gradient: NDArray[np.float64],
     max_norm: float = 100.0,
-) -> Tuple[bool, str]:
+) -> tuple[bool, str]:
     """
     Check if a gradient is numerically healthy.
 

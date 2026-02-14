@@ -21,7 +21,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Callable
 
 import numpy as np
 from numpy.typing import NDArray
@@ -73,10 +73,10 @@ class NoiseMechanism(ABC):
     @abstractmethod
     def add_noise(
         self,
-        value: Union[float, NDArray[np.float64]],
+        value: float | NDArray[np.float64],
         sensitivity: float,
-        rng: Optional[np.random.Generator] = None,
-    ) -> Union[float, NDArray[np.float64]]:
+        rng: np.random.Generator | None = None,
+    ) -> float | NDArray[np.float64]:
         """
         Add noise to a value or array.
 
@@ -143,10 +143,10 @@ class LaplaceMechanism(NoiseMechanism):
 
     def add_noise(
         self,
-        value: Union[float, NDArray[np.float64]],
+        value: float | NDArray[np.float64],
         sensitivity: float,
-        rng: Optional[np.random.Generator] = None,
-    ) -> Union[float, NDArray[np.float64]]:
+        rng: np.random.Generator | None = None,
+    ) -> float | NDArray[np.float64]:
         """
         Add Laplace noise to achieve ε-DP.
 
@@ -182,7 +182,7 @@ class LaplaceMechanism(NoiseMechanism):
     def name(self) -> str:
         return "Laplace"
 
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         return {"mechanism": self.name, "epsilon": self.epsilon}
 
 
@@ -226,10 +226,10 @@ class GaussianMechanism(NoiseMechanism):
 
     def add_noise(
         self,
-        value: Union[float, NDArray[np.float64]],
+        value: float | NDArray[np.float64],
         sensitivity: float,
-        rng: Optional[np.random.Generator] = None,
-    ) -> Union[float, NDArray[np.float64]]:
+        rng: np.random.Generator | None = None,
+    ) -> float | NDArray[np.float64]:
         """
         Add Gaussian noise to achieve (ε,δ)-DP.
 
@@ -275,7 +275,7 @@ class GaussianMechanism(NoiseMechanism):
     def name(self) -> str:
         return "Gaussian"
 
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         return {
             "mechanism": self.name,
             "epsilon": self.epsilon,
@@ -301,7 +301,7 @@ class ExponentialMechanism(NoiseMechanism):
     def __init__(
         self,
         epsilon: float,
-        utility_fn: Optional[Callable[[Any], float]] = None,
+        utility_fn: Callable[[Any], float] | None = None,
         sensitivity: float = 1.0,
     ):
         """
@@ -321,9 +321,9 @@ class ExponentialMechanism(NoiseMechanism):
 
     def select(
         self,
-        options: List[Any],
-        utilities: Optional[List[float]] = None,
-        rng: Optional[np.random.Generator] = None,
+        options: list[Any],
+        utilities: list[float] | None = None,
+        rng: np.random.Generator | None = None,
     ) -> Any:
         """
         Select an option using exponential mechanism.
@@ -361,10 +361,10 @@ class ExponentialMechanism(NoiseMechanism):
 
     def add_noise(
         self,
-        value: Union[float, NDArray[np.float64]],
+        value: float | NDArray[np.float64],
         sensitivity: float,
-        rng: Optional[np.random.Generator] = None,
-    ) -> Union[float, NDArray[np.float64]]:
+        rng: np.random.Generator | None = None,
+    ) -> float | NDArray[np.float64]:
         """
         Not applicable for exponential mechanism.
 
@@ -382,7 +382,7 @@ class ExponentialMechanism(NoiseMechanism):
     def name(self) -> str:
         return "Exponential"
 
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         return {
             "mechanism": self.name,
             "epsilon": self.epsilon,
@@ -393,7 +393,7 @@ class ExponentialMechanism(NoiseMechanism):
 def clip_gradient(
     gradient: NDArray[np.float64],
     max_norm: float,
-) -> Tuple[NDArray[np.float64], float]:
+) -> tuple[NDArray[np.float64], float]:
     """
     Clip gradient to maximum L2 norm.
 
@@ -422,7 +422,7 @@ def add_noise_to_gradient(
     gradient: NDArray[np.float64],
     noise_multiplier: float,
     max_norm: float,
-    rng: Optional[np.random.Generator] = None,
+    rng: np.random.Generator | None = None,
 ) -> NDArray[np.float64]:
     """
     Add calibrated Gaussian noise to gradient (DP-SGD style).
@@ -495,10 +495,10 @@ class SubsampledMechanism:
 
     def add_noise(
         self,
-        value: Union[float, NDArray[np.float64]],
+        value: float | NDArray[np.float64],
         sensitivity: float,
-        rng: Optional[np.random.Generator] = None,
-    ) -> Union[float, NDArray[np.float64]]:
+        rng: np.random.Generator | None = None,
+    ) -> float | NDArray[np.float64]:
         """
         Add noise with subsampling amplification.
 
@@ -538,7 +538,7 @@ class SubsampledMechanism:
     def name(self) -> str:
         return f"Subsampled_{self.base_mechanism.name}"
 
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         return {
             "mechanism": self.name,
             "sampling_rate": self.sampling_rate,

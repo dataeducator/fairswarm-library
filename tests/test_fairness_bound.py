@@ -24,7 +24,7 @@ Advisor: Dr. Uttam Ghosh
 
 import numpy as np
 import pytest
-from hypothesis import given, settings, assume, HealthCheck
+from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 
 from fairswarm.algorithms.fairswarm import FairSwarm
@@ -32,8 +32,8 @@ from fairswarm.core.client import Client, create_synthetic_clients
 from fairswarm.core.config import FairSwarmConfig
 from fairswarm.demographics.distribution import DemographicDistribution
 from fairswarm.demographics.divergence import (
-    kl_divergence,
     js_divergence,
+    kl_divergence,
     total_variation_distance,
 )
 from fairswarm.demographics.targets import CensusTarget
@@ -42,7 +42,6 @@ from fairswarm.fitness.fairness import (
     compute_coalition_demographics,
     compute_fairness_gradient,
 )
-
 
 # =============================================================================
 # Hypothesis Strategies

@@ -21,7 +21,7 @@ Advisor: Dr. Uttam Ghosh
 
 import numpy as np
 import pytest
-from hypothesis import given, settings, assume, HealthCheck
+from hypothesis import HealthCheck, assume, given, settings
 from hypothesis import strategies as st
 
 from fairswarm.algorithms.fairswarm import FairSwarm
@@ -29,8 +29,7 @@ from fairswarm.core.client import create_synthetic_clients
 from fairswarm.core.config import FairSwarmConfig
 from fairswarm.core.particle import Particle
 from fairswarm.core.position import sigmoid
-from fairswarm.fitness.mock import MockFitness, ConstantFitness
-
+from fairswarm.fitness.mock import ConstantFitness, MockFitness
 
 # =============================================================================
 # Hypothesis Strategies

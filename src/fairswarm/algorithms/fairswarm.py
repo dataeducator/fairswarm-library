@@ -62,10 +62,9 @@ from __future__ import annotations
 
 import dataclasses
 import logging
-from typing import TYPE_CHECKING, Callable, List, Optional
+from typing import TYPE_CHECKING, Callable
 
 import numpy as np
-from numpy.typing import NDArray
 
 from fairswarm.algorithms.result import (
     ConvergenceMetrics,
@@ -79,7 +78,10 @@ from fairswarm.core.swarm import Swarm, SwarmHistory
 from fairswarm.demographics.distribution import DemographicDistribution
 from fairswarm.demographics.divergence import kl_divergence
 from fairswarm.fitness.base import FitnessFunction, FitnessResult
-from fairswarm.fitness.fairness import compute_coalition_demographics, compute_fairness_gradient
+from fairswarm.fitness.fairness import (
+    compute_coalition_demographics,
+    compute_fairness_gradient,
+)
 from fairswarm.types import Coalition
 
 if TYPE_CHECKING:
@@ -133,11 +135,11 @@ class FairSwarm:
 
     def __init__(
         self,
-        clients: List[Client],
+        clients: list[Client],
         coalition_size: int,
-        config: Optional[FairSwarmConfig] = None,
-        target_distribution: Optional[DemographicDistribution] = None,
-        seed: Optional[int] = None,
+        config: FairSwarmConfig | None = None,
+        target_distribution: DemographicDistribution | None = None,
+        seed: int | None = None,
     ):
         """
         Initialize FairSwarm optimizer.
@@ -174,8 +176,8 @@ class FairSwarm:
         self.rng = np.random.default_rng(seed)
 
         # Swarm (initialized in optimize())
-        self.swarm: Optional[Swarm] = None
-        self.history: Optional[SwarmHistory] = None
+        self.swarm: Swarm | None = None
+        self.history: SwarmHistory | None = None
 
         # Logging
         self._iteration = 0
@@ -189,10 +191,10 @@ class FairSwarm:
     def optimize(
         self,
         fitness_fn: FitnessFunction,
-        n_iterations: Optional[int] = None,
+        n_iterations: int | None = None,
         convergence_threshold: float = 1e-6,
         convergence_window: int = 20,
-        callback: Optional[Callable[[int, Swarm, FitnessResult], None]] = None,
+        callback: Callable[[int, Swarm, FitnessResult], None] | None = None,
         verbose: bool = False,
     ) -> OptimizationResult:
         """
@@ -218,9 +220,9 @@ class FairSwarm:
         self._initialize_swarm()
 
         # Track convergence
-        fitness_history: List[float] = []
-        diversity_history: List[float] = []
-        global_best_updates: List[int] = []
+        fitness_history: list[float] = []
+        diversity_history: list[float] = []
+        global_best_updates: list[int] = []
 
         # Main optimization loop (Algorithm 1: Main Loop)
         converged = False
@@ -251,7 +253,9 @@ class FairSwarm:
                 # Compute fairness (demographic divergence) for this iteration
                 fairness_value = 0.0
                 if self.target_distribution is not None:
-                    from fairswarm.fitness.fairness import compute_coalition_demographics
+                    from fairswarm.fitness.fairness import (
+                        compute_coalition_demographics,
+                    )
                     coalition_demo = compute_coalition_demographics(
                         g_best_coalition, self.clients
                     )
@@ -490,7 +494,7 @@ class FairSwarm:
     def _compute_fairness_metrics(
         self,
         coalition: Coalition,
-    ) -> Optional[FairnessMetrics]:
+    ) -> FairnessMetrics | None:
         """
         Compute fairness metrics for a coalition.
 
@@ -566,7 +570,7 @@ class FairSwarm:
             "iteration": self._iteration,
         }
 
-    def reset(self, seed: Optional[int] = None) -> None:
+    def reset(self, seed: int | None = None) -> None:
         """
         Reset optimizer state for a new run.
 
@@ -592,13 +596,13 @@ class FairSwarm:
 
 
 def run_fairswarm(
-    clients: List[Client],
+    clients: list[Client],
     coalition_size: int,
     fitness_fn: FitnessFunction,
-    target_distribution: Optional[DemographicDistribution] = None,
-    config: Optional[FairSwarmConfig] = None,
+    target_distribution: DemographicDistribution | None = None,
+    config: FairSwarmConfig | None = None,
     n_iterations: int = 100,
-    seed: Optional[int] = None,
+    seed: int | None = None,
     verbose: bool = False,
 ) -> OptimizationResult:
     """

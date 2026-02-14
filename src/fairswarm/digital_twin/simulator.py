@@ -31,10 +31,9 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Any, Callable
 
 import numpy as np
-from numpy.typing import NDArray
 
 from fairswarm.algorithms.fairswarm import FairSwarm
 from fairswarm.algorithms.result import OptimizationResult
@@ -42,7 +41,7 @@ from fairswarm.core.client import Client
 from fairswarm.core.config import FairSwarmConfig
 from fairswarm.demographics.distribution import DemographicDistribution
 from fairswarm.demographics.divergence import kl_divergence
-from fairswarm.fitness.base import FitnessFunction, FitnessResult
+from fairswarm.fitness.base import FitnessFunction
 from fairswarm.types import Coalition
 
 logger = logging.getLogger(__name__)
@@ -73,7 +72,7 @@ class SimulationConfig:
     noise_level: float = 0.01
     dropout_prob: float = 0.1
     latency_model: str = "uniform"
-    seed: Optional[int] = None
+    seed: int | None = None
 
     def validate(self) -> None:
         """Validate configuration parameters."""
@@ -104,13 +103,13 @@ class SimulationResult:
 
     final_accuracy: float = 0.0
     final_divergence: float = 0.0
-    accuracy_history: List[float] = field(default_factory=list)
-    divergence_history: List[float] = field(default_factory=list)
-    coalition_history: List[Coalition] = field(default_factory=list)
-    convergence_round: Optional[int] = None
+    accuracy_history: list[float] = field(default_factory=list)
+    divergence_history: list[float] = field(default_factory=list)
+    coalition_history: list[Coalition] = field(default_factory=list)
+    convergence_round: int | None = None
     total_time: float = 0.0
-    optimization_results: List[OptimizationResult] = field(default_factory=list)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    optimization_results: list[OptimizationResult] = field(default_factory=list)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     @property
     def is_converged(self) -> bool:
@@ -184,7 +183,7 @@ class VirtualClient:
         round_num: int,
         global_accuracy: float,
         rng: np.random.Generator,
-    ) -> Tuple[float, bool]:
+    ) -> tuple[float, bool]:
         """
         Simulate local training update.
 
@@ -295,11 +294,11 @@ class VirtualEnvironment:
 
     def __init__(
         self,
-        clients: List[Client],
-        target_distribution: Optional[DemographicDistribution] = None,
-        config: Optional[SimulationConfig] = None,
-        fairswarm_config: Optional[FairSwarmConfig] = None,
-        fitness_fn: Optional[FitnessFunction] = None,
+        clients: list[Client],
+        target_distribution: DemographicDistribution | None = None,
+        config: SimulationConfig | None = None,
+        fairswarm_config: FairSwarmConfig | None = None,
+        fitness_fn: FitnessFunction | None = None,
     ):
         """
         Initialize VirtualEnvironment.
@@ -330,10 +329,10 @@ class VirtualEnvironment:
         # Simulation state
         self._current_round = 0
         self._global_accuracy = 0.5  # Starting accuracy
-        self._accuracy_history: List[float] = []
-        self._divergence_history: List[float] = []
-        self._coalition_history: List[Coalition] = []
-        self._optimization_results: List[OptimizationResult] = []
+        self._accuracy_history: list[float] = []
+        self._divergence_history: list[float] = []
+        self._coalition_history: list[Coalition] = []
+        self._optimization_results: list[OptimizationResult] = []
 
         # FairSwarm optimizer
         coalition_size = min(self.config.coalition_size, len(clients))
@@ -352,7 +351,7 @@ class VirtualEnvironment:
 
     def run_simulation(
         self,
-        callback: Optional[Callable[[int, float, float], None]] = None,
+        callback: Callable[[int, float, float], None] | None = None,
         verbose: bool = False,
     ) -> SimulationResult:
         """
@@ -545,7 +544,7 @@ class VirtualEnvironment:
 
     def run_what_if(
         self,
-        parameter_changes: Dict[str, Any],
+        parameter_changes: dict[str, Any],
     ) -> SimulationResult:
         """
         Run what-if analysis with modified parameters.
@@ -595,7 +594,7 @@ class VirtualEnvironment:
 
         logger.debug("VirtualEnvironment reset")
 
-    def get_client_statistics(self) -> Dict[str, Any]:
+    def get_client_statistics(self) -> dict[str, Any]:
         """
         Get statistics about virtual clients.
 

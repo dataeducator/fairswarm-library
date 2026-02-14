@@ -12,7 +12,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 from numpy.typing import NDArray
@@ -45,9 +45,9 @@ class FitnessResult:
     """
 
     value: FitnessValue
-    components: Dict[str, float] = field(default_factory=dict)
+    components: dict[str, float] = field(default_factory=dict)
     coalition: Coalition = field(default_factory=list)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     def __repr__(self) -> str:
         return (
@@ -89,7 +89,7 @@ class FitnessFunction(ABC):
     def evaluate(
         self,
         coalition: Coalition,
-        clients: List[Client],
+        clients: list[Client],
     ) -> FitnessResult:
         """
         Evaluate the fitness of a coalition.
@@ -111,7 +111,7 @@ class FitnessFunction(ABC):
     def compute_gradient(
         self,
         position: NDArray[np.float64],
-        clients: List[Client],
+        clients: list[Client],
         coalition_size: int,
     ) -> NDArray[np.float64]:
         """
@@ -139,9 +139,9 @@ class FitnessFunction(ABC):
 
     def evaluate_batch(
         self,
-        coalitions: List[Coalition],
-        clients: List[Client],
-    ) -> List[FitnessResult]:
+        coalitions: list[Coalition],
+        clients: list[Client],
+    ) -> list[FitnessResult]:
         """
         Evaluate multiple coalitions.
 
@@ -160,7 +160,7 @@ class FitnessFunction(ABC):
     def is_feasible(
         self,
         coalition: Coalition,
-        clients: List[Client],
+        clients: list[Client],
     ) -> bool:
         """
         Check if a coalition satisfies constraints.
@@ -177,7 +177,7 @@ class FitnessFunction(ABC):
         """
         return True
 
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         """
         Get configuration for reproducibility.
 

@@ -11,7 +11,7 @@ Advisor: Dr. Uttam Ghosh
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import numpy as np
 from numpy.typing import NDArray
@@ -37,11 +37,11 @@ class ConvergenceMetrics:
     """
 
     iterations: int
-    fitness_history: List[float] = field(default_factory=list)
-    diversity_history: List[float] = field(default_factory=list)
-    global_best_updates: List[int] = field(default_factory=list)
+    fitness_history: list[float] = field(default_factory=list)
+    diversity_history: list[float] = field(default_factory=list)
+    global_best_updates: list[int] = field(default_factory=list)
     converged: bool = False
-    convergence_iteration: Optional[int] = None
+    convergence_iteration: int | None = None
 
     @property
     def improvement_rate(self) -> float:
@@ -94,10 +94,10 @@ class FairnessMetrics:
     """
 
     demographic_divergence: float
-    coalition_distribution: Dict[str, float] = field(default_factory=dict)
-    target_distribution: Dict[str, float] = field(default_factory=dict)
+    coalition_distribution: dict[str, float] = field(default_factory=dict)
+    target_distribution: dict[str, float] = field(default_factory=dict)
     epsilon_satisfied: bool = False
-    group_representation: Dict[str, float] = field(default_factory=dict)
+    group_representation: dict[str, float] = field(default_factory=dict)
 
     def representation_gap(self, group: str) -> float:
         """
@@ -153,12 +153,12 @@ class OptimizationResult:
 
     coalition: Coalition
     fitness: FitnessValue
-    fitness_components: Dict[str, float] = field(default_factory=dict)
-    position: Optional[NDArray[np.float64]] = None
-    convergence: Optional[ConvergenceMetrics] = None
-    fairness: Optional[FairnessMetrics] = None
-    config: Dict[str, Any] = field(default_factory=dict)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    fitness_components: dict[str, float] = field(default_factory=dict)
+    position: NDArray[np.float64] | None = None
+    convergence: ConvergenceMetrics | None = None
+    fairness: FairnessMetrics | None = None
+    config: dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     @property
     def coalition_size(self) -> int:
@@ -197,13 +197,13 @@ class OptimizationResult:
                 lines.append(f"  {name}: {value:.6f}")
 
         if self.convergence:
-            lines.append(f"\nConvergence:")
+            lines.append("\nConvergence:")
             lines.append(f"  Iterations: {self.convergence.iterations}")
             lines.append(f"  Converged: {self.convergence.converged}")
             lines.append(f"  Final Diversity: {self.convergence.final_diversity:.4f}")
 
         if self.fairness:
-            lines.append(f"\nFairness (Theorem 2):")
+            lines.append("\nFairness (Theorem 2):")
             lines.append(f"  DemDiv(S*): {self.fairness.demographic_divergence:.6f}")
             lines.append(f"  ε-satisfied: {self.fairness.epsilon_satisfied}")
             lines.append(f"  Max Gap: {self.fairness.max_representation_gap():.4f}")
@@ -211,7 +211,7 @@ class OptimizationResult:
         lines.append("=" * 50)
         return "\n".join(lines)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """
         Convert result to dictionary for serialization.
 

@@ -19,8 +19,6 @@ Advisor: Dr. Uttam Ghosh
 
 from __future__ import annotations
 
-from typing import List, Union
-
 import numpy as np
 from numpy.typing import NDArray
 

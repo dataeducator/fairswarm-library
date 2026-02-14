@@ -7,26 +7,24 @@ Author: Tenicka Norwood
 Advisor: Dr. Uttam Ghosh
 """
 
-import pytest
 import numpy as np
-from hypothesis import given, settings, assume
+import pytest
+from hypothesis import given, settings
 from hypothesis import strategies as st
 
-from fairswarm.privacy.mechanisms import (
-    LaplaceMechanism,
-    GaussianMechanism,
-    ExponentialMechanism,
-    clip_gradient,
-    add_noise_to_gradient,
-)
 from fairswarm.privacy.accountant import (
-    SimpleAccountant,
+    AdvancedCompositionAccountant,
     MomentsAccountant,
     RDPAccountant,
-    AdvancedCompositionAccountant,
-    PrivacySpent,
+    SimpleAccountant,
 )
-
+from fairswarm.privacy.mechanisms import (
+    ExponentialMechanism,
+    GaussianMechanism,
+    LaplaceMechanism,
+    add_noise_to_gradient,
+    clip_gradient,
+)
 
 # =============================================================================
 # Fixtures
@@ -775,7 +773,7 @@ class TestPrivacyIntegration:
         sensitivity = 1.0
 
         for _ in range(10):
-            noisy = mechanism.add_noise(gradient, sensitivity, rng)
+            mechanism.add_noise(gradient, sensitivity, rng)
             accountant.step(mechanism.epsilon, mechanism.delta)
 
         total_eps = accountant.get_epsilon(1e-5)
@@ -784,7 +782,7 @@ class TestPrivacyIntegration:
     def test_rdp_tracking_gaussian(self, rng):
         """Test RDP accountant with Gaussian mechanism."""
         noise_multiplier = 1.0
-        mechanism = GaussianMechanism(epsilon=1.0, delta=1e-5)
+        GaussianMechanism(epsilon=1.0, delta=1e-5)
         accountant = RDPAccountant()
 
         for _ in range(10):
@@ -807,7 +805,7 @@ class TestPrivacyIntegration:
         # Query until budget exhausted
         queries = 0
         while accountant.get_epsilon(1e-5) + mechanism.epsilon <= budget:
-            noisy = mechanism.add_noise(data, sensitivity, rng)
+            mechanism.add_noise(data, sensitivity, rng)
             accountant.step(mechanism.epsilon)
             queries += 1
 

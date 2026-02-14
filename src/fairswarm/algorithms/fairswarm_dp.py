@@ -18,16 +18,19 @@ Advisor: Dr. Uttam Ghosh
 
 from __future__ import annotations
 
-import logging
 import dataclasses
+import logging
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING
 
 import numpy as np
 from numpy.typing import NDArray
 
 from fairswarm.algorithms.fairswarm import FairSwarm
-from fairswarm.algorithms.result import OptimizationResult, ConvergenceMetrics, FairnessMetrics
+from fairswarm.algorithms.result import (
+    ConvergenceMetrics,
+    OptimizationResult,
+)
 from fairswarm.core.config import FairSwarmConfig
 from fairswarm.core.position import decode_coalition
 from fairswarm.demographics.distribution import DemographicDistribution
@@ -142,12 +145,12 @@ class FairSwarmDP(FairSwarm):
 
     def __init__(
         self,
-        clients: List[Client],
+        clients: list[Client],
         coalition_size: int,
-        config: Optional[FairSwarmConfig] = None,
-        target_distribution: Optional[DemographicDistribution] = None,
-        dp_config: Optional[DPConfig] = None,
-        seed: Optional[int] = None,
+        config: FairSwarmConfig | None = None,
+        target_distribution: DemographicDistribution | None = None,
+        dp_config: DPConfig | None = None,
+        seed: int | None = None,
     ):
         """
         Initialize FairSwarmDP.
@@ -202,7 +205,7 @@ class FairSwarmDP(FairSwarm):
     def optimize(
         self,
         fitness_fn: FitnessFunction,
-        n_iterations: Optional[int] = None,
+        n_iterations: int | None = None,
         convergence_threshold: float = 1e-6,
         convergence_window: int = 20,
         callback=None,
@@ -235,9 +238,9 @@ class FairSwarmDP(FairSwarm):
         self._initialize_swarm()
 
         # Track metrics
-        fitness_history: List[float] = []
-        diversity_history: List[float] = []
-        global_best_updates: List[int] = []
+        fitness_history: list[float] = []
+        diversity_history: list[float] = []
+        global_best_updates: list[int] = []
 
         # Main optimization loop with privacy
         converged = False
@@ -529,7 +532,7 @@ class FairSwarmDP(FairSwarm):
         spent = self.accountant.get_epsilon(self.dp_config.delta)
         return max(0, self.dp_config.epsilon - spent)
 
-    def reset(self, seed: Optional[int] = None) -> None:
+    def reset(self, seed: int | None = None) -> None:
         """Reset optimizer state including privacy accountant."""
         super().reset(seed)
         self.accountant.reset()
@@ -544,14 +547,14 @@ class FairSwarmDP(FairSwarm):
 
 
 def run_fairswarm_dp(
-    clients: List[Client],
+    clients: list[Client],
     coalition_size: int,
     fitness_fn: FitnessFunction,
-    target_distribution: Optional[DemographicDistribution] = None,
-    config: Optional[FairSwarmConfig] = None,
-    dp_config: Optional[DPConfig] = None,
+    target_distribution: DemographicDistribution | None = None,
+    config: FairSwarmConfig | None = None,
+    dp_config: DPConfig | None = None,
     n_iterations: int = 100,
-    seed: Optional[int] = None,
+    seed: int | None = None,
     verbose: bool = False,
 ) -> OptimizationResult:
     """

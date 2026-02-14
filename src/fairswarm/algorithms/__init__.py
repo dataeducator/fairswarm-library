@@ -21,11 +21,11 @@ Advisor: Dr. Uttam Ghosh
 """
 
 from fairswarm.algorithms.fairswarm import FairSwarm, run_fairswarm
-from fairswarm.algorithms.fairswarm_dp import FairSwarmDP, DPConfig, DPResult
+from fairswarm.algorithms.fairswarm_dp import DPConfig, DPResult, FairSwarmDP
 from fairswarm.algorithms.result import (
-    OptimizationResult,
     ConvergenceMetrics,
     FairnessMetrics,
+    OptimizationResult,
 )
 from fairswarm.algorithms.sklearn_compat import FairSwarmSelector
 

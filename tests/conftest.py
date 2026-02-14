@@ -10,15 +10,12 @@ Security Note:
 
 from __future__ import annotations
 
-from typing import List
-
 import numpy as np
 import pytest
 
 from fairswarm.core.client import Client, create_synthetic_clients
 from fairswarm.core.config import FairSwarmConfig
 from fairswarm.types import ClientId, DemographicVector
-
 
 # =============================================================================
 # Demographic Distribution Fixtures
@@ -83,7 +80,7 @@ def single_client(uniform_demographics: DemographicVector) -> Client:
 
 
 @pytest.fixture
-def small_client_pool() -> List[Client]:
+def small_client_pool() -> list[Client]:
     """
     Small pool of 5 synthetic clients for fast tests.
 
@@ -94,7 +91,7 @@ def small_client_pool() -> List[Client]:
 
 
 @pytest.fixture
-def medium_client_pool() -> List[Client]:
+def medium_client_pool() -> list[Client]:
     """
     Medium pool of 20 synthetic clients for integration tests.
 
@@ -105,7 +102,7 @@ def medium_client_pool() -> List[Client]:
 
 
 @pytest.fixture
-def large_client_pool() -> List[Client]:
+def large_client_pool() -> list[Client]:
     """
     Large pool of 100 synthetic clients for stress tests.
 
@@ -116,7 +113,7 @@ def large_client_pool() -> List[Client]:
 
 
 @pytest.fixture
-def diverse_client_pool() -> List[Client]:
+def diverse_client_pool() -> list[Client]:
     """
     Client pool with intentionally diverse demographics.
 
@@ -241,7 +238,7 @@ def rng() -> np.random.Generator:
 # =============================================================================
 
 # Configure Hypothesis settings for the test suite
-from hypothesis import settings, Phase, Verbosity
+from hypothesis import Phase, settings  # noqa: E402
 
 # Register a profile for CI (faster, fewer examples)
 settings.register_profile(
@@ -276,7 +273,7 @@ def generate_random_clients(
     n_clients: int,
     n_demographic_groups: int = 4,
     seed: int = 42,
-) -> List[Client]:
+) -> list[Client]:
     """
     Generate random clients for hypothesis testing.
 

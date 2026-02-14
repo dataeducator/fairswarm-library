@@ -17,12 +17,11 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Callable
 
 import numpy as np
-from numpy.typing import NDArray
 
-from fairswarm.incentives.shapley import compute_shapley_values, ShapleyResult
+from fairswarm.incentives.shapley import compute_shapley_values
 from fairswarm.types import Coalition
 
 if TYPE_CHECKING:
@@ -47,7 +46,7 @@ class ContributionMetrics:
     communication_contribution: float = 0.0
     fairness_contribution: float = 0.0
     total_contribution: float = 0.0
-    details: Dict[str, Any] = field(default_factory=dict)
+    details: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -62,18 +61,18 @@ class AllocationResult:
         metrics: Per-client contribution metrics
     """
 
-    allocations: Dict[int, float]
+    allocations: dict[int, float]
     total_reward: float
     allocation_method: str
-    metrics: Optional[Dict[int, ContributionMetrics]] = None
+    metrics: dict[int, ContributionMetrics] | None = None
 
-    def get_shares(self) -> Dict[int, float]:
+    def get_shares(self) -> dict[int, float]:
         """Get allocation as fractions of total."""
         if self.total_reward <= 0:
-            return {k: 0.0 for k in self.allocations}
+            return dict.fromkeys(self.allocations, 0.0)
         return {k: v / self.total_reward for k, v in self.allocations.items()}
 
-    def get_ranking(self) -> List[int]:
+    def get_ranking(self) -> list[int]:
         """Get client indices sorted by allocation (descending)."""
         return sorted(self.allocations.keys(), key=lambda k: -self.allocations[k])
 
@@ -90,7 +89,7 @@ class RewardAllocator(ABC):
     def allocate(
         self,
         coalition: Coalition,
-        clients: List[Client],
+        clients: list[Client],
         total_reward: float,
     ) -> AllocationResult:
         """
@@ -130,7 +129,7 @@ class EqualAllocator(RewardAllocator):
     def allocate(
         self,
         coalition: Coalition,
-        clients: List[Client],
+        clients: list[Client],
         total_reward: float,
     ) -> AllocationResult:
         """
@@ -153,7 +152,7 @@ class EqualAllocator(RewardAllocator):
             )
 
         share = total_reward / n
-        allocations = {idx: share for idx in coalition}
+        allocations = dict.fromkeys(coalition, share)
 
         return AllocationResult(
             allocations=allocations,
@@ -213,7 +212,7 @@ class ProportionalAllocator(RewardAllocator):
     def allocate(
         self,
         coalition: Coalition,
-        clients: List[Client],
+        clients: list[Client],
         total_reward: float,
     ) -> AllocationResult:
         """
@@ -275,7 +274,7 @@ class ProportionalAllocator(RewardAllocator):
         if total_scores <= 0:
             # Fall back to equal allocation
             share = total_reward / len(coalition)
-            allocations = {idx: share for idx in coalition}
+            allocations = dict.fromkeys(coalition, share)
         else:
             allocations = {
                 idx: total_reward * (score / total_scores)
@@ -316,9 +315,9 @@ class ShapleyAllocator(RewardAllocator):
 
     def __init__(
         self,
-        value_fn: Optional[Callable[[Coalition, List[Client]], float]] = None,
+        value_fn: Callable[[Coalition, list[Client]], float] | None = None,
         n_samples: int = 1000,
-        seed: Optional[int] = None,
+        seed: int | None = None,
     ):
         """
         Initialize ShapleyAllocator.
@@ -335,7 +334,7 @@ class ShapleyAllocator(RewardAllocator):
     def _default_value_fn(
         self,
         coalition: Coalition,
-        clients: List[Client],
+        clients: list[Client],
     ) -> float:
         """Default value function: sum of data qualities."""
         if not coalition:
@@ -345,7 +344,7 @@ class ShapleyAllocator(RewardAllocator):
     def allocate(
         self,
         coalition: Coalition,
-        clients: List[Client],
+        clients: list[Client],
         total_reward: float,
     ) -> AllocationResult:
         """
@@ -387,7 +386,7 @@ class ShapleyAllocator(RewardAllocator):
         if total_shapley <= 0:
             # Fall back to equal allocation
             share = total_reward / len(coalition)
-            allocations = {idx: share for idx in coalition}
+            allocations = dict.fromkeys(coalition, share)
         else:
             allocations = {
                 idx: total_reward * (max(0, v) / total_shapley)
@@ -436,7 +435,7 @@ class FairnessAwareAllocator(RewardAllocator):
         self,
         target_distribution=None,
         fairness_weight: float = 0.3,
-        base_allocator: Optional[RewardAllocator] = None,
+        base_allocator: RewardAllocator | None = None,
     ):
         """
         Initialize FairnessAwareAllocator.
@@ -453,7 +452,7 @@ class FairnessAwareAllocator(RewardAllocator):
     def allocate(
         self,
         coalition: Coalition,
-        clients: List[Client],
+        clients: list[Client],
         total_reward: float,
     ) -> AllocationResult:
         """
@@ -513,12 +512,12 @@ class FairnessAwareAllocator(RewardAllocator):
                 fairness_scores[idx] = max(0, improvement)
         else:
             # No target: equal fairness scores
-            fairness_scores = {idx: 1.0 for idx in coalition}
+            fairness_scores = dict.fromkeys(coalition, 1.0)
 
         # Normalize fairness scores
         total_fairness = sum(fairness_scores.values())
         if total_fairness <= 0:
-            fairness_allocations = {idx: 0.0 for idx in coalition}
+            fairness_allocations = dict.fromkeys(coalition, 0.0)
         else:
             fairness_reward = total_reward * self.fairness_weight
             fairness_allocations = {
@@ -564,7 +563,7 @@ class FairnessAwareAllocator(RewardAllocator):
 
 def allocate_rewards(
     coalition: Coalition,
-    clients: List[Client],
+    clients: list[Client],
     total_reward: float,
     method: str = "proportional",
     **kwargs,

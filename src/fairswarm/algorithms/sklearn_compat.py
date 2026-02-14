@@ -11,7 +11,7 @@ Advisor: Dr. Uttam Ghosh
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 from numpy.typing import NDArray
@@ -115,7 +115,7 @@ class FairSwarmSelector:
         fairness_weight: float = 0.3,
         epsilon_fair: float = 0.05,
         adaptive_fairness: bool = True,
-        random_state: Optional[int] = None,
+        random_state: int | None = None,
         verbose: bool = False,
     ):
         self.coalition_size = coalition_size
@@ -132,12 +132,12 @@ class FairSwarmSelector:
         self.verbose = verbose
 
         # Attributes set during fit
-        self.result_: Optional[OptimizationResult] = None
-        self.selected_indices_: Optional[List[int]] = None
-        self.fitness_: Optional[float] = None
+        self.result_: OptimizationResult | None = None
+        self.selected_indices_: list[int] | None = None
+        self.fitness_: float | None = None
         self.is_fitted_: bool = False
 
-    def get_params(self, deep: bool = True) -> Dict[str, Any]:
+    def get_params(self, deep: bool = True) -> dict[str, Any]:
         """
         Get parameters for this estimator.
 
@@ -166,7 +166,7 @@ class FairSwarmSelector:
             "verbose": self.verbose,
         }
 
-    def set_params(self, **params: Any) -> "FairSwarmSelector":
+    def set_params(self, **params: Any) -> FairSwarmSelector:
         """
         Set parameters for this estimator.
 
@@ -205,11 +205,11 @@ class FairSwarmSelector:
 
     def fit(
         self,
-        clients: List[Client],
-        fitness_fn: Optional[FitnessFunction] = None,
-        target_distribution: Optional[DemographicDistribution] = None,
+        clients: list[Client],
+        fitness_fn: FitnessFunction | None = None,
+        target_distribution: DemographicDistribution | None = None,
         **fit_params: Any,
-    ) -> "FairSwarmSelector":
+    ) -> FairSwarmSelector:
         """
         Fit the selector by running FairSwarm optimization.
 
@@ -279,8 +279,8 @@ class FairSwarmSelector:
 
     def transform(
         self,
-        clients: List[Client],
-    ) -> List[Client]:
+        clients: list[Client],
+    ) -> list[Client]:
         """
         Select clients based on the fitted coalition.
 
@@ -308,11 +308,11 @@ class FairSwarmSelector:
 
     def fit_transform(
         self,
-        clients: List[Client],
-        fitness_fn: Optional[FitnessFunction] = None,
-        target_distribution: Optional[DemographicDistribution] = None,
+        clients: list[Client],
+        fitness_fn: FitnessFunction | None = None,
+        target_distribution: DemographicDistribution | None = None,
         **fit_params: Any,
-    ) -> List[Client]:
+    ) -> list[Client]:
         """
         Fit the selector and return selected clients.
 
@@ -368,9 +368,9 @@ class FairSwarmSelector:
 
     def score(
         self,
-        clients: List[Client],
-        fitness_fn: Optional[FitnessFunction] = None,
-        target_distribution: Optional[DemographicDistribution] = None,
+        clients: list[Client],
+        fitness_fn: FitnessFunction | None = None,
+        target_distribution: DemographicDistribution | None = None,
     ) -> float:
         """
         Return the fitness score of the selected coalition.

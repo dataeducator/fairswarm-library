@@ -12,7 +12,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 from numpy.typing import NDArray
@@ -44,7 +44,7 @@ class ConstraintResult:
     satisfied: bool
     violation: float = 0.0
     message: str = ""
-    details: Dict[str, Any] = field(default_factory=dict)
+    details: dict[str, Any] = field(default_factory=dict)
 
     def __bool__(self) -> bool:
         """Allow using result directly in conditionals."""
@@ -88,7 +88,7 @@ class Constraint(ABC):
     def evaluate(
         self,
         coalition: Coalition,
-        clients: List[Client],
+        clients: list[Client],
     ) -> ConstraintResult:
         """
         Evaluate whether the constraint is satisfied.
@@ -105,7 +105,7 @@ class Constraint(ABC):
     def compute_penalty(
         self,
         coalition: Coalition,
-        clients: List[Client],
+        clients: list[Client],
         penalty_weight: float = 1.0,
     ) -> float:
         """
@@ -128,7 +128,7 @@ class Constraint(ABC):
     def compute_gradient(
         self,
         position: NDArray[np.float64],
-        clients: List[Client],
+        clients: list[Client],
         coalition_size: int,
     ) -> NDArray[np.float64]:
         """
@@ -159,7 +159,7 @@ class Constraint(ABC):
         """
         return True
 
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         """Get configuration for reproducibility."""
         return {"name": self.name, "hard": self.is_hard_constraint()}
 
@@ -184,7 +184,7 @@ class ConstraintSet:
         ...     print("All constraints satisfied")
     """
 
-    def __init__(self, constraints: Optional[List[Constraint]] = None):
+    def __init__(self, constraints: list[Constraint] | None = None):
         """
         Initialize ConstraintSet.
 
@@ -216,7 +216,7 @@ class ConstraintSet:
     def evaluate(
         self,
         coalition: Coalition,
-        clients: List[Client],
+        clients: list[Client],
     ) -> ConstraintResult:
         """
         Evaluate all constraints.
@@ -261,7 +261,7 @@ class ConstraintSet:
     def evaluate_hard_only(
         self,
         coalition: Coalition,
-        clients: List[Client],
+        clients: list[Client],
     ) -> ConstraintResult:
         """
         Evaluate only hard constraints.
@@ -284,7 +284,7 @@ class ConstraintSet:
     def compute_total_penalty(
         self,
         coalition: Coalition,
-        clients: List[Client],
+        clients: list[Client],
         penalty_weight: float = 1.0,
     ) -> float:
         """
@@ -306,7 +306,7 @@ class ConstraintSet:
     def compute_combined_gradient(
         self,
         position: NDArray[np.float64],
-        clients: List[Client],
+        clients: list[Client],
         coalition_size: int,
     ) -> NDArray[np.float64]:
         """
@@ -342,7 +342,7 @@ class ConstraintSet:
     def __iter__(self):
         return iter(self.constraints)
 
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         """Get configuration for reproducibility."""
         return {
             "n_constraints": len(self.constraints),

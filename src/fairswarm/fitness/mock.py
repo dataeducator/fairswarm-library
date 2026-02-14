@@ -11,7 +11,7 @@ Advisor: Dr. Uttam Ghosh
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Callable
 
 import numpy as np
 from numpy.typing import NDArray
@@ -58,7 +58,7 @@ class MockFitness(FitnessFunction):
     def __init__(
         self,
         mode: str = "mean_quality",
-        custom_fn: Optional[Callable[[Coalition, List[Client]], float]] = None,
+        custom_fn: Callable[[Coalition, list[Client]], float] | None = None,
     ):
         """
         Initialize MockFitness.
@@ -82,7 +82,7 @@ class MockFitness(FitnessFunction):
     def evaluate(
         self,
         coalition: Coalition,
-        clients: List[Client],
+        clients: list[Client],
     ) -> FitnessResult:
         """
         Evaluate mock fitness.
@@ -143,7 +143,7 @@ class MockFitness(FitnessFunction):
     def compute_gradient(
         self,
         position: NDArray[np.float64],
-        clients: List[Client],
+        clients: list[Client],
         coalition_size: int,
     ) -> NDArray[np.float64]:
         """
@@ -185,7 +185,7 @@ class MockFitness(FitnessFunction):
             # Default: uniform
             return np.ones(n_clients) / n_clients
 
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         """Get configuration for reproducibility."""
         return {
             "class": self.__class__.__name__,
@@ -221,7 +221,7 @@ class ConstantFitness(FitnessFunction):
     def evaluate(
         self,
         coalition: Coalition,
-        clients: List[Client],
+        clients: list[Client],
     ) -> FitnessResult:
         """
         Evaluate constant fitness.
@@ -242,7 +242,7 @@ class ConstantFitness(FitnessFunction):
     def compute_gradient(
         self,
         position: NDArray[np.float64],
-        clients: List[Client],
+        clients: list[Client],
         coalition_size: int,
     ) -> NDArray[np.float64]:
         """
@@ -260,7 +260,7 @@ class ConstantFitness(FitnessFunction):
         """
         return np.zeros(len(clients))
 
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         """Get configuration for reproducibility."""
         return {
             "class": self.__class__.__name__,
@@ -286,7 +286,7 @@ class DeterministicFitness(FitnessFunction):
 
     def __init__(
         self,
-        values: Dict[frozenset, float],
+        values: dict[frozenset, float],
         default_value: float = 0.0,
     ):
         """
@@ -302,7 +302,7 @@ class DeterministicFitness(FitnessFunction):
     def evaluate(
         self,
         coalition: Coalition,
-        clients: List[Client],
+        clients: list[Client],
     ) -> FitnessResult:
         """
         Look up predetermined fitness value.
@@ -329,7 +329,7 @@ class DeterministicFitness(FitnessFunction):
     def compute_gradient(
         self,
         position: NDArray[np.float64],
-        clients: List[Client],
+        clients: list[Client],
         coalition_size: int,
     ) -> NDArray[np.float64]:
         """
@@ -347,7 +347,7 @@ class DeterministicFitness(FitnessFunction):
         # Return zero gradient as default
         return np.zeros(len(clients))
 
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         """Get configuration for reproducibility."""
         return {
             "class": self.__class__.__name__,
@@ -399,7 +399,7 @@ class DataQualityFitness(FitnessFunction):
     def evaluate(
         self,
         coalition: Coalition,
-        clients: List[Client],
+        clients: list[Client],
     ) -> FitnessResult:
         """
         Evaluate data quality fitness.
@@ -469,7 +469,7 @@ class DataQualityFitness(FitnessFunction):
     def compute_gradient(
         self,
         position: NDArray[np.float64],
-        clients: List[Client],
+        clients: list[Client],
         coalition_size: int,
     ) -> NDArray[np.float64]:
         """
@@ -506,7 +506,7 @@ class DataQualityFitness(FitnessFunction):
 
         return gradient
 
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         """Get configuration for reproducibility."""
         return {
             "class": self.__class__.__name__,

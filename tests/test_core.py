@@ -8,6 +8,8 @@ Author: Tenicka Norwood
 
 from __future__ import annotations
 
+import dataclasses
+
 import numpy as np
 import pytest
 
@@ -89,7 +91,7 @@ class TestClient:
 
     def test_client_immutability(self, single_client):
         """Test that clients are immutable (frozen dataclass)."""
-        with pytest.raises(Exception):  # FrozenInstanceError
+        with pytest.raises(dataclasses.FrozenInstanceError):
             single_client.dataset_size = 9999
 
     def test_demographic_contribution(self, single_client):
@@ -256,8 +258,8 @@ class TestTypeValidation:
 # =============================================================================
 
 
-from fairswarm.core.particle import Particle
-from fairswarm.core.position import (
+from fairswarm.core.particle import Particle  # noqa: E402
+from fairswarm.core.position import (  # noqa: E402
     coalition_overlap,
     decode_coalition,
     encode_coalition,
@@ -266,7 +268,7 @@ from fairswarm.core.position import (
     sigmoid,
     soft_decode_coalition,
 )
-from fairswarm.core.swarm import Swarm, SwarmHistory
+from fairswarm.core.swarm import Swarm, SwarmHistory  # noqa: E402
 
 
 class TestSigmoid:

@@ -19,10 +19,10 @@ from fairswarm.core.client import Client, create_synthetic_clients
 from fairswarm.demographics.distribution import DemographicDistribution
 from fairswarm.demographics.divergence import kl_divergence
 from fairswarm.demographics.targets import CensusTarget
-from fairswarm.fitness.base import FitnessFunction, FitnessResult
+from fairswarm.fitness.base import FitnessResult
 from fairswarm.fitness.composite import (
-    CompositeFitness,
     CommunicationCostFitness,
+    CompositeFitness,
     WeightedFitness,
 )
 from fairswarm.fitness.fairness import (
@@ -37,7 +37,6 @@ from fairswarm.fitness.mock import (
     DeterministicFitness,
     MockFitness,
 )
-
 
 # =============================================================================
 # Fixtures
@@ -296,7 +295,7 @@ class TestFairnessGradient:
 
         # Client 0: matches target well
         # Client 1: very different from target (all "white")
-        different_demo = {label: 0.0 for label in target_labels}
+        different_demo = dict.fromkeys(target_labels, 0.0)
         different_demo["white"] = 1.0
         # Normalize to sum to 1 (already does since only white=1.0)
 
@@ -365,7 +364,8 @@ class TestMockFitness:
 
     def test_custom_mode(self, sample_clients):
         """Test custom mode with user function."""
-        custom_fn = lambda coalition, clients: len(coalition) * 10.0
+        def custom_fn(coalition, clients):
+            return len(coalition) * 10.0
         fitness = MockFitness(mode="custom", custom_fn=custom_fn)
 
         result = fitness.evaluate([0, 1], sample_clients)

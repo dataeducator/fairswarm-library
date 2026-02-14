@@ -20,7 +20,6 @@ Advisor: Dr. Uttam Ghosh
 from __future__ import annotations
 
 from enum import Enum
-from typing import Dict
 
 import numpy as np
 
@@ -129,7 +128,7 @@ class CensusTarget(Enum):
         """
         return np.array(list(self.value.values()), dtype=np.float64)
 
-    def as_dict(self) -> Dict[str, float]:
+    def as_dict(self) -> dict[str, float]:
         """
         Get the target as a dictionary.
 
@@ -229,7 +228,7 @@ def get_regional_target(region: str) -> DemographicDistribution:
 
 
 def create_custom_target(
-    proportions: Dict[str, float],
+    proportions: dict[str, float],
     normalize: bool = True,
 ) -> DemographicDistribution:
     """

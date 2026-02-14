@@ -24,7 +24,7 @@ Advisor: Dr. Uttam Ghosh
 
 from __future__ import annotations
 
-from typing import List, Sequence, Union
+from collections.abc import Sequence
 
 import numpy as np
 from numpy.typing import NDArray
@@ -34,15 +34,14 @@ from fairswarm.demographics.distribution import (
     combine_distributions,
 )
 
-
 # =============================================================================
 # KL Divergence - DEFINITION 2 IMPLEMENTATION
 # =============================================================================
 
 
 def kl_divergence(
-    p: Union[NDArray[np.float64], DemographicDistribution],
-    q: Union[NDArray[np.float64], DemographicDistribution],
+    p: NDArray[np.float64] | DemographicDistribution,
+    q: NDArray[np.float64] | DemographicDistribution,
     eps: float = 1e-10,
 ) -> float:
     """
@@ -121,8 +120,8 @@ def kl_divergence(
 
 
 def js_divergence(
-    p: Union[NDArray[np.float64], DemographicDistribution],
-    q: Union[NDArray[np.float64], DemographicDistribution],
+    p: NDArray[np.float64] | DemographicDistribution,
+    q: NDArray[np.float64] | DemographicDistribution,
     eps: float = 1e-10,
 ) -> float:
     """
@@ -166,8 +165,8 @@ def js_divergence(
 
 
 def total_variation_distance(
-    p: Union[NDArray[np.float64], DemographicDistribution],
-    q: Union[NDArray[np.float64], DemographicDistribution],
+    p: NDArray[np.float64] | DemographicDistribution,
+    q: NDArray[np.float64] | DemographicDistribution,
 ) -> float:
     """
     Compute total variation distance between distributions.
@@ -205,8 +204,8 @@ def total_variation_distance(
 
 
 def wasserstein_distance(
-    p: Union[NDArray[np.float64], DemographicDistribution],
-    q: Union[NDArray[np.float64], DemographicDistribution],
+    p: NDArray[np.float64] | DemographicDistribution,
+    q: NDArray[np.float64] | DemographicDistribution,
 ) -> float:
     """
     Compute 1-Wasserstein (Earth Mover's) distance for 1D distributions.
@@ -254,9 +253,9 @@ def wasserstein_distance(
 
 
 def coalition_demographic_divergence(
-    client_demographics: Sequence[Union[NDArray[np.float64], DemographicDistribution]],
+    client_demographics: Sequence[NDArray[np.float64] | DemographicDistribution],
     coalition_indices: Sequence[int],
-    target: Union[NDArray[np.float64], DemographicDistribution],
+    target: NDArray[np.float64] | DemographicDistribution,
     weights: Sequence[float] | None = None,
 ) -> float:
     """
@@ -309,7 +308,7 @@ def coalition_demographic_divergence(
             )
 
     # Convert client demographics to DemographicDistribution objects if needed
-    coalition_dists: List[DemographicDistribution] = []
+    coalition_dists: list[DemographicDistribution] = []
     for idx in coalition_indices:
         demo = client_demographics[idx]
         if isinstance(demo, DemographicDistribution):

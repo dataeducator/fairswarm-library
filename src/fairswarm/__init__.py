@@ -47,6 +47,7 @@ from fairswarm.types import (
     FitnessValue,
 )
 
+
 # Lazy imports for optional modules
 def __getattr__(name: str):
     """Lazy loading for optional integration and digital twin modules."""

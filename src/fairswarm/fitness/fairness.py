@@ -19,15 +19,15 @@ Advisor: Dr. Uttam Ghosh
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 from numpy.typing import NDArray
 
-from fairswarm.demographics.divergence import kl_divergence
 from fairswarm.demographics.distribution import DemographicDistribution
+from fairswarm.demographics.divergence import kl_divergence
 from fairswarm.fitness.base import FitnessFunction, FitnessResult
-from fairswarm.types import Coalition, DemographicVector
+from fairswarm.types import Coalition
 
 if TYPE_CHECKING:
     from fairswarm.core.client import Client
@@ -51,7 +51,7 @@ class FairnessGradient:
 
 def compute_coalition_demographics(
     coalition: Coalition,
-    clients: List[Client],
+    clients: list[Client],
 ) -> NDArray[np.float64]:
     """
     Compute the aggregate demographic distribution of a coalition.
@@ -93,7 +93,7 @@ def compute_coalition_demographics(
 
 def compute_fairness_gradient(
     position: NDArray[np.float64],
-    clients: List[Client],
+    clients: list[Client],
     target_distribution: DemographicDistribution,
     coalition_size: int,
     eps: float = 1e-10,
@@ -281,7 +281,7 @@ class DemographicFitness(FitnessFunction):
     def evaluate(
         self,
         coalition: Coalition,
-        clients: List[Client],
+        clients: list[Client],
     ) -> FitnessResult:
         """
         Evaluate fitness based on demographic divergence.
@@ -329,7 +329,7 @@ class DemographicFitness(FitnessFunction):
     def compute_gradient(
         self,
         position: NDArray[np.float64],
-        clients: List[Client],
+        clients: list[Client],
         coalition_size: int,
     ) -> NDArray[np.float64]:
         """
@@ -351,7 +351,7 @@ class DemographicFitness(FitnessFunction):
         )
         return result.gradient
 
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         """Get configuration for reproducibility."""
         return {
             "class": self.__class__.__name__,
@@ -389,7 +389,7 @@ class AccuracyFairnessFitness(FitnessFunction):
     def __init__(
         self,
         target_distribution: DemographicDistribution,
-        accuracy_fn: Optional[Any] = None,
+        accuracy_fn: Any | None = None,
         fairness_weight: float = 0.3,
     ):
         """
@@ -407,7 +407,7 @@ class AccuracyFairnessFitness(FitnessFunction):
     def evaluate(
         self,
         coalition: Coalition,
-        clients: List[Client],
+        clients: list[Client],
     ) -> FitnessResult:
         """
         Evaluate combined accuracy and fairness fitness.
@@ -469,7 +469,7 @@ class AccuracyFairnessFitness(FitnessFunction):
     def compute_gradient(
         self,
         position: NDArray[np.float64],
-        clients: List[Client],
+        clients: list[Client],
         coalition_size: int,
     ) -> NDArray[np.float64]:
         """
@@ -494,7 +494,7 @@ class AccuracyFairnessFitness(FitnessFunction):
         )
         return result.gradient
 
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         """Get configuration for reproducibility."""
         return {
             "class": self.__class__.__name__,

@@ -23,7 +23,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from itertools import permutations
 from math import factorial
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Tuple
+from typing import TYPE_CHECKING, Callable
 
 import numpy as np
 from numpy.typing import NDArray
@@ -32,7 +32,6 @@ from fairswarm.types import Coalition
 
 if TYPE_CHECKING:
     from fairswarm.core.client import Client
-    from fairswarm.fitness.base import FitnessFunction
 
 
 @dataclass
@@ -49,7 +48,7 @@ class ShapleyResult:
 
     values: NDArray[np.float64]
     n_samples: int = 0
-    variance: Optional[NDArray[np.float64]] = None
+    variance: NDArray[np.float64] | None = None
     computation_time: float = 0.0
 
     def normalize(self) -> NDArray[np.float64]:
@@ -59,7 +58,7 @@ class ShapleyResult:
             return self.values / total
         return self.values
 
-    def get_ranking(self) -> List[int]:
+    def get_ranking(self) -> list[int]:
         """Get player indices sorted by contribution (descending)."""
         return list(np.argsort(self.values)[::-1])
 
@@ -77,8 +76,8 @@ class ShapleyValue(ABC):
     def compute(
         self,
         coalition: Coalition,
-        clients: List[Client],
-        value_fn: Callable[[Coalition, List[Client]], float],
+        clients: list[Client],
+        value_fn: Callable[[Coalition, list[Client]], float],
     ) -> ShapleyResult:
         """
         Compute Shapley values for coalition members.
@@ -128,8 +127,8 @@ class ExactShapley(ShapleyValue):
     def compute(
         self,
         coalition: Coalition,
-        clients: List[Client],
-        value_fn: Callable[[Coalition, List[Client]], float],
+        clients: list[Client],
+        value_fn: Callable[[Coalition, list[Client]], float],
     ) -> ShapleyResult:
         """
         Compute exact Shapley values.
@@ -161,7 +160,7 @@ class ExactShapley(ShapleyValue):
             )
 
         # Map coalition indices to 0...n-1
-        index_map = {idx: i for i, idx in enumerate(coalition)}
+        {idx: i for i, idx in enumerate(coalition)}
 
         # Initialize Shapley values
         shapley_values = np.zeros(n)
@@ -178,7 +177,7 @@ class ExactShapley(ShapleyValue):
             predecessors = set()
 
             for player_local in perm:
-                player_global = coalition[player_local]
+                coalition[player_local]
 
                 # v(S ∪ {i})
                 coalition_with = list(predecessors) + [player_local]
@@ -236,7 +235,7 @@ class MonteCarloShapley(ShapleyValue):
     def __init__(
         self,
         n_samples: int = 1000,
-        seed: Optional[int] = None,
+        seed: int | None = None,
     ):
         """
         Initialize MonteCarloShapley.
@@ -255,8 +254,8 @@ class MonteCarloShapley(ShapleyValue):
     def compute(
         self,
         coalition: Coalition,
-        clients: List[Client],
-        value_fn: Callable[[Coalition, List[Client]], float],
+        clients: list[Client],
+        value_fn: Callable[[Coalition, list[Client]], float],
     ) -> ShapleyResult:
         """
         Compute Monte Carlo approximation of Shapley values.
@@ -289,8 +288,8 @@ class MonteCarloShapley(ShapleyValue):
             perm = self.rng.permutation(n)
             predecessors = set()
 
-            for pos, player_local in enumerate(perm):
-                player_global = coalition[player_local]
+            for _pos, player_local in enumerate(perm):
+                coalition[player_local]
 
                 # v(S ∪ {i})
                 coalition_with_local = list(predecessors) + [player_local]
@@ -339,7 +338,7 @@ class StratifiedShapley(ShapleyValue):
     def __init__(
         self,
         samples_per_stratum: int = 100,
-        seed: Optional[int] = None,
+        seed: int | None = None,
     ):
         """
         Initialize StratifiedShapley.
@@ -355,8 +354,8 @@ class StratifiedShapley(ShapleyValue):
     def compute(
         self,
         coalition: Coalition,
-        clients: List[Client],
-        value_fn: Callable[[Coalition, List[Client]], float],
+        clients: list[Client],
+        value_fn: Callable[[Coalition, list[Client]], float],
     ) -> ShapleyResult:
         """
         Compute Shapley values using stratified sampling.
@@ -387,7 +386,7 @@ class StratifiedShapley(ShapleyValue):
         # For each player
         for player_local in range(n):
             player_value = 0.0
-            player_global = coalition[player_local]
+            coalition[player_local]
 
             # For each coalition size (stratum)
             for size in range(n):
@@ -436,11 +435,11 @@ class StratifiedShapley(ShapleyValue):
 
 def compute_shapley_values(
     coalition: Coalition,
-    clients: List[Client],
-    value_fn: Callable[[Coalition, List[Client]], float],
+    clients: list[Client],
+    value_fn: Callable[[Coalition, list[Client]], float],
     method: str = "auto",
     n_samples: int = 1000,
-    seed: Optional[int] = None,
+    seed: int | None = None,
 ) -> ShapleyResult:
     """
     Compute Shapley values with automatic method selection.
@@ -481,7 +480,7 @@ def compute_shapley_values(
 
 def shapley_from_fitness(
     coalition: Coalition,
-    clients: List[Client],
+    clients: list[Client],
     fitness_fn,
 ) -> ShapleyResult:
     """
@@ -498,7 +497,7 @@ def shapley_from_fitness(
         ShapleyResult
     """
 
-    def value_fn(subset: Coalition, all_clients: List[Client]) -> float:
+    def value_fn(subset: Coalition, all_clients: list[Client]) -> float:
         if not subset:
             return 0.0
         result = fitness_fn.evaluate(subset, all_clients)

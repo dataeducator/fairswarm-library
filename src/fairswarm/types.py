@@ -21,12 +21,12 @@ Research Foundation:
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import List, NewType, Sequence, Union
+from typing import NewType
 
 import numpy as np
 from numpy.typing import NDArray
-
 
 # =============================================================================
 # Demographics Container
@@ -73,7 +73,7 @@ class Demographics:
 ClientId = NewType("ClientId", str)
 
 # Coalition as a list of client indices (positions in the client array)
-Coalition = List[int]
+Coalition = list[int]
 
 # Demographic vector: probability distribution over k demographic groups
 # Must sum to 1.0 and contain non-negative values
@@ -187,7 +187,7 @@ def validate_position_vector(
 
 
 def normalize_to_distribution(
-    values: Union[Sequence[float], NDArray[np.float64]],
+    values: Sequence[float] | NDArray[np.float64],
 ) -> DemographicVector:
     """
     Normalize a sequence of non-negative values to a probability distribution.

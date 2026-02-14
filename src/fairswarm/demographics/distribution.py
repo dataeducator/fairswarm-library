@@ -14,11 +14,15 @@ Advisor: Dr. Uttam Ghosh
 
 from __future__ import annotations
 
+from collections.abc import Iterator, Sequence
 from dataclasses import dataclass, field
-from typing import Dict, Iterator, List, Optional, Sequence, Tuple, Union
+from typing import TYPE_CHECKING
 
 import numpy as np
 from numpy.typing import NDArray
+
+if TYPE_CHECKING:
+    from fairswarm.types import Demographics
 
 
 @dataclass(frozen=True)
@@ -53,7 +57,7 @@ class DemographicDistribution:
     """
 
     values: NDArray[np.float64]
-    labels: Optional[Tuple[str, ...]] = field(default=None)
+    labels: tuple[str, ...] | None = field(default=None)
 
     def __post_init__(self) -> None:
         """Validate that values form a valid probability distribution."""
@@ -134,7 +138,7 @@ class DemographicDistribution:
         """
         return self.values.copy()
 
-    def as_dict(self) -> Dict[str, float]:
+    def as_dict(self) -> dict[str, float]:
         """
         Get the distribution as a dictionary.
 
@@ -151,7 +155,7 @@ class DemographicDistribution:
             )
         return {label: float(val) for label, val in zip(self.labels, self.values)}
 
-    def __getitem__(self, key: Union[int, str]) -> float:
+    def __getitem__(self, key: int | str) -> float:
         """
         Get probability for a demographic group by index or label.
 
@@ -183,7 +187,7 @@ class DemographicDistribution:
         """Iterate over probability values."""
         return iter(float(v) for v in self.values)
 
-    def items(self) -> Iterator[Tuple[str, float]]:
+    def items(self) -> Iterator[tuple[str, float]]:
         """
         Iterate over (label, probability) pairs.
 
@@ -201,7 +205,7 @@ class DemographicDistribution:
     @classmethod
     def from_dict(
         cls,
-        data: Dict[str, float],
+        data: dict[str, float],
         normalize: bool = False,
     ) -> DemographicDistribution:
         """
@@ -233,8 +237,8 @@ class DemographicDistribution:
     @classmethod
     def from_counts(
         cls,
-        counts: Union[Dict[str, int], Sequence[int]],
-        labels: Optional[Sequence[str]] = None,
+        counts: dict[str, int] | Sequence[int],
+        labels: Sequence[str] | None = None,
     ) -> DemographicDistribution:
         """
         Create a distribution from raw counts (automatically normalizes).
@@ -273,7 +277,7 @@ class DemographicDistribution:
     def uniform(
         cls,
         n_groups: int,
-        labels: Optional[Sequence[str]] = None,
+        labels: Sequence[str] | None = None,
     ) -> DemographicDistribution:
         """
         Create a uniform distribution over n groups.
@@ -299,7 +303,7 @@ class DemographicDistribution:
     @classmethod
     def from_demographics(
         cls,
-        demographics: "Demographics",
+        demographics: Demographics,
     ) -> DemographicDistribution:
         """
         Create a distribution from a Demographics object.
@@ -363,7 +367,7 @@ class DemographicDistribution:
 
 def combine_distributions(
     distributions: Sequence[DemographicDistribution],
-    weights: Optional[Sequence[float]] = None,
+    weights: Sequence[float] | None = None,
 ) -> DemographicDistribution:
     """
     Combine multiple distributions into a weighted average.

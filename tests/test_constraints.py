@@ -8,35 +8,33 @@ Advisor: Dr. Uttam Ghosh
 """
 
 import pytest
-import numpy as np
-from hypothesis import given, settings, assume, HealthCheck
+from hypothesis import HealthCheck, assume, given, settings
 from hypothesis import strategies as st
 
-from fairswarm.constraints.base import Constraint, ConstraintResult, ConstraintSet
+from fairswarm.constraints.base import ConstraintResult, ConstraintSet
 from fairswarm.constraints.cardinality import (
     CardinalityConstraint,
-    MinSizeConstraint,
-    MaxSizeConstraint,
     ExactSizeConstraint,
-    MinDataConstraint,
     MaxCostConstraint,
+    MaxSizeConstraint,
+    MinDataConstraint,
+    MinSizeConstraint,
 )
 from fairswarm.constraints.fairness import (
     DivergenceConstraint,
-    RepresentationConstraint,
     MinorityRepresentationConstraint,
+    RepresentationConstraint,
     TotalVariationConstraint,
 )
 from fairswarm.constraints.privacy import (
-    PrivacyBudgetConstraint,
-    LocalPrivacyConstraint,
-    SensitivityConstraint,
     CompositionConstraint,
+    LocalPrivacyConstraint,
+    PrivacyBudgetConstraint,
+    SensitivityConstraint,
 )
 from fairswarm.core.client import Client
 from fairswarm.demographics.distribution import DemographicDistribution
 from fairswarm.types import Demographics
-
 
 # =============================================================================
 # Fixtures

@@ -16,18 +16,18 @@ Author: Tenicka Norwood
 Advisor: Dr. Uttam Ghosh
 """
 
+from fairswarm.incentives.allocation import (
+    ContributionMetrics,
+    EqualAllocator,
+    ProportionalAllocator,
+    RewardAllocator,
+    ShapleyAllocator,
+)
 from fairswarm.incentives.shapley import (
-    ShapleyValue,
     ExactShapley,
     MonteCarloShapley,
+    ShapleyValue,
     compute_shapley_values,
-)
-from fairswarm.incentives.allocation import (
-    RewardAllocator,
-    ProportionalAllocator,
-    ShapleyAllocator,
-    EqualAllocator,
-    ContributionMetrics,
 )
 
 __all__ = [

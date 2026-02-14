@@ -7,33 +7,32 @@ Author: Tenicka Norwood
 Advisor: Dr. Uttam Ghosh
 """
 
-import pytest
 import numpy as np
-from hypothesis import given, settings, assume
+import pytest
+from hypothesis import given, settings
 from hypothesis import strategies as st
 
+from fairswarm.core.client import Client
+from fairswarm.demographics.distribution import DemographicDistribution
+from fairswarm.fitness.base import FitnessFunction, FitnessResult
+from fairswarm.incentives.allocation import (
+    AllocationResult,
+    ContributionMetrics,
+    EqualAllocator,
+    FairnessAwareAllocator,
+    ProportionalAllocator,
+    ShapleyAllocator,
+    allocate_rewards,
+)
 from fairswarm.incentives.shapley import (
-    ShapleyResult,
     ExactShapley,
     MonteCarloShapley,
+    ShapleyResult,
     StratifiedShapley,
     compute_shapley_values,
     shapley_from_fitness,
 )
-from fairswarm.incentives.allocation import (
-    ContributionMetrics,
-    AllocationResult,
-    EqualAllocator,
-    ProportionalAllocator,
-    ShapleyAllocator,
-    FairnessAwareAllocator,
-    allocate_rewards,
-)
-from fairswarm.core.client import Client
 from fairswarm.types import Demographics
-from fairswarm.demographics.distribution import DemographicDistribution
-from fairswarm.fitness.base import FitnessFunction, FitnessResult
-
 
 # =============================================================================
 # Fixtures
@@ -101,7 +100,7 @@ def simple_fitness():
         def compute_gradient(self, position, clients, coalition_size):
             """Compute gradient based on data quality."""
             import numpy as np
-            n_clients = len(clients)
+            len(clients)
             gradient = np.array([c.data_quality for c in clients])
             norm = np.linalg.norm(gradient)
             if norm > 1e-10:

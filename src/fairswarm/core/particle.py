@@ -20,7 +20,6 @@ Advisor: Dr. Uttam Ghosh
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import List, Optional
 
 import numpy as np
 from numpy.typing import NDArray
@@ -67,7 +66,7 @@ class Particle:
     velocity: NDArray[np.float64]
     p_best: NDArray[np.float64]
     p_best_fitness: float = float("-inf")
-    p_best_coalition: Optional[Coalition] = field(default=None)
+    p_best_coalition: Coalition | None = field(default=None)
 
     @property
     def n_clients(self) -> int:
@@ -94,7 +93,7 @@ class Particle:
     def update_personal_best(
         self,
         fitness: float,
-        coalition: Optional[Coalition] = None,
+        coalition: Coalition | None = None,
     ) -> bool:
         """
         Update personal best if current position is better.
@@ -124,7 +123,7 @@ class Particle:
         cognitive: float,
         social: float,
         fairness_coeff: float,
-        g_best: Optional[NDArray[np.float64]],
+        g_best: NDArray[np.float64] | None,
         fairness_gradient: NDArray[np.float64],
         velocity_max: float,
         rng: np.random.Generator,
@@ -193,8 +192,8 @@ class Particle:
     def initialize(
         cls,
         n_clients: int,
-        rng: Optional[np.random.Generator] = None,
-        seed: Optional[int] = None,
+        rng: np.random.Generator | None = None,
+        seed: int | None = None,
     ) -> Particle:
         """
         Initialize a particle with random position and velocity.
@@ -236,10 +235,10 @@ class Particle:
     def initialize_with_bias(
         cls,
         n_clients: int,
-        bias_indices: List[int],
+        bias_indices: list[int],
         bias_strength: float = 0.3,
-        rng: Optional[np.random.Generator] = None,
-        seed: Optional[int] = None,
+        rng: np.random.Generator | None = None,
+        seed: int | None = None,
     ) -> Particle:
         """
         Initialize a particle with bias toward certain clients.

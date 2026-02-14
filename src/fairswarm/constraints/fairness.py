@@ -13,7 +13,7 @@ Advisor: Dr. Uttam Ghosh
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 from numpy.typing import NDArray
@@ -56,7 +56,7 @@ class FairnessConstraint(Constraint):
     def _get_coalition_demographics(
         self,
         coalition: Coalition,
-        clients: List[Client],
+        clients: list[Client],
     ) -> NDArray[np.float64]:
         """Compute coalition demographic distribution."""
         if not coalition:
@@ -102,7 +102,7 @@ class DivergenceConstraint(FairnessConstraint):
     def evaluate(
         self,
         coalition: Coalition,
-        clients: List[Client],
+        clients: list[Client],
     ) -> ConstraintResult:
         """
         Check if demographic divergence is within bounds.
@@ -145,7 +145,7 @@ class DivergenceConstraint(FairnessConstraint):
     def compute_gradient(
         self,
         position: NDArray[np.float64],
-        clients: List[Client],
+        clients: list[Client],
         coalition_size: int,
     ) -> NDArray[np.float64]:
         """
@@ -163,7 +163,7 @@ class DivergenceConstraint(FairnessConstraint):
         """Divergence is typically a soft constraint (penalized)."""
         return False
 
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         return {
             "name": self.name,
             "epsilon": self.epsilon,
@@ -204,7 +204,7 @@ class RepresentationConstraint(FairnessConstraint):
     def evaluate(
         self,
         coalition: Coalition,
-        clients: List[Client],
+        clients: list[Client],
     ) -> ConstraintResult:
         """
         Check if each group is within threshold of target.
@@ -244,7 +244,7 @@ class RepresentationConstraint(FairnessConstraint):
             },
         )
 
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         return {
             "name": self.name,
             "threshold": self.threshold,
@@ -269,7 +269,7 @@ class MinorityRepresentationConstraint(FairnessConstraint):
     def __init__(
         self,
         target_distribution: DemographicDistribution,
-        minority_groups: Optional[List[str]] = None,
+        minority_groups: list[str] | None = None,
         min_representation: float = 0.05,
     ):
         """
@@ -301,7 +301,7 @@ class MinorityRepresentationConstraint(FairnessConstraint):
         self.min_representation = min_representation
         self._group_indices = self._compute_group_indices()
 
-    def _compute_group_indices(self) -> Dict[str, int]:
+    def _compute_group_indices(self) -> dict[str, int]:
         """Map group names to array indices."""
         if self.target_distribution.labels:
             categories = list(self.target_distribution.labels)
@@ -312,7 +312,7 @@ class MinorityRepresentationConstraint(FairnessConstraint):
     def evaluate(
         self,
         coalition: Coalition,
-        clients: List[Client],
+        clients: list[Client],
     ) -> ConstraintResult:
         """
         Check if minority groups meet minimum representation.
@@ -365,7 +365,7 @@ class MinorityRepresentationConstraint(FairnessConstraint):
     def compute_gradient(
         self,
         position: NDArray[np.float64],
-        clients: List[Client],
+        clients: list[Client],
         coalition_size: int,
     ) -> NDArray[np.float64]:
         """
@@ -389,7 +389,7 @@ class MinorityRepresentationConstraint(FairnessConstraint):
 
         return gradient
 
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         return {
             "name": self.name,
             "minority_groups": self.minority_groups,
@@ -430,7 +430,7 @@ class TotalVariationConstraint(FairnessConstraint):
     def evaluate(
         self,
         coalition: Coalition,
-        clients: List[Client],
+        clients: list[Client],
     ) -> ConstraintResult:
         """
         Check if total variation distance is within bounds.
@@ -466,7 +466,7 @@ class TotalVariationConstraint(FairnessConstraint):
             },
         )
 
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         return {
             "name": self.name,
             "threshold": self.threshold,

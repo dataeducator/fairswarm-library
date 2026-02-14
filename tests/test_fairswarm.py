@@ -26,8 +26,7 @@ from fairswarm.core.config import FairSwarmConfig
 from fairswarm.demographics.distribution import DemographicDistribution
 from fairswarm.demographics.targets import CensusTarget
 from fairswarm.fitness.fairness import DemographicFitness
-from fairswarm.fitness.mock import MockFitness, ConstantFitness
-
+from fairswarm.fitness.mock import ConstantFitness, MockFitness
 
 # =============================================================================
 # Fixtures
@@ -434,7 +433,7 @@ class TestFairSwarmFairness:
         """Test that fairness gradient helps reduce divergence."""
         # Create clients with diverse demographics
         # Build an "all white" distribution with the same groups as the target
-        all_white = {label: 0.0 for label in target_distribution.labels}
+        all_white = dict.fromkeys(target_distribution.labels, 0.0)
         all_white["white"] = 1.0
 
         clients = []

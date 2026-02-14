@@ -9,7 +9,7 @@ Advisor: Dr. Uttam Ghosh
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 from numpy.typing import NDArray
@@ -69,7 +69,7 @@ class CardinalityConstraint(Constraint):
     def evaluate(
         self,
         coalition: Coalition,
-        clients: List[Client],
+        clients: list[Client],
     ) -> ConstraintResult:
         """
         Check if coalition size is within bounds.
@@ -108,7 +108,7 @@ class CardinalityConstraint(Constraint):
             details={"size": size},
         )
 
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         return {
             "name": self.name,
             "min_size": self.min_size,
@@ -134,7 +134,7 @@ class MinSizeConstraint(Constraint):
     def evaluate(
         self,
         coalition: Coalition,
-        clients: List[Client],
+        clients: list[Client],
     ) -> ConstraintResult:
         size = len(coalition)
         satisfied = size >= self.min_size
@@ -150,7 +150,7 @@ class MinSizeConstraint(Constraint):
     def compute_gradient(
         self,
         position: NDArray[np.float64],
-        clients: List[Client],
+        clients: list[Client],
         coalition_size: int,
     ) -> NDArray[np.float64]:
         """
@@ -166,7 +166,7 @@ class MinSizeConstraint(Constraint):
             gradient = gradient / norm
         return gradient
 
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         return {"name": self.name, "min_size": self.min_size}
 
 
@@ -188,7 +188,7 @@ class MaxSizeConstraint(Constraint):
     def evaluate(
         self,
         coalition: Coalition,
-        clients: List[Client],
+        clients: list[Client],
     ) -> ConstraintResult:
         size = len(coalition)
         satisfied = size <= self.max_size
@@ -201,7 +201,7 @@ class MaxSizeConstraint(Constraint):
             details={"size": size, "max_size": self.max_size},
         )
 
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         return {"name": self.name, "max_size": self.max_size}
 
 
@@ -223,7 +223,7 @@ class ExactSizeConstraint(Constraint):
     def evaluate(
         self,
         coalition: Coalition,
-        clients: List[Client],
+        clients: list[Client],
     ) -> ConstraintResult:
         size = len(coalition)
         satisfied = size == self.exact_size
@@ -236,7 +236,7 @@ class ExactSizeConstraint(Constraint):
             details={"size": size, "exact_size": self.exact_size},
         )
 
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         return {"name": self.name, "exact_size": self.exact_size}
 
 
@@ -260,7 +260,7 @@ class MinDataConstraint(Constraint):
     def evaluate(
         self,
         coalition: Coalition,
-        clients: List[Client],
+        clients: list[Client],
     ) -> ConstraintResult:
         total_samples = sum(
             clients[i].dataset_size for i in coalition if 0 <= i < len(clients)
@@ -279,7 +279,7 @@ class MinDataConstraint(Constraint):
     def compute_gradient(
         self,
         position: NDArray[np.float64],
-        clients: List[Client],
+        clients: list[Client],
         coalition_size: int,
     ) -> NDArray[np.float64]:
         """
@@ -291,7 +291,7 @@ class MinDataConstraint(Constraint):
             gradient = gradient / norm
         return gradient
 
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         return {"name": self.name, "min_samples": self.min_samples}
 
 
@@ -315,7 +315,7 @@ class MaxCostConstraint(Constraint):
     def evaluate(
         self,
         coalition: Coalition,
-        clients: List[Client],
+        clients: list[Client],
     ) -> ConstraintResult:
         total_cost = sum(
             clients[i].communication_cost for i in coalition if 0 <= i < len(clients)
@@ -334,7 +334,7 @@ class MaxCostConstraint(Constraint):
     def compute_gradient(
         self,
         position: NDArray[np.float64],
-        clients: List[Client],
+        clients: list[Client],
         coalition_size: int,
     ) -> NDArray[np.float64]:
         """
@@ -346,5 +346,5 @@ class MaxCostConstraint(Constraint):
             gradient = gradient / norm
         return gradient
 
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         return {"name": self.name, "max_cost": self.max_cost}

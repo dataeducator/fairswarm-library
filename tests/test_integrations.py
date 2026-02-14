@@ -7,11 +7,10 @@ Advisor: Dr. Uttam Ghosh
 
 from __future__ import annotations
 
-import pytest
 import numpy as np
+import pytest
 
 from fairswarm.core.client import Client
-from fairswarm.core.config import FairSwarmConfig
 from fairswarm.demographics.distribution import DemographicDistribution
 from fairswarm.demographics.targets import CensusTarget
 
@@ -259,7 +258,7 @@ class TestClientInfo:
 
 # Skip Flower-dependent tests if Flower not available
 try:
-    import flwr
+    import flwr  # noqa: F401
     FLOWER_AVAILABLE = True
 except ImportError:
     FLOWER_AVAILABLE = False

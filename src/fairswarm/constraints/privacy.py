@@ -12,10 +12,9 @@ Advisor: Dr. Uttam Ghosh
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
-from numpy.typing import NDArray
 
 from fairswarm.constraints.base import Constraint, ConstraintResult
 from fairswarm.types import Coalition
@@ -64,7 +63,7 @@ class PrivacyBudgetConstraint(PrivacyConstraint):
         self,
         epsilon_budget: float,
         delta: float = 1e-5,
-        accountant: Optional[PrivacyAccountant] = None,
+        accountant: PrivacyAccountant | None = None,
     ):
         """
         Initialize PrivacyBudgetConstraint.
@@ -87,7 +86,7 @@ class PrivacyBudgetConstraint(PrivacyConstraint):
     def evaluate(
         self,
         coalition: Coalition,
-        clients: List[Client],
+        clients: list[Client],
     ) -> ConstraintResult:
         """
         Check if privacy budget allows this coalition.
@@ -146,7 +145,7 @@ class PrivacyBudgetConstraint(PrivacyConstraint):
         if self.accountant is not None:
             self.accountant.reset()
 
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         return {
             "name": self.name,
             "epsilon_budget": self.epsilon_budget,
@@ -189,7 +188,7 @@ class LocalPrivacyConstraint(PrivacyConstraint):
     def evaluate(
         self,
         coalition: Coalition,
-        clients: List[Client],
+        clients: list[Client],
     ) -> ConstraintResult:
         """
         Check if all clients meet privacy requirements.
@@ -233,7 +232,7 @@ class LocalPrivacyConstraint(PrivacyConstraint):
             },
         )
 
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         return {
             "name": self.name,
             "min_epsilon": self.min_epsilon,
@@ -265,7 +264,7 @@ class SensitivityConstraint(PrivacyConstraint):
     def evaluate(
         self,
         coalition: Coalition,
-        clients: List[Client],
+        clients: list[Client],
     ) -> ConstraintResult:
         """
         Check if coalition sensitivity is bounded.
@@ -310,7 +309,7 @@ class SensitivityConstraint(PrivacyConstraint):
             },
         )
 
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         return {
             "name": self.name,
             "max_sensitivity": self.max_sensitivity,
@@ -359,7 +358,7 @@ class CompositionConstraint(PrivacyConstraint):
     def evaluate(
         self,
         coalition: Coalition,
-        clients: List[Client],
+        clients: list[Client],
     ) -> ConstraintResult:
         """
         Check if composition budget allows more queries.
@@ -434,7 +433,7 @@ class CompositionConstraint(PrivacyConstraint):
                 )
             return 0.0
 
-    def get_config(self) -> Dict[str, Any]:
+    def get_config(self) -> dict[str, Any]:
         return {
             "name": self.name,
             "epsilon_per_query": self.epsilon_per_query,

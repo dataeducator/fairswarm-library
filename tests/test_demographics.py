@@ -9,6 +9,7 @@ Author: Tenicka Norwood
 
 from __future__ import annotations
 
+import dataclasses
 import math
 
 import numpy as np
@@ -30,7 +31,6 @@ from fairswarm.demographics.targets import (
     create_custom_target,
     get_regional_target,
 )
-
 
 # =============================================================================
 # DemographicDistribution Tests
@@ -150,7 +150,7 @@ class TestDemographicDistribution:
     def test_immutability(self):
         """Test that distribution is immutable."""
         dist = DemographicDistribution(values=np.array([0.5, 0.5]))
-        with pytest.raises(Exception):  # FrozenInstanceError
+        with pytest.raises(dataclasses.FrozenInstanceError):
             dist.values = np.array([0.3, 0.7])
 
     def test_reorder(self):

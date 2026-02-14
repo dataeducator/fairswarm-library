@@ -31,7 +31,7 @@ import logging
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Any, Callable
 
 import numpy as np
 from numpy.typing import NDArray
@@ -41,7 +41,7 @@ from fairswarm.algorithms.result import OptimizationResult
 from fairswarm.core.client import Client
 from fairswarm.core.config import FairSwarmConfig
 from fairswarm.demographics.distribution import DemographicDistribution
-from fairswarm.fitness.base import FitnessFunction, FitnessResult
+from fairswarm.fitness.base import FitnessFunction
 from fairswarm.types import Coalition
 
 logger = logging.getLogger(__name__)
@@ -80,7 +80,7 @@ class SyncResult:
     metrics_transferred: int = 0
     drift_detected: bool = False
     drift_magnitude: float = 0.0
-    details: Dict[str, Any] = field(default_factory=dict)
+    details: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -130,10 +130,10 @@ class PhysicalState:
         timestamp: When state was captured
     """
 
-    clients: List[Client] = field(default_factory=list)
-    model_parameters: Optional[NDArray[np.float64]] = None
-    performance_metrics: Dict[str, List[float]] = field(default_factory=dict)
-    demographic_distribution: Optional[NDArray[np.float64]] = None
+    clients: list[Client] = field(default_factory=list)
+    model_parameters: NDArray[np.float64] | None = None
+    performance_metrics: dict[str, list[float]] = field(default_factory=dict)
+    demographic_distribution: NDArray[np.float64] | None = None
     round_number: int = 0
     timestamp: datetime = field(default_factory=datetime.now)
 
@@ -152,10 +152,10 @@ class VirtualState:
         timestamp: When state was updated
     """
 
-    clients: List[Client] = field(default_factory=list)
-    model_parameters: Optional[NDArray[np.float64]] = None
-    performance_metrics: Dict[str, List[float]] = field(default_factory=dict)
-    demographic_distribution: Optional[NDArray[np.float64]] = None
+    clients: list[Client] = field(default_factory=list)
+    model_parameters: NDArray[np.float64] | None = None
+    performance_metrics: dict[str, list[float]] = field(default_factory=dict)
+    demographic_distribution: NDArray[np.float64] | None = None
     simulation_round: int = 0
     timestamp: datetime = field(default_factory=datetime.now)
 
@@ -217,14 +217,14 @@ class BentleyDigitalTwin:
 
     def __init__(
         self,
-        physical_clients: Optional[List[Client]] = None,
-        target_distribution: Optional[DemographicDistribution] = None,
-        fairswarm_config: Optional[FairSwarmConfig] = None,
+        physical_clients: list[Client] | None = None,
+        target_distribution: DemographicDistribution | None = None,
+        fairswarm_config: FairSwarmConfig | None = None,
         coalition_size: int = 10,
         sync_threshold: float = 0.1,
         drift_threshold: float = 0.05,
-        on_sync: Optional[Callable[[SyncResult], None]] = None,
-        on_drift: Optional[Callable[[float], None]] = None,
+        on_sync: Callable[[SyncResult], None] | None = None,
+        on_drift: Callable[[float], None] | None = None,
     ):
         """
         Initialize BentleyDigitalTwin.
@@ -253,13 +253,13 @@ class BentleyDigitalTwin:
         self._virtual_state = VirtualState()
 
         # History tracking
-        self._sync_history: List[SyncResult] = []
-        self._metrics_history: List[TwinMetrics] = []
-        self._optimization_history: List[OptimizationResult] = []
+        self._sync_history: list[SyncResult] = []
+        self._metrics_history: list[TwinMetrics] = []
+        self._optimization_history: list[OptimizationResult] = []
 
         # Cached optimizer
-        self._optimizer: Optional[FairSwarm] = None
-        self._last_sync: Optional[datetime] = None
+        self._optimizer: FairSwarm | None = None
+        self._last_sync: datetime | None = None
 
         # Initialize virtual state if physical clients provided
         if physical_clients:
@@ -280,12 +280,12 @@ class BentleyDigitalTwin:
         return self._state == TwinState.SYNCHRONIZED
 
     @property
-    def physical_clients(self) -> List[Client]:
+    def physical_clients(self) -> list[Client]:
         """Physical client list."""
         return self._physical_state.clients
 
     @property
-    def virtual_clients(self) -> List[Client]:
+    def virtual_clients(self) -> list[Client]:
         """Virtual client representations."""
         return self._virtual_state.clients
 
@@ -317,8 +317,8 @@ class BentleyDigitalTwin:
 
     def sync_physical_to_virtual(
         self,
-        physical_metrics: Optional[Dict[str, Any]] = None,
-        model_parameters: Optional[NDArray[np.float64]] = None,
+        physical_metrics: dict[str, Any] | None = None,
+        model_parameters: NDArray[np.float64] | None = None,
     ) -> SyncResult:
         """
         Synchronize virtual environment from physical system.
@@ -416,8 +416,8 @@ class BentleyDigitalTwin:
 
     def deploy_to_physical(
         self,
-        coalition: Optional[Coalition] = None,
-        policy_parameters: Optional[Dict[str, Any]] = None,
+        coalition: Coalition | None = None,
+        policy_parameters: dict[str, Any] | None = None,
     ) -> SyncResult:
         """
         Deploy optimized policy to physical system.
@@ -445,7 +445,7 @@ class BentleyDigitalTwin:
         self._state = TwinState.DEPLOYING
 
         try:
-            details: Dict[str, Any] = {}
+            details: dict[str, Any] = {}
 
             # Record coalition deployment
             if coalition is not None:
@@ -491,7 +491,7 @@ class BentleyDigitalTwin:
 
     def simulate(
         self,
-        fitness_fn: Optional[FitnessFunction] = None,
+        fitness_fn: FitnessFunction | None = None,
         n_rounds: int = 1,
         n_iterations: int = 50,
         verbose: bool = False,
@@ -641,7 +641,7 @@ class BentleyDigitalTwin:
 
     def update_physical_clients(
         self,
-        clients: List[Client],
+        clients: list[Client],
         auto_sync: bool = True,
     ) -> None:
         """
@@ -658,11 +658,11 @@ class BentleyDigitalTwin:
 
         logger.debug(f"Updated {len(clients)} physical clients")
 
-    def get_sync_history(self) -> List[SyncResult]:
+    def get_sync_history(self) -> list[SyncResult]:
         """Get history of sync operations."""
         return self._sync_history.copy()
 
-    def get_optimization_history(self) -> List[OptimizationResult]:
+    def get_optimization_history(self) -> list[OptimizationResult]:
         """Get history of optimization results."""
         return self._optimization_history.copy()
 

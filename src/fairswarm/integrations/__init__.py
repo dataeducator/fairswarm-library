@@ -10,10 +10,10 @@ Advisor: Dr. Uttam Ghosh
 """
 
 from fairswarm.integrations.flower import (
-    FairSwarmStrategy,
     FairSwarmClient,
-    FairSwarmFitConfig,
     FairSwarmEvaluateConfig,
+    FairSwarmFitConfig,
+    FairSwarmStrategy,
 )
 
 __all__ = [

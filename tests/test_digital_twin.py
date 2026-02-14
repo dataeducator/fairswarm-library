@@ -7,11 +7,10 @@ Advisor: Dr. Uttam Ghosh
 
 from __future__ import annotations
 
-import pytest
 import numpy as np
+import pytest
 
 from fairswarm.core.client import Client
-from fairswarm.core.config import FairSwarmConfig
 from fairswarm.demographics.distribution import DemographicDistribution
 from fairswarm.demographics.targets import CensusTarget
 
@@ -289,7 +288,10 @@ class TestVirtualEnvironment:
 
     def test_initialization(self):
         """Test environment initialization."""
-        from fairswarm.digital_twin.simulator import VirtualEnvironment, SimulationConfig
+        from fairswarm.digital_twin.simulator import (
+            SimulationConfig,
+            VirtualEnvironment,
+        )
 
         clients = create_test_clients(10)
         config = SimulationConfig(n_rounds=5, coalition_size=3)
@@ -303,7 +305,10 @@ class TestVirtualEnvironment:
 
     def test_run_simulation(self):
         """Test running simulation."""
-        from fairswarm.digital_twin.simulator import VirtualEnvironment, SimulationConfig
+        from fairswarm.digital_twin.simulator import (
+            SimulationConfig,
+            VirtualEnvironment,
+        )
 
         clients = create_test_clients(10)
         target = CensusTarget.US_2020.as_distribution()
@@ -323,7 +328,10 @@ class TestVirtualEnvironment:
 
     def test_run_what_if(self):
         """Test what-if analysis."""
-        from fairswarm.digital_twin.simulator import VirtualEnvironment, SimulationConfig
+        from fairswarm.digital_twin.simulator import (
+            SimulationConfig,
+            VirtualEnvironment,
+        )
 
         clients = create_test_clients(10)
         config = SimulationConfig(n_rounds=3, coalition_size=3, seed=42)
@@ -336,7 +344,10 @@ class TestVirtualEnvironment:
 
     def test_reset(self):
         """Test environment reset."""
-        from fairswarm.digital_twin.simulator import VirtualEnvironment, SimulationConfig
+        from fairswarm.digital_twin.simulator import (
+            SimulationConfig,
+            VirtualEnvironment,
+        )
 
         clients = create_test_clients(10)
         config = SimulationConfig(n_rounds=2, coalition_size=3, seed=42)
@@ -355,7 +366,10 @@ class TestDomainAdaptationConfig:
 
     def test_default_config(self):
         """Test default configuration."""
-        from fairswarm.digital_twin.adapter import DomainAdaptationConfig, AdaptationStrategy
+        from fairswarm.digital_twin.adapter import (
+            AdaptationStrategy,
+            DomainAdaptationConfig,
+        )
 
         config = DomainAdaptationConfig()
 
@@ -384,9 +398,9 @@ class TestSimToRealAdapter:
     def test_adapt_moment_matching(self):
         """Test moment matching adaptation."""
         from fairswarm.digital_twin.adapter import (
-            SimToRealAdapter,
-            DomainAdaptationConfig,
             AdaptationStrategy,
+            DomainAdaptationConfig,
+            SimToRealAdapter,
         )
 
         source_clients = create_test_clients(10)
@@ -409,9 +423,9 @@ class TestSimToRealAdapter:
     def test_adapt_importance_weighting(self):
         """Test importance weighting adaptation."""
         from fairswarm.digital_twin.adapter import (
-            SimToRealAdapter,
-            DomainAdaptationConfig,
             AdaptationStrategy,
+            DomainAdaptationConfig,
+            SimToRealAdapter,
         )
 
         source_clients = create_test_clients(10)
@@ -434,9 +448,9 @@ class TestSimToRealAdapter:
     def test_reweight_coalition(self):
         """Test coalition reweighting."""
         from fairswarm.digital_twin.adapter import (
-            SimToRealAdapter,
-            DomainAdaptationConfig,
             AdaptationStrategy,
+            DomainAdaptationConfig,
+            SimToRealAdapter,
         )
 
         source_clients = create_test_clients(10)
@@ -601,7 +615,7 @@ class TestDriftResult:
 
     def test_summary(self):
         """Test summary generation."""
-        from fairswarm.digital_twin.drift import DriftResult, DriftType, DriftSeverity
+        from fairswarm.digital_twin.drift import DriftResult, DriftSeverity, DriftType
 
         result = DriftResult(
             drift_detected=True,

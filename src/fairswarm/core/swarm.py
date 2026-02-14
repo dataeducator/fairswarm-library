@@ -14,8 +14,8 @@ Advisor: Dr. Uttam Ghosh
 
 from __future__ import annotations
 
+from collections.abc import Iterator
 from dataclasses import dataclass, field
-from typing import Callable, Iterator, List, Optional
 
 import numpy as np
 from numpy.typing import NDArray
@@ -56,10 +56,10 @@ class Swarm:
         >>> best = swarm.get_global_best_coalition(coalition_size=5)
     """
 
-    particles: List[Particle]
-    g_best: Optional[NDArray[np.float64]] = field(default=None)
+    particles: list[Particle]
+    g_best: NDArray[np.float64] | None = field(default=None)
     g_best_fitness: float = field(default=float("-inf"))
-    g_best_coalition: Optional[Coalition] = field(default=None)
+    g_best_coalition: Coalition | None = field(default=None)
     iteration: int = field(default=0)
 
     @property
@@ -88,7 +88,7 @@ class Swarm:
 
     def update_global_best(
         self,
-        coalition_size: Optional[int] = None,
+        coalition_size: int | None = None,
     ) -> bool:
         """
         Update global best from current particle personal bests.
@@ -231,7 +231,7 @@ class Swarm:
     def inject_diversity(
         self,
         n_particles: int = 5,
-        rng: Optional[np.random.Generator] = None,
+        rng: np.random.Generator | None = None,
     ) -> None:
         """
         Replace worst particles with new random particles.
@@ -266,8 +266,8 @@ class Swarm:
         cls,
         swarm_size: int,
         n_clients: int,
-        rng: Optional[np.random.Generator] = None,
-        seed: Optional[int] = None,
+        rng: np.random.Generator | None = None,
+        seed: int | None = None,
     ) -> Swarm:
         """
         Initialize a swarm with random particles.
@@ -301,9 +301,9 @@ class Swarm:
         cls,
         swarm_size: int,
         n_clients: int,
-        seed_coalitions: List[Coalition],
-        rng: Optional[np.random.Generator] = None,
-        seed: Optional[int] = None,
+        seed_coalitions: list[Coalition],
+        rng: np.random.Generator | None = None,
+        seed: int | None = None,
     ) -> Swarm:
         """
         Initialize a swarm with some particles seeded from known coalitions.
@@ -362,17 +362,17 @@ class SwarmHistory:
         coalition_history: Global best coalition at each iteration
     """
 
-    fitness_history: List[float] = field(default_factory=list)
-    fairness_history: List[float] = field(default_factory=list)
-    diversity_history: List[float] = field(default_factory=list)
-    coalition_history: List[Coalition] = field(default_factory=list)
+    fitness_history: list[float] = field(default_factory=list)
+    fairness_history: list[float] = field(default_factory=list)
+    diversity_history: list[float] = field(default_factory=list)
+    coalition_history: list[Coalition] = field(default_factory=list)
 
     def record(
         self,
         fitness: float,
         fairness: float,
         diversity: float,
-        coalition: Optional[Coalition] = None,
+        coalition: Coalition | None = None,
     ) -> None:
         """Record metrics for current iteration."""
         self.fitness_history.append(fitness)

@@ -7,23 +7,20 @@ Author: Tenicka Norwood
 Advisor: Dr. Uttam Ghosh
 """
 
-import pytest
 import numpy as np
-from hypothesis import given, settings, assume, HealthCheck
+import pytest
+from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 
 from fairswarm.algorithms.fairswarm_dp import (
-    FairSwarmDP,
     DPConfig,
     DPResult,
+    FairSwarmDP,
     run_fairswarm_dp,
 )
 from fairswarm.algorithms.result import OptimizationResult
-from fairswarm.core.config import FairSwarmConfig
-from fairswarm.demographics.distribution import DemographicDistribution
 from fairswarm.fitness.base import FitnessFunction, FitnessResult
 from fairswarm.privacy.accountant import RDPAccountant, SimpleAccountant
-
 
 # =============================================================================
 # Test Fixtures
