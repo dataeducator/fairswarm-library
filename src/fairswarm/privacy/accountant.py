@@ -146,8 +146,8 @@ def _rdp_to_dp_tight(
 
     2. **Balle, Gaboardi, and Zanella-Béguelin (2020)** tight conversion
        ("Hypothesis Testing Interpretations and Renewals for RDP",
-       arXiv:2004.00010):
-       epsilon = rdp - log(1 - 1/order) - (log(delta) + log(order-1)) / (order-1)
+       arXiv:2004.00010, Proposition 3):
+       epsilon = rdp + log(1 - 1/order) - (log(delta) + log(order-1)) / (order-1)
        This bound is valid when rdp >= log(1/delta).
 
     Args:
@@ -164,13 +164,14 @@ def _rdp_to_dp_tight(
     # Mironov (2017) standard conversion
     eps_mironov = float(rdp + np.log(1.0 / delta) / (order - 1.0))
 
-    # Balle et al. (2020) tighter conversion — Theorem 21, arXiv:1905.09982
-    # Also matches Opacus (Meta) and Google dp-accounting implementations
+    # Balle et al. (2020) tighter conversion — Proposition 3, arXiv:2004.00010
+    # Matches Opacus (Meta) and Google dp-accounting implementations:
+    # ε = ρ_α + log(1 - 1/α) - (log(δ) + log(α-1)) / (α - 1)
     if rdp >= np.log(1.0 / delta):
         eps_balle = float(
             rdp
             + np.log((order - 1.0) / order)
-            - (np.log(delta) + np.log(order)) / (order - 1.0)
+            - (np.log(delta) + np.log(order - 1.0)) / (order - 1.0)
         )
         return min(eps_mironov, eps_balle)
 

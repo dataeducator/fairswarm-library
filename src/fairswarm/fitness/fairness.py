@@ -203,8 +203,8 @@ def compute_fairness_gradient(
         # For the chain rule through the weighted average:
         # ∂D_KL/∂position_i = Σ_k (∂D_KL/∂coalition_demo_k) * (∂coalition_demo_k/∂position_i)
         #
-        # ∂coalition_demo_k/∂position_i involves softmax derivative:
-        # = (δ_ik - coalition_demo_k) / position_sum
+        # ∂coalition_demo_k/∂position_i for w_j = pos_j / Σ pos_k:
+        # = (demo_ik - coalition_demo_k) / position_sum
 
         # KL gradient w.r.t. coalition demographics
         target_safe = np.clip(target, eps, 1.0)
@@ -212,11 +212,11 @@ def compute_fairness_gradient(
 
         for i in range(n_clients):
             client_demo = demo_matrix[i]
-            # Softmax-style derivative: how changing position_i affects coalition_demo
-            # ∂coalition_demo_k/∂position_i = (δ_ik - coalition_demo_k * w_i) / position_sum
-            d_coalition_d_pos = (
-                client_demo - coalition_demo * weights[i]
-            ) / position_sum
+            # Derivative of weighted average w.r.t. position_i:
+            # ∂coalition_demo_k/∂position_i = (demo_ik - coalition_demo_k) / position_sum
+            # Derivation: w_j = pos_j/S, ∂w_i/∂pos_i = (1-w_i)/S,
+            # ∂w_j/∂pos_i = -w_j/S (j≠i), chain rule gives (demo_i - coalition) / S
+            d_coalition_d_pos = (client_demo - coalition_demo) / position_sum
 
             # Chain rule: gradient of divergence w.r.t. position_i
             # We want to REDUCE divergence, so negate

@@ -500,11 +500,13 @@ class FairSwarm:
             adjustment = 1.0 - self._adaptive_beta * progress
 
         # Update the current fairness weight with bounds
+        # Bounds are wide to avoid capping the adaptive strategy while
+        # still preventing degenerate extremes (all-fairness or all-accuracy)
         self._current_fairness_weight = float(
             np.clip(
                 base_weight * adjustment,
-                0.1,  # Minimum: always consider some fairness
-                0.9,  # Maximum: always consider some accuracy
+                0.01,  # Minimum: tiny fairness floor
+                base_weight * 3.0,  # Maximum: up to 3x base weight
             )
         )
 

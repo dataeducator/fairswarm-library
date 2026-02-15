@@ -267,6 +267,9 @@ class MonteCarloShapley(ShapleyValue):
         """
         import time
 
+        # Reset RNG for reproducibility across repeated calls
+        self.rng = np.random.default_rng(self.seed)
+
         start_time = time.time()
 
         n = len(coalition)
