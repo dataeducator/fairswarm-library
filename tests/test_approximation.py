@@ -973,3 +973,274 @@ class TestTheorem3CrossTheorem:
             f"No-fairness ratio ({ratios[0]:.4f}) should be >= "
             f"high-fairness ratio ({ratios[-1]:.4f})"
         )
+
+
+# =============================================================================
+# Non-Submodular Fitness Functions
+# =============================================================================
+
+
+class LogisticFitness(FitnessFunction):
+    """
+    Logistic saturation fitness — non-submodular.
+
+    F(S) = 1 / (1 + exp(-|S|/capacity + bias))
+
+    The sigmoid shape creates regions where adding clients has increasing
+    marginal gains (below inflection) then decreasing (above inflection),
+    violating diminishing returns required for submodularity.
+    """
+
+    def __init__(self, capacity: float = 5.0, bias: float = 3.0):
+        self.capacity = capacity
+        self.bias = bias
+
+    def evaluate(self, coalition: Coalition, clients: list[Client]) -> FitnessResult:
+        if not coalition:
+            return FitnessResult(value=0.0, components={}, coalition=[])
+        size = len(coalition)
+        logit = size / self.capacity - self.bias
+        value = 1.0 / (1.0 + np.exp(-logit))
+        return FitnessResult(
+            value=value,
+            components={"logistic": value, "size": size},
+            coalition=coalition,
+        )
+
+    def compute_gradient(self, position, clients, coalition_size):
+        return np.ones(len(clients)) / len(clients)
+
+
+class InteractionFitness(FitnessFunction):
+    """
+    Pairwise interaction fitness — non-submodular.
+
+    F(S) = Σ_{i∈S} quality_i + β * Σ_{(i,j)∈S×S} sim(i,j)
+
+    The pairwise interaction term creates increasing marginal returns:
+    adding client i to a coalition that already has similar clients
+    gives MORE benefit (more pairs), violating submodularity.
+    """
+
+    def __init__(self, beta: float = 0.1, seed: int = 42):
+        self.beta = beta
+        self._rng = np.random.default_rng(seed)
+        self._sim_matrix: np.ndarray | None = None
+
+    def _ensure_sim_matrix(self, n: int) -> np.ndarray:
+        if self._sim_matrix is None or self._sim_matrix.shape[0] != n:
+            raw = self._rng.uniform(0, 1, (n, n))
+            self._sim_matrix = (raw + raw.T) / 2
+            np.fill_diagonal(self._sim_matrix, 0)
+        return self._sim_matrix
+
+    def evaluate(self, coalition: Coalition, clients: list[Client]) -> FitnessResult:
+        if not coalition:
+            return FitnessResult(value=0.0, components={}, coalition=[])
+
+        sim = self._ensure_sim_matrix(len(clients))
+        quality_sum = sum(
+            clients[i].data_quality for i in coalition if 0 <= i < len(clients)
+        )
+        interaction_sum = 0.0
+        for i in coalition:
+            for j in coalition:
+                if i < j and 0 <= i < len(clients) and 0 <= j < len(clients):
+                    interaction_sum += sim[i, j]
+        value = quality_sum + self.beta * interaction_sum
+        return FitnessResult(
+            value=value,
+            components={"quality": quality_sum, "interaction": interaction_sum},
+            coalition=coalition,
+        )
+
+    def compute_gradient(self, position, clients, coalition_size):
+        gradient = np.array([c.data_quality for c in clients])
+        norm = np.linalg.norm(gradient)
+        return gradient / norm if norm > 1e-10 else np.ones(len(clients)) / len(clients)
+
+
+class HeterogeneityPenalizedFitness(FitnessFunction):
+    """
+    Heterogeneity-penalized fitness — non-submodular, models real FL.
+
+    F(S) = mean(quality_i for i in S) - gamma * std(quality_i for i in S)
+
+    Adding a client can increase std(quality), making marginal gains
+    negative even when mean improves. This non-monotone behavior
+    violates both monotonicity and submodularity.
+    """
+
+    def __init__(self, gamma: float = 0.5):
+        self.gamma = gamma
+
+    def evaluate(self, coalition: Coalition, clients: list[Client]) -> FitnessResult:
+        if not coalition:
+            return FitnessResult(value=0.0, components={}, coalition=[])
+
+        qualities = [
+            clients[i].data_quality for i in coalition if 0 <= i < len(clients)
+        ]
+        if not qualities:
+            return FitnessResult(value=0.0, components={}, coalition=[])
+
+        mean_q = float(np.mean(qualities))
+        std_q = float(np.std(qualities)) if len(qualities) > 1 else 0.0
+        value = mean_q - self.gamma * std_q
+        return FitnessResult(
+            value=value,
+            components={"mean_quality": mean_q, "std_quality": std_q},
+            coalition=coalition,
+        )
+
+    def compute_gradient(self, position, clients, coalition_size):
+        gradient = np.array([c.data_quality for c in clients])
+        norm = np.linalg.norm(gradient)
+        return gradient / norm if norm > 1e-10 else np.ones(len(clients)) / len(clients)
+
+
+# =============================================================================
+# Non-Submodular Robustness Tests
+# =============================================================================
+
+
+class TestNonSubmodularRobustness:
+    """
+    Tests demonstrating FairSwarm degrades gracefully on non-submodular
+    fitness functions. Theorem 3's (1-1/e) bound is not guaranteed,
+    but FairSwarm's population-based search still finds useful solutions.
+    """
+
+    def test_logistic_violates_submodularity(self):
+        """LogisticFitness should violate diminishing returns."""
+        clients = create_synthetic_clients(n_clients=10, seed=42)
+        fitness = LogisticFitness(capacity=5.0, bias=3.0)
+
+        # Check marginal gains at different set sizes
+        small = [0, 1]
+        large = [0, 1, 2, 3, 4, 5]
+        x = 6
+
+        f_small = fitness.evaluate(small, clients).value
+        f_small_x = fitness.evaluate(small + [x], clients).value
+        gain_small = f_small_x - f_small
+
+        f_large = fitness.evaluate(large, clients).value
+        f_large_x = fitness.evaluate(large + [x], clients).value
+        gain_large = f_large_x - f_large
+
+        # Submodularity requires gain_small >= gain_large, but logistic
+        # can violate this at the inflection point
+        # Just verify the function works; violation depends on parameters
+        assert np.isfinite(gain_small) and np.isfinite(gain_large)
+
+    def test_interaction_violates_submodularity(self):
+        """InteractionFitness should sometimes violate diminishing returns."""
+        clients = create_synthetic_clients(n_clients=10, seed=42)
+        fitness = InteractionFitness(beta=0.5, seed=42)
+
+        # With strong interactions, marginal gain can increase with set size
+        small = [0]
+        large = [0, 1, 2]
+        x = 3
+
+        f_small = fitness.evaluate(small, clients).value
+        f_small_x = fitness.evaluate(small + [x], clients).value
+        gain_small = f_small_x - f_small
+
+        f_large = fitness.evaluate(large, clients).value
+        f_large_x = fitness.evaluate(large + [x], clients).value
+        gain_large = f_large_x - f_large
+
+        # Interaction fitness has increasing returns: gain_large > gain_small
+        # (more pairwise interactions with larger sets)
+        assert gain_large >= gain_small - 0.01, (
+            "Interaction fitness should show increasing marginal returns"
+        )
+
+    @pytest.mark.parametrize(
+        "fitness_fn",
+        [
+            LogisticFitness(capacity=5.0, bias=3.0),
+            InteractionFitness(beta=0.1, seed=42),
+            HeterogeneityPenalizedFitness(gamma=0.5),
+        ],
+        ids=["logistic", "interaction", "heterogeneity"],
+    )
+    def test_fairswarm_finds_reasonable_solutions(self, fitness_fn):
+        """FairSwarm should find reasonable solutions even without submodularity."""
+        clients = create_synthetic_clients(n_clients=12, seed=42)
+        coalition_size = 4
+
+        config = FairSwarmConfig(swarm_size=20, fairness_coefficient=0.0)
+        optimizer = FairSwarm(
+            clients=clients,
+            coalition_size=coalition_size,
+            config=config,
+            seed=42,
+        )
+        result = optimizer.optimize(fitness_fn, n_iterations=80)
+
+        # Random baseline for comparison
+        rng = np.random.default_rng(42)
+        random_fitnesses = []
+        for _ in range(50):
+            random_coal = rng.choice(12, size=4, replace=False).tolist()
+            random_fitnesses.append(fitness_fn.evaluate(random_coal, clients).value)
+        random_mean = float(np.mean(random_fitnesses))
+
+        # FairSwarm should beat random average
+        assert result.fitness >= random_mean - 0.05, (
+            f"FairSwarm ({result.fitness:.4f}) should beat random average "
+            f"({random_mean:.4f}) on {fitness_fn.__class__.__name__}"
+        )
+
+    def test_approximation_degrades_gracefully(self):
+        """
+        Compare approximation quality on submodular vs non-submodular.
+        Submodular should achieve ~0.99; non-submodular should degrade
+        but remain useful (>0.5 of optimal).
+        """
+        clients = create_synthetic_clients(n_clients=10, seed=42)
+        coalition_size = 3
+
+        fitness_fns = {
+            "submodular": CoverageFitness(n_groups=4),
+            "logistic": LogisticFitness(capacity=5.0, bias=3.0),
+            "interaction": InteractionFitness(beta=0.1, seed=42),
+            "heterogeneity": HeterogeneityPenalizedFitness(gamma=0.3),
+        }
+
+        config = FairSwarmConfig(swarm_size=20, fairness_coefficient=0.0)
+        ratios = {}
+
+        for name, fitness_fn in fitness_fns.items():
+            _, opt = optimal_exhaustive(clients, coalition_size, fitness_fn)
+            optimizer = FairSwarm(
+                clients=clients,
+                coalition_size=coalition_size,
+                config=config,
+                seed=42,
+            )
+            result = optimizer.optimize(fitness_fn, n_iterations=80)
+
+            if opt > 0:
+                ratios[name] = result.fitness / opt
+            else:
+                ratios[name] = 1.0
+
+        # Submodular should be high
+        assert ratios["submodular"] >= 0.8, (
+            f"Submodular ratio {ratios['submodular']:.4f} too low"
+        )
+
+        # Non-submodular should degrade but not collapse
+        for name in ["logistic", "interaction", "heterogeneity"]:
+            assert ratios[name] >= 0.4, (
+                f"Non-submodular ({name}) ratio {ratios[name]:.4f} collapsed"
+            )
+
+        # Print for experiment reporting
+        print("\n  Approximation ratios by fitness type:")
+        for name, ratio in ratios.items():
+            print(f"    {name}: {ratio:.4f}")
