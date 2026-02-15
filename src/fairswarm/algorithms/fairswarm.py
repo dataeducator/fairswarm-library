@@ -188,6 +188,10 @@ class FairSwarm:
         self._adaptive_alpha = 0.5  # Rate of increase when behind target
         self._adaptive_beta = 0.3  # Rate of decrease when at target
 
+        # Adaptive c3 schedule: start high, decay when fairness target met
+        self._base_c3 = self.config.fairness_coefficient
+        self._current_c3 = self._base_c3
+
     def optimize(
         self,
         fitness_fn: FitnessFunction,
@@ -288,6 +292,14 @@ class FairSwarm:
             if self.config.adaptive_fairness and self.target_distribution is not None:
                 current_fairness = self._compute_current_fairness()
                 self._adapt_fairness_weight(
+                    iteration=iteration,
+                    max_iterations=n_iterations,
+                    current_fairness=current_fairness,
+                )
+                # Adaptive c3 schedule: decay c3 when fairness target met,
+                # increase when behind. This curriculum-style approach
+                # prioritizes fairness early, then refines accuracy.
+                self._adapt_c3_schedule(
                     iteration=iteration,
                     max_iterations=n_iterations,
                     current_fairness=current_fairness,
@@ -397,17 +409,16 @@ class FairSwarm:
         else:
             fairness_gradient = np.zeros(self.n_clients)
 
-        # Compute effective fairness coefficient (with adaptive scaling)
-        # When adaptive_fairness is enabled, scale c₃ based on current fairness level
-        effective_fairness_coeff = self.config.fairness_coefficient
+        # Compute effective fairness coefficient (with adaptive c3 schedule)
+        # When adaptive_fairness is enabled, use the adaptive c3 value
+        # which decays as fairness target is met, allowing accuracy focus
+        effective_fairness_coeff = self._current_c3
         if self.config.adaptive_fairness:
-            # Scale fairness coefficient by the ratio of current to base weight
+            # Also scale by the adaptive weight ratio for combined effect
             base_weight = self.config.fairness_weight
             if base_weight > 0:
                 adaptive_scale = self._current_fairness_weight / base_weight
-                effective_fairness_coeff = (
-                    self.config.fairness_coefficient * adaptive_scale
-                )
+                effective_fairness_coeff = self._current_c3 * adaptive_scale
 
         # Velocity update (Algorithm 1: Lines 554-567)
         particle.apply_velocity_update(
@@ -501,6 +512,40 @@ class FairSwarm:
             f"Iteration {iteration}: fairness={current_fairness:.4f}, "
             f"target={epsilon_target:.4f}, weight={self._current_fairness_weight:.4f}"
         )
+
+    def _adapt_c3_schedule(
+        self,
+        iteration: int,
+        max_iterations: int,
+        current_fairness: float,
+    ) -> None:
+        """
+        Adapt c3 (fairness gradient coefficient) over iterations.
+
+        Curriculum-style schedule:
+        - When fairness target NOT met: maintain or increase c3
+        - When fairness target met: decay c3 to shift focus to accuracy
+        - Minimum c3 = 0.1 * base to always maintain some fairness pressure
+
+        This is analogous to learning rate scheduling: strong fairness
+        steering early, then fine-tuning for accuracy once fair.
+
+        Args:
+            iteration: Current iteration (t)
+            max_iterations: Total iterations (T)
+            current_fairness: Current DemDiv(S)
+        """
+        progress = iteration / max_iterations if max_iterations > 0 else 0.0
+        epsilon_target = self.config.epsilon_fair
+
+        if current_fairness > epsilon_target:
+            # Behind target: keep c3 high (no decay)
+            self._current_c3 = self._base_c3
+        else:
+            # Target met: decay c3 to allow accuracy refinement
+            # c3(t) = c3_base * max(0.1, 1 - 0.5 * progress)
+            decay_factor = max(0.1, 1.0 - 0.5 * progress)
+            self._current_c3 = self._base_c3 * decay_factor
 
     def _compute_fairness_metrics(
         self,
@@ -597,6 +642,7 @@ class FairSwarm:
         self._iteration = 0
         self._best_fitness = float("-inf")
         self._current_fairness_weight = self.config.fairness_weight
+        self._current_c3 = self._base_c3
 
     def __repr__(self) -> str:
         return (

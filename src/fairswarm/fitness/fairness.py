@@ -103,6 +103,8 @@ def compute_fairness_gradient(
     coalition_size: int,
     eps: float = 1e-10,
     use_kl_gradient: bool = True,
+    group_performance: NDArray[np.float64] | None = None,
+    outcome_weight: float = 0.3,
 ) -> FairnessGradient:
     """
     Compute the fairness gradient for position update.
@@ -122,6 +124,16 @@ def compute_fairness_gradient(
         The gradient is positive when selecting client i would
         move the coalition demographics closer to the target.
 
+    Outcome-Aware Extension:
+        When group_performance is provided (per-group AUC or accuracy),
+        the gradient is augmented with a performance correction term:
+
+        ∇_outcome[i] = Σ_g performance_gap[g] · δ[i][g]
+
+        where performance_gap[g] = max_performance - performance[g].
+        This biases selection toward clients whose data helps
+        underperforming demographic groups.
+
     Implementation:
         When use_kl_gradient=True (default), we compute the proper
         gradient of KL divergence using the chain rule.
@@ -137,6 +149,10 @@ def compute_fairness_gradient(
         eps: Small value for numerical stability
         use_kl_gradient: If True, compute proper KL derivative; else use
             the simplified (δ* - δ_current) · δ[i] approximation
+        group_performance: Optional per-group performance array (e.g., AUC).
+            When provided, enables outcome-aware gradient correction.
+        outcome_weight: Weight for the outcome-aware correction term.
+            Controls balance between demographic and outcome fairness.
 
     Returns:
         FairnessGradient with gradient vector and diagnostics
@@ -218,6 +234,30 @@ def compute_fairness_gradient(
             client_demo = demo_matrix[i]
             # Positive gradient if client helps fill the demographic gap
             gradient[i] = np.dot(gap, client_demo)
+
+    # Outcome-aware correction: bias toward clients that help
+    # underperforming demographic groups (novel extension)
+    if group_performance is not None and len(group_performance) > 1:
+        n_groups = min(len(group_performance), demo_matrix.shape[1])
+        perf = group_performance[:n_groups]
+        # Performance gap: how far each group is from the best
+        perf_gap = np.max(perf) - perf  # Higher gap = needs more help
+        perf_gap = perf_gap / (np.sum(perf_gap) + eps)  # Normalize
+
+        # For each client, compute how much their data helps underperforming groups
+        outcome_correction = np.zeros(n_clients)
+        for i in range(n_clients):
+            client_demo = demo_matrix[i, :n_groups]
+            # Clients with data from underperforming groups get positive correction
+            outcome_correction[i] = np.dot(perf_gap, client_demo)
+
+        # Normalize correction to same scale as fairness gradient
+        corr_norm = np.linalg.norm(outcome_correction)
+        fair_norm = np.linalg.norm(gradient)
+        if corr_norm > eps and fair_norm > eps:
+            outcome_correction = outcome_correction * (fair_norm / corr_norm)
+
+        gradient = gradient + outcome_weight * outcome_correction
 
     # Handle numerical issues: replace NaN/inf with zeros
     gradient = np.nan_to_num(gradient, nan=0.0, posinf=0.0, neginf=0.0)
