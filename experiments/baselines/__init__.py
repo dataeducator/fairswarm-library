@@ -6,7 +6,7 @@ Implements the baselines from Section 4.2 of CLAUDE.md:
     - FedAvg with all clients (no selection)
     - Greedy selection (myopic comparison)
     - Standard PSO without fairness term (ablation)
-    - FairDPFL-SCS (2024 state-of-the-art competitor)
+    - FedFDP (Ling et al., 2024, state-of-the-art competitor)
     - Grey Wolf Optimizer (alternative swarm algorithm)
 """
 
