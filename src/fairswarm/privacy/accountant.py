@@ -164,12 +164,13 @@ def _rdp_to_dp_tight(
     # Mironov (2017) standard conversion
     eps_mironov = float(rdp + np.log(1.0 / delta) / (order - 1.0))
 
-    # Balle et al. (2020) tighter conversion (valid when rdp >= log(1/delta))
+    # Balle et al. (2020) tighter conversion — Theorem 21, arXiv:1905.09982
+    # Also matches Opacus (Meta) and Google dp-accounting implementations
     if rdp >= np.log(1.0 / delta):
         eps_balle = float(
             rdp
-            - np.log(1.0 - 1.0 / order)
-            - (np.log(delta) + np.log(order - 1.0)) / (order - 1.0)
+            + np.log((order - 1.0) / order)
+            - (np.log(delta) + np.log(order)) / (order - 1.0)
         )
         return min(eps_mironov, eps_balle)
 
