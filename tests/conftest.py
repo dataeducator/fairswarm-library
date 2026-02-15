@@ -123,7 +123,6 @@ def diverse_client_pool() -> list[Client]:
     Returns:
         List of 10 clients with varied demographics
     """
-    np.random.seed(123)
     clients = []
 
     # Create clients with different demographic profiles
