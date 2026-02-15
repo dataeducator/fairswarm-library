@@ -716,7 +716,9 @@ class TestPrivacyBoundaryConditions:
 
         # Both should achieve reasonable fitness since fairness is trivial
         assert result_clean.fitness > 0, "Non-DP should achieve positive fitness"
-        assert result_dp.fitness > 0, "DP with k=1 should still achieve positive fitness"
+        assert result_dp.fitness > 0, (
+            "DP with k=1 should still achieve positive fitness"
+        )
 
     def test_very_tight_budget_minimal_optimization(
         self, clients_5groups, target_5groups, quality_fitness, pso_config
@@ -743,7 +745,7 @@ class TestPrivacyBoundaryConditions:
 
         # Should terminate very early due to budget exhaustion
         assert result.convergence.iterations <= 30, (
-            f"With very tight budget, should not exceed max iterations"
+            "With very tight budget, should not exceed max iterations"
         )
         # Fitness should be non-negative (but may be poor)
         assert result.fitness >= 0 or np.isfinite(result.fitness), (
@@ -896,9 +898,10 @@ class TestPrivacyFairnessCrossTheorem:
             target_distribution=target_5groups,
             seed=seed,
         )
-        result_fair = optimizer_fair.optimize(
+        _result_fair = optimizer_fair.optimize(
             quality_fitness, n_iterations=n_iterations
         )
+        assert _result_fair.fitness is not None  # verify optimization ran
 
         # DP only (no fairness)
         dp_config = DPConfig(
@@ -914,7 +917,8 @@ class TestPrivacyFairnessCrossTheorem:
             dp_config=dp_config,
             seed=seed,
         )
-        result_dp = optimizer_dp.optimize(quality_fitness, n_iterations=n_iterations)
+        _result_dp = optimizer_dp.optimize(quality_fitness, n_iterations=n_iterations)
+        assert _result_dp.fitness is not None  # verify optimization ran
 
         # Both DP and fairness
         optimizer_both = FairSwarmDP(

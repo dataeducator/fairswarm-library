@@ -954,9 +954,7 @@ class TestTheorem3CrossTheorem:
 
         ratios = []
         for fairness_coeff in [0.0, 0.5, 1.0]:
-            config = FairSwarmConfig(
-                swarm_size=20, fairness_coefficient=fairness_coeff
-            )
+            config = FairSwarmConfig(swarm_size=20, fairness_coefficient=fairness_coeff)
             optimizer = FairSwarm(
                 clients=clients,
                 coalition_size=coalition_size,

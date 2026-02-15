@@ -543,8 +543,10 @@ class FairSwarm:
             self._current_c3 = self._base_c3
         else:
             # Target met: decay c3 to allow accuracy refinement
-            # c3(t) = c3_base * max(0.1, 1 - 0.5 * progress)
-            decay_factor = max(0.1, 1.0 - 0.5 * progress)
+            # c3(t) = c3_base * max(min_frac, 1 - decay_rate * progress)
+            decay_rate = self.config.c3_decay_rate
+            min_frac = self.config.c3_min_fraction
+            decay_factor = max(min_frac, 1.0 - decay_rate * progress)
             self._current_c3 = self._base_c3 * decay_factor
 
     def _compute_fairness_metrics(

@@ -735,22 +735,24 @@ class TestTheorem2BoundaryConditions:
         target = CensusTarget.US_2020.as_distribution()
         fitness = DemographicFitness(target_distribution=target)
 
-        config_zero = FairSwarmConfig(
-            fairness_coefficient=0.0, swarm_size=20
-        )
-        config_high = FairSwarmConfig(
-            fairness_coefficient=0.8, swarm_size=20
-        )
+        config_zero = FairSwarmConfig(fairness_coefficient=0.0, swarm_size=20)
+        config_high = FairSwarmConfig(fairness_coefficient=0.8, swarm_size=20)
 
         optimizer_zero = FairSwarm(
-            clients=clients, coalition_size=10,
-            config=config_zero, target_distribution=target, seed=42,
+            clients=clients,
+            coalition_size=10,
+            config=config_zero,
+            target_distribution=target,
+            seed=42,
         )
         result_zero = optimizer_zero.optimize(fitness, n_iterations=100)
 
         optimizer_high = FairSwarm(
-            clients=clients, coalition_size=10,
-            config=config_high, target_distribution=target, seed=42,
+            clients=clients,
+            coalition_size=10,
+            config=config_high,
+            target_distribution=target,
+            seed=42,
         )
         result_high = optimizer_high.optimize(fitness, n_iterations=100)
 
@@ -779,8 +781,10 @@ class TestTheorem2BoundaryConditions:
         fitness = DemographicFitness(target_distribution=target)
 
         optimizer = FairSwarm(
-            clients=clients, coalition_size=5,
-            target_distribution=target, seed=42,
+            clients=clients,
+            coalition_size=5,
+            target_distribution=target,
+            seed=42,
         )
         result = optimizer.optimize(fitness, n_iterations=20)
 
@@ -794,8 +798,10 @@ class TestTheorem2BoundaryConditions:
         demo = DemographicDistribution.from_dict({"only_group": 1.0})
         clients = [
             Client(
-                id=f"c_{i}", demographics=demo,
-                num_samples=1000, data_quality=0.8,
+                id=f"c_{i}",
+                demographics=demo,
+                num_samples=1000,
+                data_quality=0.8,
             )
             for i in range(10)
         ]
@@ -803,8 +809,10 @@ class TestTheorem2BoundaryConditions:
         fitness = DemographicFitness(target_distribution=demo)
 
         optimizer = FairSwarm(
-            clients=clients, coalition_size=5,
-            target_distribution=demo, seed=42,
+            clients=clients,
+            coalition_size=5,
+            target_distribution=demo,
+            seed=42,
         )
         result = optimizer.optimize(fitness, n_iterations=20)
 
@@ -833,12 +841,16 @@ class TestTheorem2ScaleTests:
         fitness = DemographicFitness(target_distribution=target)
 
         config = FairSwarmConfig(
-            swarm_size=20, fairness_coefficient=0.7,
+            swarm_size=20,
+            fairness_coefficient=0.7,
         )
 
         optimizer = FairSwarm(
-            clients=clients, coalition_size=15,
-            config=config, target_distribution=target, seed=42,
+            clients=clients,
+            coalition_size=15,
+            config=config,
+            target_distribution=target,
+            seed=42,
         )
         result = optimizer.optimize(fitness, n_iterations=100)
 
@@ -860,12 +872,16 @@ class TestTheorem2ScaleTests:
         fitness = DemographicFitness(target_distribution=target)
 
         config = FairSwarmConfig(
-            swarm_size=15, fairness_coefficient=0.5,
+            swarm_size=15,
+            fairness_coefficient=0.5,
         )
 
         optimizer = FairSwarm(
-            clients=clients, coalition_size=10,
-            config=config, target_distribution=target, seed=42,
+            clients=clients,
+            coalition_size=10,
+            config=config,
+            target_distribution=target,
+            seed=42,
         )
         result = optimizer.optimize(fitness, n_iterations=50)
 
@@ -878,35 +894,50 @@ class TestTheorem2ScaleTests:
         FairSwarm should still achieve some fairness improvement.
         """
         target = DemographicDistribution.from_dict(
-            {"majority": 0.5, "minority_a": 0.2,
-             "minority_b": 0.2, "minority_c": 0.1}
+            {"majority": 0.5, "minority_a": 0.2, "minority_b": 0.2, "minority_c": 0.1}
         )
 
         clients = []
         for i in range(20):
             if i < 16:
                 demo = DemographicDistribution.from_dict(
-                    {"majority": 0.95, "minority_a": 0.02,
-                     "minority_b": 0.02, "minority_c": 0.01}
+                    {
+                        "majority": 0.95,
+                        "minority_a": 0.02,
+                        "minority_b": 0.02,
+                        "minority_c": 0.01,
+                    }
                 )
             else:
                 demo = DemographicDistribution.from_dict(
-                    {"majority": 0.1, "minority_a": 0.4,
-                     "minority_b": 0.3, "minority_c": 0.2}
+                    {
+                        "majority": 0.1,
+                        "minority_a": 0.4,
+                        "minority_b": 0.3,
+                        "minority_c": 0.2,
+                    }
                 )
-            clients.append(Client(
-                id=f"c_{i}", demographics=demo,
-                num_samples=1000, data_quality=0.8,
-            ))
+            clients.append(
+                Client(
+                    id=f"c_{i}",
+                    demographics=demo,
+                    num_samples=1000,
+                    data_quality=0.8,
+                )
+            )
 
         fitness = DemographicFitness(target_distribution=target)
         config = FairSwarmConfig(
-            swarm_size=20, fairness_coefficient=0.8,
+            swarm_size=20,
+            fairness_coefficient=0.8,
         )
 
         optimizer = FairSwarm(
-            clients=clients, coalition_size=10,
-            config=config, target_distribution=target, seed=42,
+            clients=clients,
+            coalition_size=10,
+            config=config,
+            target_distribution=target,
+            seed=42,
         )
         result = optimizer.optimize(fitness, n_iterations=100)
 

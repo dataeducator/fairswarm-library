@@ -87,6 +87,10 @@ class FairSwarmConfig:
     fairness_weight: float = 0.3  # λ: weight in fitness function
     adaptive_fairness: bool = True  # Adapt λ over iterations
 
+    # === Curriculum Schedule Parameters (c₃ adaptation) ===
+    c3_decay_rate: float = 0.5  # Decay rate for c₃ once fairness target met
+    c3_min_fraction: float = 0.1  # Minimum c₃ as fraction of base (floor)
+
     # === Convergence Parameters ===
     velocity_max: float = 4.0  # v_max: velocity clipping
     convergence_threshold: float = 1e-4  # Convergence detection
@@ -161,6 +165,15 @@ class FairSwarmConfig:
             raise ValueError(
                 f"epsilon_fair must be positive, got {self.epsilon_fair}. "
                 "This is the target demographic divergence (Theorem 2)."
+            )
+
+        if not 0 < self.c3_decay_rate <= 1:
+            raise ValueError(
+                f"c3_decay_rate must be in (0, 1], got {self.c3_decay_rate}"
+            )
+        if not 0 < self.c3_min_fraction <= 1:
+            raise ValueError(
+                f"c3_min_fraction must be in (0, 1], got {self.c3_min_fraction}"
             )
 
         if self.epsilon_dp is not None and self.epsilon_dp <= 0:

@@ -827,22 +827,22 @@ class TestTheorem1CrossTheorem:
         fitness = MockFitness(mode="mean_quality")
 
         # Without fairness
-        config_no_fair = FairSwarmConfig(
-            swarm_size=15, fairness_coefficient=0.0
-        )
+        config_no_fair = FairSwarmConfig(swarm_size=15, fairness_coefficient=0.0)
         opt_no = FairSwarm(
-            clients=clients, coalition_size=10,
-            config=config_no_fair, seed=42,
+            clients=clients,
+            coalition_size=10,
+            config=config_no_fair,
+            seed=42,
         )
         result_no = opt_no.optimize(fitness, n_iterations=100)
 
         # With fairness
-        config_fair = FairSwarmConfig(
-            swarm_size=15, fairness_coefficient=0.5
-        )
+        config_fair = FairSwarmConfig(swarm_size=15, fairness_coefficient=0.5)
         opt_fair = FairSwarm(
-            clients=clients, coalition_size=10,
-            config=config_fair, seed=42,
+            clients=clients,
+            coalition_size=10,
+            config=config_fair,
+            seed=42,
         )
         result_fair = opt_fair.optimize(fitness, n_iterations=100)
 
