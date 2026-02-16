@@ -605,7 +605,7 @@ class TestFairSwarmEdgeCases:
 
     # ── Zero iterations ──────────────────────────────────────────────
     def test_zero_iterations(self):
-        """n_iterations=0."""
+        """n_iterations=0 - config should reject this at validation time."""
         clients = create_synthetic_clients(10, 4, seed=42)
         try:
             fs = FairSwarm(
@@ -628,6 +628,9 @@ class TestFairSwarmEdgeCases:
                 record("zero_iter", "Boundary", "FairSwarm",
                        "SILENT_WRONG", f"Zero iters returned {result.coalition}", 3)
                 pytest.fail("Zero iterations produced bad result")
+        except ValueError:
+            record("zero_iter", "Boundary", "FairSwarm",
+                   "HANDLED", "Config rejects max_iterations=0 (correct validation)", 1)
         except Exception as e:
             record("zero_iter", "Boundary", "FairSwarm",
                    "CRASH", f"Error: {e}", 2)
@@ -638,9 +641,9 @@ class TestFairSwarmEdgeCases:
         clients = create_synthetic_clients(10, 4, seed=42)
         try:
             config = FairSwarmConfig(
-                inertia_weight=0.999,
-                cognitive_coefficient=0.001,
-                social_coefficient=0.001,
+                inertia=0.999,
+                cognitive=0.001,
+                social=0.001,
                 max_iterations=10,
             )
             fs = FairSwarm(
