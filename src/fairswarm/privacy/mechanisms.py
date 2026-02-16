@@ -503,6 +503,7 @@ class SubsampledMechanism:
 
         self.base_mechanism = base_mechanism
         self.sampling_rate = sampling_rate
+        self._subsampling_verified = False
 
     def add_noise(
         self,
@@ -558,6 +559,17 @@ class SubsampledMechanism:
         """
         return self.base_mechanism.get_epsilon(sensitivity)
 
+    def confirm_subsampling(self) -> None:
+        """
+        Confirm that Poisson subsampling was actually performed.
+
+        Callers MUST invoke this method after performing Poisson
+        subsampling on the data and before calling
+        ``get_amplified_epsilon()``.  This prevents falsely claiming
+        privacy amplification when subsampling was not done.
+        """
+        self._subsampling_verified = True
+
     def get_amplified_epsilon(self, sensitivity: float, delta: float = 1e-5) -> float:
         """
         Get amplified epsilon assuming Poisson subsampling was performed.
@@ -578,7 +590,17 @@ class SubsampledMechanism:
         Returns:
             Amplified epsilon (smaller than base), valid only under
             actual Poisson subsampling.
+
+        Raises:
+            RuntimeError: If confirm_subsampling() was not called first.
         """
+        if not self._subsampling_verified:
+            raise RuntimeError(
+                "get_amplified_epsilon() requires confirm_subsampling() "
+                "to be called first, certifying that Poisson subsampling "
+                "was performed on the data before noise was applied. "
+                "Without actual subsampling, use get_epsilon() instead."
+            )
         base_eps = self.base_mechanism.get_epsilon(sensitivity)
         q = self.sampling_rate
 

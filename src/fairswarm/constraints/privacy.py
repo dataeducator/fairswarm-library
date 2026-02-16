@@ -24,12 +24,17 @@ if TYPE_CHECKING:
     from fairswarm.privacy.accountant import PrivacyAccountant
 
 __all__ = [
+    "PrivacyBudgetExhausted",
     "PrivacyConstraint",
     "PrivacyBudgetConstraint",
     "LocalPrivacyConstraint",
     "SensitivityConstraint",
     "CompositionConstraint",
 ]
+
+
+class PrivacyBudgetExhausted(RuntimeError):
+    """Raised when a query would exceed the remaining privacy budget."""
 
 
 class PrivacyConstraint(Constraint):
@@ -65,6 +70,7 @@ class PrivacyBudgetConstraint(PrivacyConstraint):
         delta: float = 1e-5,
         accountant: PrivacyAccountant | None = None,
         cost_per_round: float = 0.0,
+        strict: bool = True,
     ):
         """
         Initialize PrivacyBudgetConstraint.
@@ -76,6 +82,9 @@ class PrivacyBudgetConstraint(PrivacyConstraint):
             cost_per_round: Expected epsilon cost per round of training.
                 When > 0, the constraint checks that the remaining budget
                 is sufficient to cover at least one more round.
+            strict: If True (default), record_query raises
+                PrivacyBudgetExhausted when the budget would be exceeded.
+                This prevents silent privacy violations.
         """
         if epsilon_budget <= 0:
             raise ValueError("epsilon_budget must be positive")
@@ -86,6 +95,7 @@ class PrivacyBudgetConstraint(PrivacyConstraint):
         self.delta = delta
         self.accountant = accountant
         self.cost_per_round = cost_per_round
+        self.strict = strict
         self._consumed_epsilon = 0.0
 
     def evaluate(
@@ -138,7 +148,23 @@ class PrivacyBudgetConstraint(PrivacyConstraint):
 
         Args:
             epsilon: Epsilon consumed by this query
+
+        Raises:
+            PrivacyBudgetExhausted: If strict=True and the query would
+                exceed the remaining budget.
         """
+        if self.strict:
+            # Pre-check: would this query exceed the budget?
+            if self.accountant is not None:
+                consumed = self.accountant.get_epsilon(self.delta)
+            else:
+                consumed = self._consumed_epsilon
+            if consumed + epsilon > self.epsilon_budget:
+                raise PrivacyBudgetExhausted(
+                    f"Query (ε={epsilon:.4f}) would exceed privacy budget: "
+                    f"{consumed:.4f} + {epsilon:.4f} > {self.epsilon_budget}"
+                )
+
         if self.accountant is not None:
             self.accountant.step(epsilon, self.delta)
         else:

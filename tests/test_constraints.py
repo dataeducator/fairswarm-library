@@ -436,8 +436,21 @@ class TestPrivacyBudgetConstraint:
         assert result.details["consumed"] == pytest.approx(0.9, rel=1e-5)
         assert result.satisfied is True
 
-        # One more query exhausts budget
-        constraint.record_query(0.2)
+        # Strict mode (default): exceeding budget raises PrivacyBudgetExhausted
+        from fairswarm.constraints.privacy import PrivacyBudgetExhausted
+        with pytest.raises(PrivacyBudgetExhausted):
+            constraint.record_query(0.2)
+
+    def test_record_and_check_non_strict(self, sample_clients):
+        """Test that strict=False allows exceeding budget (soft check)."""
+        constraint = PrivacyBudgetConstraint(
+            epsilon_budget=1.0, delta=1e-5, strict=False
+        )
+        constraint.record_query(0.3)
+        constraint.record_query(0.3)
+        constraint.record_query(0.3)
+        constraint.record_query(0.2)  # Exceeds budget — no exception
+
         result = constraint.evaluate([], sample_clients)
         assert result.satisfied is False  # 1.1 > 1.0
 
@@ -732,7 +745,9 @@ class TestConstraintProperties:
     )
     def test_privacy_budget_monotonic(self, epsilon, n_queries, sample_clients):
         """Privacy consumption increases monotonically."""
-        constraint = PrivacyBudgetConstraint(epsilon_budget=100.0)
+        constraint = PrivacyBudgetConstraint(
+            epsilon_budget=100.0, strict=False,
+        )
 
         previous_remaining = constraint.get_remaining_budget()
 

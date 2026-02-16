@@ -100,6 +100,12 @@ def kl_divergence(
             f"Distributions must have same length. Got {len(p_arr)} and {len(q_arr)}"
         )
 
+    # Validate that inputs contain no NaN or Inf values
+    if np.any(np.isnan(p_arr)) or np.any(np.isinf(p_arr)):
+        raise ValueError("Distribution p contains NaN or Inf values")
+    if np.any(np.isnan(q_arr)) or np.any(np.isinf(q_arr)):
+        raise ValueError("Distribution q contains NaN or Inf values")
+
     # Validate that inputs are valid probability distributions (sum to ~1.0)
     p_sum = float(np.sum(p_arr))
     q_sum = float(np.sum(q_arr))
@@ -273,6 +279,8 @@ def coalition_demographic_divergence(
     coalition_indices: Sequence[int],
     target: NDArray[np.float64] | DemographicDistribution,
     weights: Sequence[float] | None = None,
+    dp_epsilon: float | None = None,
+    rng: np.random.Generator | None = None,
 ) -> float:
     """
     Compute demographic divergence for a coalition from target.
@@ -288,6 +296,12 @@ def coalition_demographic_divergence(
         coalition_indices: Indices of clients in the coalition
         target: Target demographic distribution δ*
         weights: Optional weights for coalition members (default: uniform)
+        dp_epsilon: If provided, adds calibrated Laplace noise to the
+            coalition average before computing KL divergence.  This
+            prevents membership inference from published divergence values.
+            Sensitivity is 1/|S| (adding/removing one client changes each
+            component of the average by at most 1/|S|).
+        rng: Random number generator for DP noise (default: numpy default)
 
     Returns:
         KL divergence from coalition demographics to target
@@ -344,13 +358,31 @@ def coalition_demographic_divergence(
 
     coalition_avg = combine_distributions(coalition_dists, coalition_weights)
 
+    avg_arr = coalition_avg.as_array()
+
+    # Optional: add Laplace noise for differential privacy (membership inference defense)
+    if dp_epsilon is not None:
+        if dp_epsilon <= 0:
+            raise ValueError("dp_epsilon must be positive")
+        gen = rng if rng is not None else np.random.default_rng()
+        m = len(coalition_indices)
+        # Sensitivity: adding/removing one client changes each
+        # component of the mean by at most 1/m.
+        sensitivity = 1.0 / m
+        scale = sensitivity / dp_epsilon
+        noise = gen.laplace(0, scale, size=len(avg_arr))
+        avg_arr = avg_arr + noise
+        # Project back to a valid distribution (non-negative, sums to 1)
+        avg_arr = np.clip(avg_arr, 1e-10, None)
+        avg_arr = avg_arr / avg_arr.sum()
+
     # Convert target if needed
     target_arr = (
         target.as_array() if isinstance(target, DemographicDistribution) else target
     )
 
     # Compute D_KL(δ_S || δ*) - Definition 2
-    return kl_divergence(coalition_avg.as_array(), target_arr)
+    return kl_divergence(avg_arr, target_arr)
 
 
 def is_epsilon_fair(
