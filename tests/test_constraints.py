@@ -438,6 +438,7 @@ class TestPrivacyBudgetConstraint:
 
         # Strict mode (default): exceeding budget raises PrivacyBudgetExhausted
         from fairswarm.constraints.privacy import PrivacyBudgetExhausted
+
         with pytest.raises(PrivacyBudgetExhausted):
             constraint.record_query(0.2)
 
@@ -746,7 +747,8 @@ class TestConstraintProperties:
     def test_privacy_budget_monotonic(self, epsilon, n_queries, sample_clients):
         """Privacy consumption increases monotonically."""
         constraint = PrivacyBudgetConstraint(
-            epsilon_budget=100.0, strict=False,
+            epsilon_budget=100.0,
+            strict=False,
         )
 
         previous_remaining = constraint.get_remaining_budget()

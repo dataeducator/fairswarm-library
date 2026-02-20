@@ -104,7 +104,8 @@ select = [
     "UP",  # pyupgrade
 ]
 ignore = [
-    "E501",  # line too long (handled by black)
+    "E402",  # module-level import not at top (needed for sys.path in experiments)
+    "E501",  # line too long (handled by formatter)
 ]
 
 [tool.ruff.lint.isort]
