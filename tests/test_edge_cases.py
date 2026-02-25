@@ -366,7 +366,7 @@ class TestKLDivergenceEdgeCases:
             )
 
     def test_zero_in_q(self):
-        """Zero in Q (should be smoothed, not crash)."""
+        """Zero in Q (should be smoothed, not raise)."""
         try:
             result = kl_divergence(
                 np.array([0.5, 0.3, 0.2]),
@@ -983,7 +983,7 @@ class TestFairSwarmEdgeCases:
                 "Boundary",
                 "FairSwarm",
                 "HANDLED",
-                "Extreme inertia runs without crash",
+                "Extreme inertia runs successfully",
                 1,
             )
         except Exception as e:
