@@ -102,7 +102,9 @@ FairSwarm builds upon the foundational research of:
 
 ## Documentation
 
-See the [root README](../README.md) for full project documentation, and the `publications/` directory for the formal algorithm specification and proofs.
+Full API documentation is available in the source code docstrings. For the formal algorithm specification, theoretical proofs, and experimental methodology, please refer to:
+
+> T. Norwood and U. Ghosh, "FairSwarm: Provably Fair Particle Swarm Optimization for Federated Learning Coalition Selection," *IEEE Trans. Neural Netw. Learn. Syst.*, 2026.
 
 ## Citation
 
