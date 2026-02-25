@@ -3,10 +3,10 @@ Edge Case Stress Tests for the FairSwarm Pipeline.
 
 Injects missing values, outliers, duplicate records, swapped column types,
 and empty datasets at every layer of the pipeline. Documents which steps
-break, which silently produce wrong results, and which handle errors correctly.
+break, which produce incorrect results without raising, and which handle errors correctly.
 
-Failures ranked by severity:
-  SILENT_WRONG > CRASH > HANDLED
+Outcomes ranked by severity:
+  UNDETECTED > UNHANDLED > HANDLED
 
 Author: Tenicka Norwood
 """
@@ -44,12 +44,12 @@ class EdgeCaseResult:
     name: str
     category: str  # NaN, Inf, Empty, Outlier, TypeSwap, Duplicate, Boundary
     component: str  # e.g. "DemographicDistribution", "kl_divergence"
-    outcome: str  # HANDLED, CRASH, SILENT_WRONG
+    outcome: str  # HANDLED, UNHANDLED, UNDETECTED
     detail: str  # what happened
-    severity: int  # 3=SILENT_WRONG, 2=CRASH, 1=HANDLED
+    severity: int  # 3=UNDETECTED, 2=UNHANDLED, 1=HANDLED
 
     def __repr__(self) -> str:
-        tag = {3: "SILENT_WRONG", 2: "CRASH", 1: "HANDLED"}[self.severity]
+        tag = {3: "UNDETECTED", 2: "UNHANDLED", 1: "HANDLED"}[self.severity]
         return f"[{tag}] {self.component}::{self.name} - {self.detail}"
 
 
@@ -82,7 +82,7 @@ class TestDemographicDistributionEdgeCases:
                     "nan_in_values",
                     "NaN",
                     "DemographicDistribution",
-                    "SILENT_WRONG",
+                    "UNDETECTED",
                     "NaN accepted without error",
                     3,
                 )
@@ -114,7 +114,7 @@ class TestDemographicDistributionEdgeCases:
                 "all_nan_values",
                 "NaN",
                 "DemographicDistribution",
-                "SILENT_WRONG",
+                "UNDETECTED",
                 "All-NaN accepted",
                 3,
             )
@@ -138,7 +138,7 @@ class TestDemographicDistributionEdgeCases:
                 "inf_in_values",
                 "Inf",
                 "DemographicDistribution",
-                "SILENT_WRONG",
+                "UNDETECTED",
                 "Inf accepted",
                 3,
             )
@@ -161,7 +161,7 @@ class TestDemographicDistributionEdgeCases:
                 "neg_inf_values",
                 "Inf",
                 "DemographicDistribution",
-                "SILENT_WRONG",
+                "UNDETECTED",
                 "-Inf accepted",
                 3,
             )
@@ -185,7 +185,7 @@ class TestDemographicDistributionEdgeCases:
                 "neg_sum_one",
                 "Outlier",
                 "DemographicDistribution",
-                "SILENT_WRONG",
+                "UNDETECTED",
                 "Negative prob accepted because sum=1",
                 3,
             )
@@ -209,7 +209,7 @@ class TestDemographicDistributionEdgeCases:
                 "empty_values",
                 "Empty",
                 "DemographicDistribution",
-                "SILENT_WRONG",
+                "UNDETECTED",
                 "Empty array accepted",
                 3,
             )
@@ -243,7 +243,7 @@ class TestDemographicDistributionEdgeCases:
                 "single_element",
                 "Boundary",
                 "DemographicDistribution",
-                "CRASH",
+                "UNHANDLED",
                 f"Unexpected error: {e}",
                 2,
             )
@@ -268,7 +268,7 @@ class TestDemographicDistributionEdgeCases:
                 "very_large_k",
                 "Boundary",
                 "DemographicDistribution",
-                "CRASH",
+                "UNHANDLED",
                 f"Error: {e}",
                 2,
             )
@@ -282,7 +282,7 @@ class TestDemographicDistributionEdgeCases:
                 "all_zeros",
                 "Empty",
                 "DemographicDistribution",
-                "SILENT_WRONG",
+                "UNDETECTED",
                 "All-zero accepted (sum != 1)",
                 3,
             )
@@ -309,7 +309,7 @@ class TestDemographicDistributionEdgeCases:
                 "label_mismatch",
                 "TypeSwap",
                 "DemographicDistribution",
-                "SILENT_WRONG",
+                "UNDETECTED",
                 "Label/value mismatch accepted",
                 3,
             )
@@ -345,7 +345,7 @@ class TestKLDivergenceEdgeCases:
                     "nan_in_p",
                     "NaN",
                     "kl_divergence",
-                    "SILENT_WRONG",
+                    "UNDETECTED",
                     f"Returned {result} (NaN/Inf)",
                     3,
                 )
@@ -355,7 +355,7 @@ class TestKLDivergenceEdgeCases:
                     "nan_in_p",
                     "NaN",
                     "kl_divergence",
-                    "SILENT_WRONG",
+                    "UNDETECTED",
                     f"Returned numeric {result} from NaN input",
                     3,
                 )
@@ -377,7 +377,7 @@ class TestKLDivergenceEdgeCases:
                     "zero_in_q",
                     "Outlier",
                     "kl_divergence",
-                    "SILENT_WRONG",
+                    "UNDETECTED",
                     f"Returned {result}",
                     3,
                 )
@@ -392,7 +392,7 @@ class TestKLDivergenceEdgeCases:
                     1,
                 )
         except Exception as e:
-            record("zero_in_q", "Outlier", "kl_divergence", "CRASH", f"Error: {e}", 2)
+            record("zero_in_q", "Outlier", "kl_divergence", "UNHANDLED", f"Error: {e}", 2)
 
     def test_empty_arrays(self):
         """Empty arrays as input."""
@@ -402,7 +402,7 @@ class TestKLDivergenceEdgeCases:
                 "empty_arrays",
                 "Empty",
                 "kl_divergence",
-                "SILENT_WRONG",
+                "UNDETECTED",
                 f"Returned {result} for empty arrays",
                 3,
             )
@@ -421,7 +421,7 @@ class TestKLDivergenceEdgeCases:
                 "length_mismatch",
                 "TypeSwap",
                 "kl_divergence",
-                "SILENT_WRONG",
+                "UNDETECTED",
                 f"Different-length arrays accepted, got {result}",
                 3,
             )
@@ -440,7 +440,7 @@ class TestKLDivergenceEdgeCases:
                 "identical",
                 "Boundary",
                 "kl_divergence",
-                "SILENT_WRONG",
+                "UNDETECTED",
                 f"KL(P||P)={result}, expected 0",
                 3,
             )
@@ -466,7 +466,7 @@ class TestKLDivergenceEdgeCases:
                     "tiny_probs",
                     "Outlier",
                     "kl_divergence",
-                    "SILENT_WRONG",
+                    "UNDETECTED",
                     f"Returned {result}",
                     3,
                 )
@@ -481,7 +481,7 @@ class TestKLDivergenceEdgeCases:
                     1,
                 )
         except Exception as e:
-            record("tiny_probs", "Outlier", "kl_divergence", "CRASH", f"Error: {e}", 2)
+            record("tiny_probs", "Outlier", "kl_divergence", "UNHANDLED", f"Error: {e}", 2)
 
 
 # =========================================================================
@@ -504,7 +504,7 @@ class TestClientEdgeCases:
                 "nan_client_demo",
                 "NaN",
                 "Client",
-                "SILENT_WRONG",
+                "UNDETECTED",
                 "NaN demographics accepted",
                 3,
             )
@@ -524,7 +524,7 @@ class TestClientEdgeCases:
                 "zero_dataset",
                 "Boundary",
                 "Client",
-                "SILENT_WRONG",
+                "UNDETECTED",
                 "Zero dataset_size accepted",
                 3,
             )
@@ -544,7 +544,7 @@ class TestClientEdgeCases:
                 "neg_dataset",
                 "Outlier",
                 "Client",
-                "SILENT_WRONG",
+                "UNDETECTED",
                 "Negative dataset_size accepted",
                 3,
             )
@@ -565,7 +565,7 @@ class TestClientEdgeCases:
                 "neg_comm_cost",
                 "Outlier",
                 "Client",
-                "SILENT_WRONG",
+                "UNDETECTED",
                 "Negative comm cost accepted",
                 3,
             )
@@ -586,7 +586,7 @@ class TestClientEdgeCases:
                 "high_comm_cost",
                 "Outlier",
                 "Client",
-                "SILENT_WRONG",
+                "UNDETECTED",
                 "Comm cost > 1 accepted",
                 3,
             )
@@ -634,7 +634,7 @@ class TestCoalitionDivergenceEdgeCases:
                 "empty_coalition",
                 "Empty",
                 "coalition_divergence",
-                "SILENT_WRONG",
+                "UNDETECTED",
                 f"Empty coalition returned {result}",
                 3,
             )
@@ -663,7 +663,7 @@ class TestCoalitionDivergenceEdgeCases:
                 "oob_index",
                 "Boundary",
                 "coalition_divergence",
-                "SILENT_WRONG",
+                "UNDETECTED",
                 f"OOB index accepted, got {result}",
                 3,
             )
@@ -693,7 +693,7 @@ class TestCoalitionDivergenceEdgeCases:
                 "neg_index",
                 "Outlier",
                 "coalition_divergence",
-                "SILENT_WRONG",
+                "UNDETECTED",
                 f"Negative index silently wrapped, got {result:.6f}",
                 3,
             )
@@ -735,7 +735,7 @@ class TestCoalitionDivergenceEdgeCases:
                 "dup_indices",
                 "Duplicate",
                 "coalition_divergence",
-                "SILENT_WRONG",
+                "UNDETECTED",
                 f"Dup={result_dup:.6f} vs single={result_single:.6f} — "
                 "duplicates change the result",
                 3,
@@ -774,7 +774,7 @@ class TestFairSwarmEdgeCases:
                 "empty_clients",
                 "Empty",
                 "FairSwarm",
-                "SILENT_WRONG",
+                "UNDETECTED",
                 "Empty client list accepted",
                 3,
             )
@@ -805,7 +805,7 @@ class TestFairSwarmEdgeCases:
                 "coalition_gt_n",
                 "Boundary",
                 "FairSwarm",
-                "SILENT_WRONG",
+                "UNDETECTED",
                 "coalition_size > n_clients accepted",
                 3,
             )
@@ -840,7 +840,7 @@ class TestFairSwarmEdgeCases:
                 1,
             )
         except Exception as e:
-            record("coalition_eq_n", "Boundary", "FairSwarm", "CRASH", f"Error: {e}", 2)
+            record("coalition_eq_n", "Boundary", "FairSwarm", "UNHANDLED", f"Error: {e}", 2)
 
     # ── Single client ────────────────────────────────────────────────
     def test_single_client(self):
@@ -869,7 +869,7 @@ class TestFairSwarmEdgeCases:
                 1,
             )
         except Exception as e:
-            record("single_client", "Boundary", "FairSwarm", "CRASH", f"Error: {e}", 2)
+            record("single_client", "Boundary", "FairSwarm", "UNHANDLED", f"Error: {e}", 2)
 
     # ── Mismatched demographic dimensions ────────────────────────────
     def test_mismatched_k(self):
@@ -895,7 +895,7 @@ class TestFairSwarmEdgeCases:
                 "mismatched_k",
                 "TypeSwap",
                 "FairSwarm",
-                "SILENT_WRONG",
+                "UNDETECTED",
                 "Clients with different k accepted — dimension mismatch undetected",
                 3,
             )
@@ -937,7 +937,7 @@ class TestFairSwarmEdgeCases:
                     "zero_iter",
                     "Boundary",
                     "FairSwarm",
-                    "SILENT_WRONG",
+                    "UNDETECTED",
                     f"Zero iters returned {result.coalition}",
                     3,
                 )
@@ -952,7 +952,7 @@ class TestFairSwarmEdgeCases:
                 1,
             )
         except Exception as e:
-            record("zero_iter", "Boundary", "FairSwarm", "CRASH", f"Error: {e}", 2)
+            record("zero_iter", "Boundary", "FairSwarm", "UNHANDLED", f"Error: {e}", 2)
 
     # ── Extreme config values ────────────────────────────────────────
     def test_extreme_inertia(self):
@@ -988,7 +988,7 @@ class TestFairSwarmEdgeCases:
             )
         except Exception as e:
             record(
-                "extreme_inertia", "Boundary", "FairSwarm", "CRASH", f"Error: {e}", 2
+                "extreme_inertia", "Boundary", "FairSwarm", "UNHANDLED", f"Error: {e}", 2
             )
 
 
@@ -1008,7 +1008,7 @@ class TestCombineDistributionsEdgeCases:
                 "combine_empty",
                 "Empty",
                 "combine_distributions",
-                "SILENT_WRONG",
+                "UNDETECTED",
                 "Empty list returned a result",
                 3,
             )
@@ -1047,7 +1047,7 @@ class TestCombineDistributionsEdgeCases:
                 "combine_mismatch",
                 "TypeSwap",
                 "combine_distributions",
-                "SILENT_WRONG",
+                "UNDETECTED",
                 "Mismatched groups combined",
                 3,
             )
@@ -1075,7 +1075,7 @@ class TestCombineDistributionsEdgeCases:
                     "combine_nan_wt",
                     "NaN",
                     "combine_distributions",
-                    "SILENT_WRONG",
+                    "UNDETECTED",
                     "NaN weights produced NaN output",
                     3,
                 )
@@ -1085,7 +1085,7 @@ class TestCombineDistributionsEdgeCases:
                     "combine_nan_wt",
                     "NaN",
                     "combine_distributions",
-                    "SILENT_WRONG",
+                    "UNDETECTED",
                     f"NaN weight silently accepted, result={result.values}",
                     3,
                 )
@@ -1117,7 +1117,7 @@ class TestConfigEdgeCases:
                 "neg_inertia",
                 "Outlier",
                 "FairSwarmConfig",
-                "SILENT_WRONG",
+                "UNDETECTED",
                 "Negative inertia accepted",
                 3,
             )
@@ -1135,7 +1135,7 @@ class TestConfigEdgeCases:
                 "high_inertia",
                 "Outlier",
                 "FairSwarmConfig",
-                "SILENT_WRONG",
+                "UNDETECTED",
                 "Inertia > 1 accepted (violates theorem)",
                 3,
             )
@@ -1153,7 +1153,7 @@ class TestConfigEdgeCases:
                 "zero_swarm",
                 "Boundary",
                 "FairSwarmConfig",
-                "SILENT_WRONG",
+                "UNDETECTED",
                 "Zero swarm_size accepted",
                 3,
             )
@@ -1171,7 +1171,7 @@ class TestConfigEdgeCases:
                 "neg_eps_fair",
                 "Outlier",
                 "FairSwarmConfig",
-                "SILENT_WRONG",
+                "UNDETECTED",
                 "Negative epsilon_fair accepted",
                 3,
             )
@@ -1214,7 +1214,7 @@ class TestDemographicFitnessEdgeCases:
                     "empty_fitness",
                     "Empty",
                     "DemographicFitness",
-                    "SILENT_WRONG",
+                    "UNDETECTED",
                     f"Empty coalition fitness = {result.value}",
                     3,
                 )
@@ -1251,7 +1251,7 @@ class TestDemographicFitnessEdgeCases:
                 "single_fitness",
                 "Boundary",
                 "DemographicFitness",
-                "CRASH",
+                "UNHANDLED",
                 f"Error: {e}",
                 2,
             )
@@ -1275,11 +1275,11 @@ def print_summary(request):
         for r in sorted_results:
             print(r)
         print("=" * 72)
-        silent = sum(1 for r in RESULTS if r.severity == 3)
-        crash = sum(1 for r in RESULTS if r.severity == 2)
+        undetected = sum(1 for r in RESULTS if r.severity == 3)
+        unhandled = sum(1 for r in RESULTS if r.severity == 2)
         handled = sum(1 for r in RESULTS if r.severity == 1)
         print(
             f"Total: {len(RESULTS)} tests | "
-            f"SILENT_WRONG: {silent} | CRASH: {crash} | HANDLED: {handled}"
+            f"UNDETECTED: {undetected} | UNHANDLED: {unhandled} | HANDLED: {handled}"
         )
         print("=" * 72)
