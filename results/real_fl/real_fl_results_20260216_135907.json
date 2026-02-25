@@ -1,0 +1,4773 @@
+{
+  "config": {
+    "n_clients_values": [
+      20,
+      50,
+      100
+    ],
+    "k_values": [
+      4,
+      8
+    ],
+    "coalition_fraction": 0.3,
+    "n_fl_rounds": 3,
+    "local_epochs": 5,
+    "learning_rate": 0.01,
+    "n_trials": 30,
+    "n_iterations": 50,
+    "swarm_size": 20,
+    "non_iid_alpha": 0.5,
+    "n_samples_total": 20000,
+    "n_features": 20,
+    "output_dir": "results/real_fl",
+    "seed": 42
+  },
+  "analysis": {
+    "per_scenario": {
+      "n20_k4": {
+        "FairSwarm": {
+          "n_trials": 30,
+          "auc_roc": {
+            "mean": 0.8824110686151427,
+            "ci": {
+              "mean": 0.8824110686151427,
+              "ci_lower": 0.864985101516075,
+              "ci_upper": 0.8998370357142105,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "demographic_divergence": {
+            "mean": 0.00916448075144998,
+            "ci": {
+              "mean": 0.00916448075144998,
+              "ci_lower": 0.005895086284307982,
+              "ci_upper": 0.012433875218591978,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "equalized_odds_gap": {
+            "mean": 0.40921367546655124,
+            "ci": {
+              "mean": 0.40921367546655124,
+              "ci_lower": 0.34291136366100394,
+              "ci_upper": 0.47551598727209854,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "wall_clock_seconds": {
+            "mean": 6.723936438560486,
+            "ci": {
+              "mean": 6.723936438560486,
+              "ci_lower": 6.298753099171918,
+              "ci_upper": 7.149119777949053,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "convergence_iterations": {
+            "mean": 24.866666666666667,
+            "ci": {
+              "mean": 24.866666666666667,
+              "ci_lower": 22.723330845163613,
+              "ci_upper": 27.01000248816972,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "coalition_size": 6
+        },
+        "Standard PSO": {
+          "n_trials": 30,
+          "auc_roc": {
+            "mean": 0.8819053885462458,
+            "ci": {
+              "mean": 0.8819053885462458,
+              "ci_lower": 0.8638381425858934,
+              "ci_upper": 0.8999726345065981,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "demographic_divergence": {
+            "mean": 0.013151222327338782,
+            "ci": {
+              "mean": 0.013151222327338782,
+              "ci_lower": 0.009448609648414222,
+              "ci_upper": 0.01685383500626334,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "equalized_odds_gap": {
+            "mean": 0.4194963643683668,
+            "ci": {
+              "mean": 0.4194963643683668,
+              "ci_lower": 0.34943891593399,
+              "ci_upper": 0.48955381280274357,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "wall_clock_seconds": {
+            "mean": 6.793683322270711,
+            "ci": {
+              "mean": 6.793683322270711,
+              "ci_lower": 6.320854515449295,
+              "ci_upper": 7.266512129092127,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "convergence_iterations": {
+            "mean": 23.6,
+            "ci": {
+              "mean": 23.6,
+              "ci_lower": 22.38863584970441,
+              "ci_upper": 24.811364150295592,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "coalition_size": 6
+        },
+        "Random": {
+          "n_trials": 30,
+          "auc_roc": {
+            "mean": 0.8838461102200739,
+            "ci": {
+              "mean": 0.8838461102200739,
+              "ci_lower": 0.8662481247070514,
+              "ci_upper": 0.9014440957330964,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "demographic_divergence": {
+            "mean": 0.020651515621481948,
+            "ci": {
+              "mean": 0.020651515621481948,
+              "ci_lower": 0.014814028355910037,
+              "ci_upper": 0.02648900288705386,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "equalized_odds_gap": {
+            "mean": 0.40930818438794353,
+            "ci": {
+              "mean": 0.40930818438794353,
+              "ci_lower": 0.34171385524028625,
+              "ci_upper": 0.4769025135356008,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "wall_clock_seconds": {
+            "mean": 3.2047621488571165,
+            "ci": {
+              "mean": 3.2047621488571165,
+              "ci_lower": 3.077741587877456,
+              "ci_upper": 3.331782709836777,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "convergence_iterations": {
+            "mean": 50.0,
+            "ci": {
+              "mean": 50.0,
+              "ci_lower": 50.0,
+              "ci_upper": 50.0,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "coalition_size": 6
+        },
+        "Greedy (size)": {
+          "n_trials": 30,
+          "auc_roc": {
+            "mean": 0.8867300724183821,
+            "ci": {
+              "mean": 0.8867300724183821,
+              "ci_lower": 0.8692527360622451,
+              "ci_upper": 0.9042074087745191,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "demographic_divergence": {
+            "mean": 0.11285058426420774,
+            "ci": {
+              "mean": 0.11285058426420774,
+              "ci_lower": 0.07496231209014162,
+              "ci_upper": 0.15073885643827387,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "equalized_odds_gap": {
+            "mean": 0.38764906944162875,
+            "ci": {
+              "mean": 0.38764906944162875,
+              "ci_lower": 0.3216317020206318,
+              "ci_upper": 0.4536664368626257,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "wall_clock_seconds": {
+            "mean": 0.06988935470581055,
+            "ci": {
+              "mean": 0.06988935470581055,
+              "ci_lower": 0.06592897716633679,
+              "ci_upper": 0.07384973224528431,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "convergence_iterations": {
+            "mean": 1.0,
+            "ci": {
+              "mean": 1.0,
+              "ci_lower": 1.0,
+              "ci_upper": 1.0,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "coalition_size": 6
+        },
+        "FedAvg (all)": {
+          "n_trials": 30,
+          "auc_roc": {
+            "mean": 0.8873730269441216,
+            "ci": {
+              "mean": 0.8873730269441216,
+              "ci_lower": 0.8700511153740772,
+              "ci_upper": 0.9046949385141659,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "demographic_divergence": {
+            "mean": 0.03507697640186147,
+            "ci": {
+              "mean": 0.03507697640186147,
+              "ci_lower": 0.024327936953736768,
+              "ci_upper": 0.045826015849986176,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "equalized_odds_gap": {
+            "mean": 0.3892788045407442,
+            "ci": {
+              "mean": 0.3892788045407442,
+              "ci_lower": 0.32168700735783656,
+              "ci_upper": 0.45687060172365185,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "wall_clock_seconds": {
+            "mean": 0.16470670700073242,
+            "ci": {
+              "mean": 0.16470670700073242,
+              "ci_lower": 0.1539363543886309,
+              "ci_upper": 0.17547705961283394,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "convergence_iterations": {
+            "mean": 3.0,
+            "ci": {
+              "mean": 3.0,
+              "ci_lower": 3.0,
+              "ci_upper": 3.0,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "coalition_size": 20
+        },
+        "FedFDP": {
+          "n_trials": 30,
+          "auc_roc": {
+            "mean": 0.8852557754356253,
+            "ci": {
+              "mean": 0.8852557754356253,
+              "ci_lower": 0.8680265226135703,
+              "ci_upper": 0.9024850282576803,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "demographic_divergence": {
+            "mean": 0.02807748409700966,
+            "ci": {
+              "mean": 0.02807748409700966,
+              "ci_lower": 0.02206003106391281,
+              "ci_upper": 0.034094937130106515,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "equalized_odds_gap": {
+            "mean": 0.4033572587006536,
+            "ci": {
+              "mean": 0.4033572587006536,
+              "ci_lower": 0.33208916250873727,
+              "ci_upper": 0.4746253548925699,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "wall_clock_seconds": {
+            "mean": 3.088459507624308,
+            "ci": {
+              "mean": 3.088459507624308,
+              "ci_lower": 2.934050698376515,
+              "ci_upper": 3.2428683168721015,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "convergence_iterations": {
+            "mean": 50.0,
+            "ci": {
+              "mean": 50.0,
+              "ci_lower": 50.0,
+              "ci_upper": 50.0,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "coalition_size": 6
+        },
+        "GWO": {
+          "n_trials": 30,
+          "auc_roc": {
+            "mean": 0.8866891964896966,
+            "ci": {
+              "mean": 0.8866891964896966,
+              "ci_lower": 0.8692718080789257,
+              "ci_upper": 0.9041065849004675,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "demographic_divergence": {
+            "mean": 0.03350601375129885,
+            "ci": {
+              "mean": 0.03350601375129885,
+              "ci_lower": 0.022163696870226575,
+              "ci_upper": 0.044848330632371126,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "equalized_odds_gap": {
+            "mean": 0.3950765551664403,
+            "ci": {
+              "mean": 0.3950765551664403,
+              "ci_lower": 0.3288726418140403,
+              "ci_upper": 0.4612804685188403,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "wall_clock_seconds": {
+            "mean": 0.33052051862080895,
+            "ci": {
+              "mean": 0.33052051862080895,
+              "ci_lower": 0.29555674225289136,
+              "ci_upper": 0.36548429498872653,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "convergence_iterations": {
+            "mean": 50.0,
+            "ci": {
+              "mean": 50.0,
+              "ci_lower": 50.0,
+              "ci_upper": 50.0,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "coalition_size": 6
+        }
+      },
+      "n20_k8": {
+        "FairSwarm": {
+          "n_trials": 30,
+          "auc_roc": {
+            "mean": 0.8769921198900249,
+            "ci": {
+              "mean": 0.8769921198900249,
+              "ci_lower": 0.858618082925093,
+              "ci_upper": 0.8953661568549568,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "demographic_divergence": {
+            "mean": 0.047467752427876576,
+            "ci": {
+              "mean": 0.047467752427876576,
+              "ci_lower": 0.03848251451808105,
+              "ci_upper": 0.0564529903376721,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "equalized_odds_gap": {
+            "mean": 0.714457201971994,
+            "ci": {
+              "mean": 0.714457201971994,
+              "ci_lower": 0.6141540995381901,
+              "ci_upper": 0.8147603044057979,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "wall_clock_seconds": {
+            "mean": 6.978591831525167,
+            "ci": {
+              "mean": 6.978591831525167,
+              "ci_lower": 6.498257432205544,
+              "ci_upper": 7.4589262308447895,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "convergence_iterations": {
+            "mean": 24.333333333333332,
+            "ci": {
+              "mean": 24.333333333333332,
+              "ci_lower": 22.924751291789352,
+              "ci_upper": 25.741915374877312,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "coalition_size": 6
+        },
+        "Standard PSO": {
+          "n_trials": 30,
+          "auc_roc": {
+            "mean": 0.876396832280119,
+            "ci": {
+              "mean": 0.876396832280119,
+              "ci_lower": 0.857583620356491,
+              "ci_upper": 0.895210044203747,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "demographic_divergence": {
+            "mean": 0.05137502735383177,
+            "ci": {
+              "mean": 0.05137502735383177,
+              "ci_lower": 0.041381540027675384,
+              "ci_upper": 0.06136851467998816,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "equalized_odds_gap": {
+            "mean": 0.719715569700768,
+            "ci": {
+              "mean": 0.719715569700768,
+              "ci_lower": 0.6181885253734487,
+              "ci_upper": 0.8212426140280873,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "wall_clock_seconds": {
+            "mean": 7.318707784016927,
+            "ci": {
+              "mean": 7.318707784016927,
+              "ci_lower": 6.772233461895881,
+              "ci_upper": 7.865182106137973,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "convergence_iterations": {
+            "mean": 25.633333333333333,
+            "ci": {
+              "mean": 25.633333333333333,
+              "ci_lower": 23.075300017906475,
+              "ci_upper": 28.19136664876019,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "coalition_size": 6
+        },
+        "Random": {
+          "n_trials": 30,
+          "auc_roc": {
+            "mean": 0.8776215375069246,
+            "ci": {
+              "mean": 0.8776215375069246,
+              "ci_lower": 0.8591771211273747,
+              "ci_upper": 0.8960659538864746,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "demographic_divergence": {
+            "mean": 0.07987303120115904,
+            "ci": {
+              "mean": 0.07987303120115904,
+              "ci_lower": 0.06669256125495537,
+              "ci_upper": 0.09305350114736272,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "equalized_odds_gap": {
+            "mean": 0.713125645128868,
+            "ci": {
+              "mean": 0.713125645128868,
+              "ci_lower": 0.6108846202262989,
+              "ci_upper": 0.8153666700314371,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "wall_clock_seconds": {
+            "mean": 3.312028686205546,
+            "ci": {
+              "mean": 3.312028686205546,
+              "ci_lower": 3.2366406399266796,
+              "ci_upper": 3.387416732484412,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "convergence_iterations": {
+            "mean": 50.0,
+            "ci": {
+              "mean": 50.0,
+              "ci_lower": 50.0,
+              "ci_upper": 50.0,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "coalition_size": 6
+        },
+        "Greedy (size)": {
+          "n_trials": 30,
+          "auc_roc": {
+            "mean": 0.8798746956432029,
+            "ci": {
+              "mean": 0.8798746956432029,
+              "ci_lower": 0.8613109147342931,
+              "ci_upper": 0.8984384765521126,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "demographic_divergence": {
+            "mean": 0.27198356524422895,
+            "ci": {
+              "mean": 0.27198356524422895,
+              "ci_lower": 0.22545458204910046,
+              "ci_upper": 0.31851254843935745,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "equalized_odds_gap": {
+            "mean": 0.6815852831966336,
+            "ci": {
+              "mean": 0.6815852831966336,
+              "ci_lower": 0.5847482264252917,
+              "ci_upper": 0.7784223399679755,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "wall_clock_seconds": {
+            "mean": 0.06926800409952799,
+            "ci": {
+              "mean": 0.06926800409952799,
+              "ci_lower": 0.06604393118702608,
+              "ci_upper": 0.0724920770120299,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "convergence_iterations": {
+            "mean": 1.0,
+            "ci": {
+              "mean": 1.0,
+              "ci_lower": 1.0,
+              "ci_upper": 1.0,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "coalition_size": 6
+        },
+        "FedAvg (all)": {
+          "n_trials": 30,
+          "auc_roc": {
+            "mean": 0.8809964412108762,
+            "ci": {
+              "mean": 0.8809964412108762,
+              "ci_lower": 0.8629168839844891,
+              "ci_upper": 0.8990759984372633,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "demographic_divergence": {
+            "mean": 0.11746679284653849,
+            "ci": {
+              "mean": 0.11746679284653849,
+              "ci_lower": 0.09679267335411977,
+              "ci_upper": 0.1381409123389572,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "equalized_odds_gap": {
+            "mean": 0.6945602646526879,
+            "ci": {
+              "mean": 0.6945602646526879,
+              "ci_lower": 0.5928695714549649,
+              "ci_upper": 0.796250957850411,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "wall_clock_seconds": {
+            "mean": 0.1628774881362915,
+            "ci": {
+              "mean": 0.1628774881362915,
+              "ci_lower": 0.15667183359112644,
+              "ci_upper": 0.16908314268145655,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "convergence_iterations": {
+            "mean": 3.0,
+            "ci": {
+              "mean": 3.0,
+              "ci_lower": 3.0,
+              "ci_upper": 3.0,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "coalition_size": 20
+        },
+        "FedFDP": {
+          "n_trials": 30,
+          "auc_roc": {
+            "mean": 0.8794387273536906,
+            "ci": {
+              "mean": 0.8794387273536906,
+              "ci_lower": 0.8611836047652551,
+              "ci_upper": 0.897693849942126,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "demographic_divergence": {
+            "mean": 0.11772889671655155,
+            "ci": {
+              "mean": 0.11772889671655155,
+              "ci_lower": 0.09368076153359771,
+              "ci_upper": 0.1417770318995054,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "equalized_odds_gap": {
+            "mean": 0.6944817717525352,
+            "ci": {
+              "mean": 0.6944817717525352,
+              "ci_lower": 0.5953438089570535,
+              "ci_upper": 0.7936197345480169,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "wall_clock_seconds": {
+            "mean": 3.3737059672673544,
+            "ci": {
+              "mean": 3.3737059672673544,
+              "ci_lower": 3.300666211751479,
+              "ci_upper": 3.4467457227832297,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "convergence_iterations": {
+            "mean": 50.0,
+            "ci": {
+              "mean": 50.0,
+              "ci_lower": 50.0,
+              "ci_upper": 50.0,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "coalition_size": 6
+        },
+        "GWO": {
+          "n_trials": 30,
+          "auc_roc": {
+            "mean": 0.8796309183841383,
+            "ci": {
+              "mean": 0.8796309183841383,
+              "ci_lower": 0.8612250046847766,
+              "ci_upper": 0.8980368320835,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "demographic_divergence": {
+            "mean": 0.09965822960666568,
+            "ci": {
+              "mean": 0.09965822960666568,
+              "ci_lower": 0.07852900139928479,
+              "ci_upper": 0.12078745781404657,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "equalized_odds_gap": {
+            "mean": 0.6864242946088983,
+            "ci": {
+              "mean": 0.6864242946088983,
+              "ci_lower": 0.5889250406752619,
+              "ci_upper": 0.7839235485425348,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "wall_clock_seconds": {
+            "mean": 0.3181130886077881,
+            "ci": {
+              "mean": 0.3181130886077881,
+              "ci_lower": 0.30498052821391997,
+              "ci_upper": 0.3312456490016562,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "convergence_iterations": {
+            "mean": 50.0,
+            "ci": {
+              "mean": 50.0,
+              "ci_lower": 50.0,
+              "ci_upper": 50.0,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "coalition_size": 6
+        }
+      },
+      "n50_k4": {
+        "FairSwarm": {
+          "n_trials": 30,
+          "auc_roc": {
+            "mean": 0.8760770524554157,
+            "ci": {
+              "mean": 0.8760770524554157,
+              "ci_lower": 0.858947949929761,
+              "ci_upper": 0.8932061549810704,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "demographic_divergence": {
+            "mean": 0.0044044099974933455,
+            "ci": {
+              "mean": 0.0044044099974933455,
+              "ci_lower": 0.003174608755356649,
+              "ci_upper": 0.005634211239630042,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "equalized_odds_gap": {
+            "mean": 0.4854128691007784,
+            "ci": {
+              "mean": 0.4854128691007784,
+              "ci_lower": 0.40418162423882126,
+              "ci_upper": 0.5666441139627355,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "wall_clock_seconds": {
+            "mean": 25.16616885662079,
+            "ci": {
+              "mean": 25.16616885662079,
+              "ci_lower": 23.448640256940074,
+              "ci_upper": 26.883697456301505,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "convergence_iterations": {
+            "mean": 30.966666666666665,
+            "ci": {
+              "mean": 30.966666666666665,
+              "ci_lower": 27.941857066895512,
+              "ci_upper": 33.991476266437815,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "coalition_size": 15
+        },
+        "Standard PSO": {
+          "n_trials": 30,
+          "auc_roc": {
+            "mean": 0.8757658515124092,
+            "ci": {
+              "mean": 0.8757658515124092,
+              "ci_lower": 0.8592025857093158,
+              "ci_upper": 0.8923291173155025,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "demographic_divergence": {
+            "mean": 0.007267561130376715,
+            "ci": {
+              "mean": 0.007267561130376715,
+              "ci_lower": 0.0048480562329780465,
+              "ci_upper": 0.009687066027775384,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "equalized_odds_gap": {
+            "mean": 0.4872265793487368,
+            "ci": {
+              "mean": 0.4872265793487368,
+              "ci_lower": 0.40769478153975763,
+              "ci_upper": 0.5667583771577159,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "wall_clock_seconds": {
+            "mean": 29.133316191037498,
+            "ci": {
+              "mean": 29.133316191037498,
+              "ci_lower": 26.06776325785357,
+              "ci_upper": 32.198869124221424,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "convergence_iterations": {
+            "mean": 34.733333333333334,
+            "ci": {
+              "mean": 34.733333333333334,
+              "ci_lower": 31.60468235087167,
+              "ci_upper": 37.861984315795,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "coalition_size": 15
+        },
+        "Random": {
+          "n_trials": 30,
+          "auc_roc": {
+            "mean": 0.8771085931860102,
+            "ci": {
+              "mean": 0.8771085931860102,
+              "ci_lower": 0.8604980626937996,
+              "ci_upper": 0.8937191236782208,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "demographic_divergence": {
+            "mean": 0.014046904449917021,
+            "ci": {
+              "mean": 0.014046904449917021,
+              "ci_lower": 0.010553010797401452,
+              "ci_upper": 0.01754079810243259,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "equalized_odds_gap": {
+            "mean": 0.4762100929405536,
+            "ci": {
+              "mean": 0.4762100929405536,
+              "ci_lower": 0.3982909978718935,
+              "ci_upper": 0.5541291880092137,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "wall_clock_seconds": {
+            "mean": 5.9191769440968836,
+            "ci": {
+              "mean": 5.9191769440968836,
+              "ci_lower": 5.757132475326955,
+              "ci_upper": 6.081221412866812,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "convergence_iterations": {
+            "mean": 50.0,
+            "ci": {
+              "mean": 50.0,
+              "ci_lower": 50.0,
+              "ci_upper": 50.0,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "coalition_size": 15
+        },
+        "Greedy (size)": {
+          "n_trials": 30,
+          "auc_roc": {
+            "mean": 0.8819922966892545,
+            "ci": {
+              "mean": 0.8819922966892545,
+              "ci_lower": 0.865475924402836,
+              "ci_upper": 0.8985086689756729,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "demographic_divergence": {
+            "mean": 0.08146369944899791,
+            "ci": {
+              "mean": 0.08146369944899791,
+              "ci_lower": 0.0621502799960611,
+              "ci_upper": 0.10077711890193472,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "equalized_odds_gap": {
+            "mean": 0.4584475608272639,
+            "ci": {
+              "mean": 0.4584475608272639,
+              "ci_lower": 0.3785941591423191,
+              "ci_upper": 0.5383009625122087,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "wall_clock_seconds": {
+            "mean": 0.12346263726552327,
+            "ci": {
+              "mean": 0.12346263726552327,
+              "ci_lower": 0.11733410791087891,
+              "ci_upper": 0.12959116662016762,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "convergence_iterations": {
+            "mean": 1.0,
+            "ci": {
+              "mean": 1.0,
+              "ci_lower": 1.0,
+              "ci_upper": 1.0,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "coalition_size": 15
+        },
+        "FedAvg (all)": {
+          "n_trials": 30,
+          "auc_roc": {
+            "mean": 0.8814646922438532,
+            "ci": {
+              "mean": 0.8814646922438532,
+              "ci_lower": 0.8649942515440162,
+              "ci_upper": 0.8979351329436901,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "demographic_divergence": {
+            "mean": 0.02576262552667468,
+            "ci": {
+              "mean": 0.02576262552667468,
+              "ci_lower": 0.017519542433432633,
+              "ci_upper": 0.034005708619916725,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "equalized_odds_gap": {
+            "mean": 0.4684930209239671,
+            "ci": {
+              "mean": 0.4684930209239671,
+              "ci_lower": 0.3882788007561752,
+              "ci_upper": 0.548707241091759,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "wall_clock_seconds": {
+            "mean": 0.35039172172546384,
+            "ci": {
+              "mean": 0.35039172172546384,
+              "ci_lower": 0.3275512120727995,
+              "ci_upper": 0.37323223137812817,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "convergence_iterations": {
+            "mean": 3.0,
+            "ci": {
+              "mean": 3.0,
+              "ci_lower": 3.0,
+              "ci_upper": 3.0,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "coalition_size": 50
+        },
+        "FedFDP": {
+          "n_trials": 30,
+          "auc_roc": {
+            "mean": 0.8805546565884812,
+            "ci": {
+              "mean": 0.8805546565884812,
+              "ci_lower": 0.8638428830397563,
+              "ci_upper": 0.8972664301372061,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "demographic_divergence": {
+            "mean": 0.021998919222232922,
+            "ci": {
+              "mean": 0.021998919222232922,
+              "ci_lower": 0.016807510237426833,
+              "ci_upper": 0.02719032820703901,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "equalized_odds_gap": {
+            "mean": 0.4659724927432132,
+            "ci": {
+              "mean": 0.4659724927432132,
+              "ci_lower": 0.3888126283747706,
+              "ci_upper": 0.5431323571116558,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "wall_clock_seconds": {
+            "mean": 5.992169102032979,
+            "ci": {
+              "mean": 5.992169102032979,
+              "ci_lower": 5.8635071443393105,
+              "ci_upper": 6.1208310597266475,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "convergence_iterations": {
+            "mean": 50.0,
+            "ci": {
+              "mean": 50.0,
+              "ci_lower": 50.0,
+              "ci_upper": 50.0,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "coalition_size": 15
+        },
+        "GWO": {
+          "n_trials": 30,
+          "auc_roc": {
+            "mean": 0.8814202011273591,
+            "ci": {
+              "mean": 0.8814202011273591,
+              "ci_lower": 0.8647069090609808,
+              "ci_upper": 0.8981334931937374,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "demographic_divergence": {
+            "mean": 0.021012354428642983,
+            "ci": {
+              "mean": 0.021012354428642983,
+              "ci_lower": 0.014576932559655907,
+              "ci_upper": 0.02744777629763006,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "equalized_odds_gap": {
+            "mean": 0.4505519605063847,
+            "ci": {
+              "mean": 0.4505519605063847,
+              "ci_lower": 0.3735747798072325,
+              "ci_upper": 0.5275291412055368,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "wall_clock_seconds": {
+            "mean": 0.40138057867685956,
+            "ci": {
+              "mean": 0.40138057867685956,
+              "ci_lower": 0.38311982999267213,
+              "ci_upper": 0.419641327361047,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "convergence_iterations": {
+            "mean": 50.0,
+            "ci": {
+              "mean": 50.0,
+              "ci_lower": 50.0,
+              "ci_upper": 50.0,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "coalition_size": 15
+        }
+      },
+      "n50_k8": {
+        "FairSwarm": {
+          "n_trials": 30,
+          "auc_roc": {
+            "mean": 0.8717492778518117,
+            "ci": {
+              "mean": 0.8717492778518117,
+              "ci_lower": 0.8546335981406985,
+              "ci_upper": 0.8888649575629248,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "demographic_divergence": {
+            "mean": 0.02805382233854068,
+            "ci": {
+              "mean": 0.02805382233854068,
+              "ci_lower": 0.019424582687247883,
+              "ci_upper": 0.03668306198983348,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "equalized_odds_gap": {
+            "mean": 0.7923146637370746,
+            "ci": {
+              "mean": 0.7923146637370746,
+              "ci_lower": 0.7272818652654665,
+              "ci_upper": 0.8573474622086827,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "wall_clock_seconds": {
+            "mean": 23.908996558189394,
+            "ci": {
+              "mean": 23.908996558189394,
+              "ci_lower": 22.424430743887704,
+              "ci_upper": 25.393562372491083,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "convergence_iterations": {
+            "mean": 33.4,
+            "ci": {
+              "mean": 33.4,
+              "ci_lower": 30.61844620162061,
+              "ci_upper": 36.18155379837939,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "coalition_size": 15
+        },
+        "Standard PSO": {
+          "n_trials": 30,
+          "auc_roc": {
+            "mean": 0.8740707116885348,
+            "ci": {
+              "mean": 0.8740707116885348,
+              "ci_lower": 0.8569762123465778,
+              "ci_upper": 0.8911652110304917,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "demographic_divergence": {
+            "mean": 0.04094024929347788,
+            "ci": {
+              "mean": 0.04094024929347788,
+              "ci_lower": 0.02922896533309914,
+              "ci_upper": 0.05265153325385662,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "equalized_odds_gap": {
+            "mean": 0.7866481476422551,
+            "ci": {
+              "mean": 0.7866481476422551,
+              "ci_lower": 0.717712323714016,
+              "ci_upper": 0.8555839715704942,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "wall_clock_seconds": {
+            "mean": 26.80532421271006,
+            "ci": {
+              "mean": 26.80532421271006,
+              "ci_lower": 24.332891065964596,
+              "ci_upper": 29.277757359455528,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "convergence_iterations": {
+            "mean": 29.766666666666666,
+            "ci": {
+              "mean": 29.766666666666666,
+              "ci_lower": 27.319682998365778,
+              "ci_upper": 32.213650334967554,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "coalition_size": 15
+        },
+        "Random": {
+          "n_trials": 30,
+          "auc_roc": {
+            "mean": 0.8749454050609887,
+            "ci": {
+              "mean": 0.8749454050609887,
+              "ci_lower": 0.8580703606015063,
+              "ci_upper": 0.8918204495204711,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "demographic_divergence": {
+            "mean": 0.06669857173761432,
+            "ci": {
+              "mean": 0.06669857173761432,
+              "ci_lower": 0.05232177630234778,
+              "ci_upper": 0.08107536717288086,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "equalized_odds_gap": {
+            "mean": 0.7896825704318847,
+            "ci": {
+              "mean": 0.7896825704318847,
+              "ci_lower": 0.7225687783000259,
+              "ci_upper": 0.8567963625637436,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "wall_clock_seconds": {
+            "mean": 6.1197248538335165,
+            "ci": {
+              "mean": 6.1197248538335165,
+              "ci_lower": 6.037283116699143,
+              "ci_upper": 6.20216659096789,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "convergence_iterations": {
+            "mean": 50.0,
+            "ci": {
+              "mean": 50.0,
+              "ci_lower": 50.0,
+              "ci_upper": 50.0,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "coalition_size": 15
+        },
+        "Greedy (size)": {
+          "n_trials": 30,
+          "auc_roc": {
+            "mean": 0.8784127008820646,
+            "ci": {
+              "mean": 0.8784127008820646,
+              "ci_lower": 0.8615884103844139,
+              "ci_upper": 0.8952369913797152,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "demographic_divergence": {
+            "mean": 0.2640457997257297,
+            "ci": {
+              "mean": 0.2640457997257297,
+              "ci_lower": 0.20576174946107514,
+              "ci_upper": 0.3223298499903843,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "equalized_odds_gap": {
+            "mean": 0.7563362876035508,
+            "ci": {
+              "mean": 0.7563362876035508,
+              "ci_lower": 0.6891275986211001,
+              "ci_upper": 0.8235449765860015,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "wall_clock_seconds": {
+            "mean": 0.12201128005981446,
+            "ci": {
+              "mean": 0.12201128005981446,
+              "ci_lower": 0.11678336281902163,
+              "ci_upper": 0.1272391973006073,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "convergence_iterations": {
+            "mean": 1.0,
+            "ci": {
+              "mean": 1.0,
+              "ci_lower": 1.0,
+              "ci_upper": 1.0,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "coalition_size": 15
+        },
+        "FedAvg (all)": {
+          "n_trials": 30,
+          "auc_roc": {
+            "mean": 0.8778776077515908,
+            "ci": {
+              "mean": 0.8778776077515908,
+              "ci_lower": 0.861195028629816,
+              "ci_upper": 0.8945601868733657,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "demographic_divergence": {
+            "mean": 0.11093154829634061,
+            "ci": {
+              "mean": 0.11093154829634061,
+              "ci_lower": 0.09243226786030903,
+              "ci_upper": 0.1294308287323722,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "equalized_odds_gap": {
+            "mean": 0.7704129601086981,
+            "ci": {
+              "mean": 0.7704129601086981,
+              "ci_lower": 0.7027740500548266,
+              "ci_upper": 0.8380518701625695,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "wall_clock_seconds": {
+            "mean": 0.3446255445480347,
+            "ci": {
+              "mean": 0.3446255445480347,
+              "ci_lower": 0.3346007303757024,
+              "ci_upper": 0.35465035872036693,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "convergence_iterations": {
+            "mean": 3.0,
+            "ci": {
+              "mean": 3.0,
+              "ci_lower": 3.0,
+              "ci_upper": 3.0,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "coalition_size": 50
+        },
+        "FedFDP": {
+          "n_trials": 30,
+          "auc_roc": {
+            "mean": 0.8776777977481669,
+            "ci": {
+              "mean": 0.8776777977481669,
+              "ci_lower": 0.8608836973348793,
+              "ci_upper": 0.8944718981614544,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "demographic_divergence": {
+            "mean": 0.10174459597397581,
+            "ci": {
+              "mean": 0.10174459597397581,
+              "ci_lower": 0.07946095962271908,
+              "ci_upper": 0.12402823232523254,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "equalized_odds_gap": {
+            "mean": 0.7659102931202146,
+            "ci": {
+              "mean": 0.7659102931202146,
+              "ci_lower": 0.7029360577000843,
+              "ci_upper": 0.828884528540345,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "wall_clock_seconds": {
+            "mean": 6.298795056343079,
+            "ci": {
+              "mean": 6.298795056343079,
+              "ci_lower": 6.221480152625775,
+              "ci_upper": 6.376109960060383,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "convergence_iterations": {
+            "mean": 50.0,
+            "ci": {
+              "mean": 50.0,
+              "ci_lower": 50.0,
+              "ci_upper": 50.0,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "coalition_size": 15
+        },
+        "GWO": {
+          "n_trials": 30,
+          "auc_roc": {
+            "mean": 0.877977851798137,
+            "ci": {
+              "mean": 0.877977851798137,
+              "ci_lower": 0.8612867363779152,
+              "ci_upper": 0.8946689672183589,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "demographic_divergence": {
+            "mean": 0.08234473900307321,
+            "ci": {
+              "mean": 0.08234473900307321,
+              "ci_lower": 0.06838521208824329,
+              "ci_upper": 0.09630426591790313,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "equalized_odds_gap": {
+            "mean": 0.759563425542209,
+            "ci": {
+              "mean": 0.759563425542209,
+              "ci_lower": 0.6944823476690707,
+              "ci_upper": 0.8246445034153473,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "wall_clock_seconds": {
+            "mean": 0.41941243012746177,
+            "ci": {
+              "mean": 0.41941243012746177,
+              "ci_lower": 0.4024137964295881,
+              "ci_upper": 0.43641106382533545,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "convergence_iterations": {
+            "mean": 50.0,
+            "ci": {
+              "mean": 50.0,
+              "ci_lower": 50.0,
+              "ci_upper": 50.0,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "coalition_size": 15
+        }
+      },
+      "n100_k4": {
+        "FairSwarm": {
+          "n_trials": 30,
+          "auc_roc": {
+            "mean": 0.8718286408443071,
+            "ci": {
+              "mean": 0.8718286408443071,
+              "ci_lower": 0.8567306889988523,
+              "ci_upper": 0.8869265926897619,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "demographic_divergence": {
+            "mean": 0.0038849362403770757,
+            "ci": {
+              "mean": 0.0038849362403770757,
+              "ci_lower": 0.0020644425402799515,
+              "ci_upper": 0.0057054299404742,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "equalized_odds_gap": {
+            "mean": 0.573283963074159,
+            "ci": {
+              "mean": 0.573283963074159,
+              "ci_lower": 0.49597131291080776,
+              "ci_upper": 0.6505966132375102,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "wall_clock_seconds": {
+            "mean": 91.20768330891927,
+            "ci": {
+              "mean": 91.20768330891927,
+              "ci_lower": 80.40362362281833,
+              "ci_upper": 102.01174299502021,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "convergence_iterations": {
+            "mean": 36.43333333333333,
+            "ci": {
+              "mean": 36.43333333333333,
+              "ci_lower": 33.28209657366389,
+              "ci_upper": 39.58457009300277,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "coalition_size": 30
+        },
+        "Standard PSO": {
+          "n_trials": 30,
+          "auc_roc": {
+            "mean": 0.8733432788372176,
+            "ci": {
+              "mean": 0.8733432788372176,
+              "ci_lower": 0.8585149037146892,
+              "ci_upper": 0.8881716539597461,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "demographic_divergence": {
+            "mean": 0.006688014319123972,
+            "ci": {
+              "mean": 0.006688014319123972,
+              "ci_lower": 0.0031863400681635835,
+              "ci_upper": 0.01018968857008436,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "equalized_odds_gap": {
+            "mean": 0.5790014502121668,
+            "ci": {
+              "mean": 0.5790014502121668,
+              "ci_lower": 0.503370185005396,
+              "ci_upper": 0.6546327154189375,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "wall_clock_seconds": {
+            "mean": 91.30324377218882,
+            "ci": {
+              "mean": 91.30324377218882,
+              "ci_lower": 76.13745272955381,
+              "ci_upper": 106.46903481482383,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "convergence_iterations": {
+            "mean": 39.6,
+            "ci": {
+              "mean": 39.6,
+              "ci_lower": 36.10455980912359,
+              "ci_upper": 43.09544019087641,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "coalition_size": 30
+        },
+        "Random": {
+          "n_trials": 30,
+          "auc_roc": {
+            "mean": 0.8741987056583753,
+            "ci": {
+              "mean": 0.8741987056583753,
+              "ci_lower": 0.8590495436925822,
+              "ci_upper": 0.8893478676241684,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "demographic_divergence": {
+            "mean": 0.013552384718353029,
+            "ci": {
+              "mean": 0.013552384718353029,
+              "ci_lower": 0.008621235385449108,
+              "ci_upper": 0.01848353405125695,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "equalized_odds_gap": {
+            "mean": 0.5576306344654292,
+            "ci": {
+              "mean": 0.5576306344654292,
+              "ci_lower": 0.48349777381985964,
+              "ci_upper": 0.6317634951109987,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "wall_clock_seconds": {
+            "mean": 11.192703294754029,
+            "ci": {
+              "mean": 11.192703294754029,
+              "ci_lower": 10.99246751930102,
+              "ci_upper": 11.392939070207039,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "convergence_iterations": {
+            "mean": 50.0,
+            "ci": {
+              "mean": 50.0,
+              "ci_lower": 50.0,
+              "ci_upper": 50.0,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "coalition_size": 30
+        },
+        "Greedy (size)": {
+          "n_trials": 30,
+          "auc_roc": {
+            "mean": 0.8795410601450072,
+            "ci": {
+              "mean": 0.8795410601450072,
+              "ci_lower": 0.8646829185046933,
+              "ci_upper": 0.8943992017853212,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "demographic_divergence": {
+            "mean": 0.07600055325295142,
+            "ci": {
+              "mean": 0.07600055325295142,
+              "ci_lower": 0.04964147668238455,
+              "ci_upper": 0.10235962982351829,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "equalized_odds_gap": {
+            "mean": 0.5325477474469319,
+            "ci": {
+              "mean": 0.5325477474469319,
+              "ci_lower": 0.46404452507764804,
+              "ci_upper": 0.6010509698162158,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "wall_clock_seconds": {
+            "mean": 0.2304651180903117,
+            "ci": {
+              "mean": 0.2304651180903117,
+              "ci_lower": 0.22556713388001617,
+              "ci_upper": 0.23536310230060722,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "convergence_iterations": {
+            "mean": 1.0,
+            "ci": {
+              "mean": 1.0,
+              "ci_lower": 1.0,
+              "ci_upper": 1.0,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "coalition_size": 30
+        },
+        "FedAvg (all)": {
+          "n_trials": 30,
+          "auc_roc": {
+            "mean": 0.8774923377517134,
+            "ci": {
+              "mean": 0.8774923377517134,
+              "ci_lower": 0.8625158434940009,
+              "ci_upper": 0.892468832009426,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "demographic_divergence": {
+            "mean": 0.024347400517266023,
+            "ci": {
+              "mean": 0.024347400517266023,
+              "ci_lower": 0.015349520538977788,
+              "ci_upper": 0.033345280495554255,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "equalized_odds_gap": {
+            "mean": 0.5514790869641111,
+            "ci": {
+              "mean": 0.5514790869641111,
+              "ci_lower": 0.4795857312295033,
+              "ci_upper": 0.6233724426987188,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "wall_clock_seconds": {
+            "mean": 0.7132813056310018,
+            "ci": {
+              "mean": 0.7132813056310018,
+              "ci_lower": 0.6883189728636191,
+              "ci_upper": 0.7382436383983845,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "convergence_iterations": {
+            "mean": 3.0,
+            "ci": {
+              "mean": 3.0,
+              "ci_lower": 3.0,
+              "ci_upper": 3.0,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "coalition_size": 100
+        },
+        "FedFDP": {
+          "n_trials": 30,
+          "auc_roc": {
+            "mean": 0.8774039642748295,
+            "ci": {
+              "mean": 0.8774039642748295,
+              "ci_lower": 0.8621322711303699,
+              "ci_upper": 0.892675657419289,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "demographic_divergence": {
+            "mean": 0.025983069062610383,
+            "ci": {
+              "mean": 0.025983069062610383,
+              "ci_lower": 0.014851048327705627,
+              "ci_upper": 0.03711508979751514,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "equalized_odds_gap": {
+            "mean": 0.5384018696000273,
+            "ci": {
+              "mean": 0.5384018696000273,
+              "ci_lower": 0.4672521067621631,
+              "ci_upper": 0.6095516324378916,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "wall_clock_seconds": {
+            "mean": 11.498713223139445,
+            "ci": {
+              "mean": 11.498713223139445,
+              "ci_lower": 11.164116289890302,
+              "ci_upper": 11.833310156388588,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "convergence_iterations": {
+            "mean": 50.0,
+            "ci": {
+              "mean": 50.0,
+              "ci_lower": 50.0,
+              "ci_upper": 50.0,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "coalition_size": 30
+        },
+        "GWO": {
+          "n_trials": 30,
+          "auc_roc": {
+            "mean": 0.8786800664440687,
+            "ci": {
+              "mean": 0.8786800664440687,
+              "ci_lower": 0.8637708741821263,
+              "ci_upper": 0.8935892587060111,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "demographic_divergence": {
+            "mean": 0.018525570140814632,
+            "ci": {
+              "mean": 0.018525570140814632,
+              "ci_lower": 0.010758108308861928,
+              "ci_upper": 0.026293031972767337,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "equalized_odds_gap": {
+            "mean": 0.5392504335021485,
+            "ci": {
+              "mean": 0.5392504335021485,
+              "ci_lower": 0.46955819285913086,
+              "ci_upper": 0.6089426741451661,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "wall_clock_seconds": {
+            "mean": 0.5686079899470011,
+            "ci": {
+              "mean": 0.5686079899470011,
+              "ci_lower": 0.5491555807002946,
+              "ci_upper": 0.5880603991937077,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "convergence_iterations": {
+            "mean": 50.0,
+            "ci": {
+              "mean": 50.0,
+              "ci_lower": 50.0,
+              "ci_upper": 50.0,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "coalition_size": 30
+        }
+      },
+      "n100_k8": {
+        "FairSwarm": {
+          "n_trials": 30,
+          "auc_roc": {
+            "mean": 0.8724806664019419,
+            "ci": {
+              "mean": 0.8724806664019419,
+              "ci_lower": 0.85674767008805,
+              "ci_upper": 0.8882136627158338,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "demographic_divergence": {
+            "mean": 0.016944214352090717,
+            "ci": {
+              "mean": 0.016944214352090717,
+              "ci_lower": 0.012331799698287406,
+              "ci_upper": 0.02155662900589403,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "equalized_odds_gap": {
+            "mean": 0.774186998650036,
+            "ci": {
+              "mean": 0.774186998650036,
+              "ci_lower": 0.6918384670448026,
+              "ci_upper": 0.8565355302552695,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "wall_clock_seconds": {
+            "mean": 71.6808050553004,
+            "ci": {
+              "mean": 71.6808050553004,
+              "ci_lower": 65.30601942007658,
+              "ci_upper": 78.05559069052421,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "convergence_iterations": {
+            "mean": 34.9,
+            "ci": {
+              "mean": 34.9,
+              "ci_lower": 32.57872209225236,
+              "ci_upper": 37.221277907747634,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "coalition_size": 30
+        },
+        "Standard PSO": {
+          "n_trials": 30,
+          "auc_roc": {
+            "mean": 0.8747097783540863,
+            "ci": {
+              "mean": 0.8747097783540863,
+              "ci_lower": 0.8591702639426616,
+              "ci_upper": 0.8902492927655109,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "demographic_divergence": {
+            "mean": 0.035750101134411426,
+            "ci": {
+              "mean": 0.035750101134411426,
+              "ci_lower": 0.02572399928244213,
+              "ci_upper": 0.04577620298638072,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "equalized_odds_gap": {
+            "mean": 0.775812525388708,
+            "ci": {
+              "mean": 0.775812525388708,
+              "ci_lower": 0.6966801736292673,
+              "ci_upper": 0.8549448771481488,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "wall_clock_seconds": {
+            "mean": 100.938472032547,
+            "ci": {
+              "mean": 100.938472032547,
+              "ci_lower": 85.80554362783032,
+              "ci_upper": 116.07140043726368,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "convergence_iterations": {
+            "mean": 41.56666666666667,
+            "ci": {
+              "mean": 41.56666666666667,
+              "ci_lower": 38.38959800465914,
+              "ci_upper": 44.7437353286742,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "coalition_size": 30
+        },
+        "Random": {
+          "n_trials": 30,
+          "auc_roc": {
+            "mean": 0.8756438775437199,
+            "ci": {
+              "mean": 0.8756438775437199,
+              "ci_lower": 0.8600874540020942,
+              "ci_upper": 0.8912003010853455,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "demographic_divergence": {
+            "mean": 0.0599277992189613,
+            "ci": {
+              "mean": 0.0599277992189613,
+              "ci_lower": 0.04836361223620552,
+              "ci_upper": 0.07149198620171707,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "equalized_odds_gap": {
+            "mean": 0.7652301675486854,
+            "ci": {
+              "mean": 0.7652301675486854,
+              "ci_lower": 0.6872096692375259,
+              "ci_upper": 0.843250665859845,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "wall_clock_seconds": {
+            "mean": 10.807558687527974,
+            "ci": {
+              "mean": 10.807558687527974,
+              "ci_lower": 10.043678454853092,
+              "ci_upper": 11.571438920202857,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "convergence_iterations": {
+            "mean": 50.0,
+            "ci": {
+              "mean": 50.0,
+              "ci_lower": 50.0,
+              "ci_upper": 50.0,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "coalition_size": 30
+        },
+        "Greedy (size)": {
+          "n_trials": 30,
+          "auc_roc": {
+            "mean": 0.879640721698255,
+            "ci": {
+              "mean": 0.879640721698255,
+              "ci_lower": 0.8642412663409649,
+              "ci_upper": 0.8950401770555452,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "demographic_divergence": {
+            "mean": 0.21469551438577808,
+            "ci": {
+              "mean": 0.21469551438577808,
+              "ci_lower": 0.1779490475949204,
+              "ci_upper": 0.2514419811766358,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "equalized_odds_gap": {
+            "mean": 0.7538529337015627,
+            "ci": {
+              "mean": 0.7538529337015627,
+              "ci_lower": 0.6817392119100136,
+              "ci_upper": 0.8259666554931118,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "wall_clock_seconds": {
+            "mean": 0.21936659018198648,
+            "ci": {
+              "mean": 0.21936659018198648,
+              "ci_lower": 0.19669429322993637,
+              "ci_upper": 0.2420388871340366,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "convergence_iterations": {
+            "mean": 1.0,
+            "ci": {
+              "mean": 1.0,
+              "ci_lower": 1.0,
+              "ci_upper": 1.0,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "coalition_size": 30
+        },
+        "FedAvg (all)": {
+          "n_trials": 30,
+          "auc_roc": {
+            "mean": 0.8776665399566376,
+            "ci": {
+              "mean": 0.8776665399566376,
+              "ci_lower": 0.8621665852906102,
+              "ci_upper": 0.893166494622665,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "demographic_divergence": {
+            "mean": 0.0949942439248678,
+            "ci": {
+              "mean": 0.0949942439248678,
+              "ci_lower": 0.07885449462111117,
+              "ci_upper": 0.11113399322862443,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "equalized_odds_gap": {
+            "mean": 0.7673908218470246,
+            "ci": {
+              "mean": 0.7673908218470246,
+              "ci_lower": 0.692015549439427,
+              "ci_upper": 0.8427660942546221,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "wall_clock_seconds": {
+            "mean": 0.6457841396331787,
+            "ci": {
+              "mean": 0.6457841396331787,
+              "ci_lower": 0.5952635427579296,
+              "ci_upper": 0.6963047365084278,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "convergence_iterations": {
+            "mean": 3.0,
+            "ci": {
+              "mean": 3.0,
+              "ci_lower": 3.0,
+              "ci_upper": 3.0,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "coalition_size": 100
+        },
+        "FedFDP": {
+          "n_trials": 30,
+          "auc_roc": {
+            "mean": 0.8788292635000737,
+            "ci": {
+              "mean": 0.8788292635000737,
+              "ci_lower": 0.8633759266267835,
+              "ci_upper": 0.8942826003733639,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "demographic_divergence": {
+            "mean": 0.09778427243845937,
+            "ci": {
+              "mean": 0.09778427243845937,
+              "ci_lower": 0.078739043334116,
+              "ci_upper": 0.11682950154280275,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "equalized_odds_gap": {
+            "mean": 0.767044178338626,
+            "ci": {
+              "mean": 0.767044178338626,
+              "ci_lower": 0.6900454819337828,
+              "ci_upper": 0.8440428747434693,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "wall_clock_seconds": {
+            "mean": 10.970196795463561,
+            "ci": {
+              "mean": 10.970196795463561,
+              "ci_lower": 10.146380518589229,
+              "ci_upper": 11.794013072337894,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "convergence_iterations": {
+            "mean": 50.0,
+            "ci": {
+              "mean": 50.0,
+              "ci_lower": 50.0,
+              "ci_upper": 50.0,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "coalition_size": 30
+        },
+        "GWO": {
+          "n_trials": 30,
+          "auc_roc": {
+            "mean": 0.8779497106399858,
+            "ci": {
+              "mean": 0.8779497106399858,
+              "ci_lower": 0.8621404916969758,
+              "ci_upper": 0.8937589295829959,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "demographic_divergence": {
+            "mean": 0.06711721455361558,
+            "ci": {
+              "mean": 0.06711721455361558,
+              "ci_lower": 0.05444998093514693,
+              "ci_upper": 0.07978444817208423,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "equalized_odds_gap": {
+            "mean": 0.7620282952248064,
+            "ci": {
+              "mean": 0.7620282952248064,
+              "ci_lower": 0.6877258394372563,
+              "ci_upper": 0.8363307510123565,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "wall_clock_seconds": {
+            "mean": 0.5225572983423868,
+            "ci": {
+              "mean": 0.5225572983423868,
+              "ci_lower": 0.4719206515108426,
+              "ci_upper": 0.5731939451739311,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "convergence_iterations": {
+            "mean": 50.0,
+            "ci": {
+              "mean": 50.0,
+              "ci_lower": 50.0,
+              "ci_upper": 50.0,
+              "confidence": 0.95,
+              "n": 30
+            }
+          },
+          "coalition_size": 30
+        }
+      }
+    },
+    "aggregate": {
+      "FairSwarm": {
+        "n_total_trials": 180,
+        "auc_roc": {
+          "name": "FairSwarm_auc_roc",
+          "n": 180,
+          "mean": 0.8752564710097741,
+          "mean_ci": {
+            "mean": 0.8752564710097741,
+            "ci_lower": 0.8686896341928736,
+            "ci_upper": 0.8818233078266746,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "std": 0.044647604779009906,
+          "std_ci": {
+            "mean": 0.044647604779009906,
+            "ci_lower": 0.040462754625025465,
+            "ci_upper": 0.049805535110501765,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "median": 0.8825036984723296,
+          "min": 0.7372906991627967,
+          "max": 0.960813960813961,
+          "q25": 0.8464627881400133,
+          "q75": 0.9056050658836218,
+          "confidence_level": 0.95
+        },
+        "demographic_divergence": {
+          "name": "FairSwarm_divergence",
+          "n": 180,
+          "mean": 0.01831993601797139,
+          "mean_ci": {
+            "mean": 0.01831993601797139,
+            "ci_lower": 0.01515481308647374,
+            "ci_upper": 0.02148505894946904,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "std": 0.021519517183493632,
+          "std_ci": {
+            "mean": 0.021519517183493632,
+            "ci_lower": 0.019502478302130123,
+            "ci_upper": 0.02400556701638376,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "median": 0.010008426260801478,
+          "min": 0.0003389993027827687,
+          "max": 0.11697021240569883,
+          "q25": 0.0033874368882719427,
+          "q75": 0.023794943383974282,
+          "confidence_level": 0.95
+        },
+        "equalized_odds_gap": {
+          "name": "FairSwarm_eqodds",
+          "n": 180,
+          "mean": 0.6248115620000988,
+          "mean_ci": {
+            "mean": 0.6248115620000988,
+            "ci_lower": 0.5871735059208394,
+            "ci_upper": 0.6624496180793582,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "std": 0.2558993164185484,
+          "std_ci": {
+            "mean": 0.2558993164185484,
+            "ci_lower": 0.2319137006387264,
+            "ci_upper": 0.28546217544528374,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "median": 0.61477070779207,
+          "min": 0.13404409889352156,
+          "max": 1.3960475865425246,
+          "q25": 0.4250693692767979,
+          "q75": 0.7923442541833754,
+          "confidence_level": 0.95
+        },
+        "wall_clock_seconds": {
+          "name": "FairSwarm_time",
+          "n": 180,
+          "mean": 37.61103034151925,
+          "mean_ci": {
+            "mean": 37.61103034151925,
+            "ci_lower": 32.43202067160179,
+            "ci_upper": 42.790040011436716,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "std": 35.21183536859768,
+          "std_ci": {
+            "mean": 35.21183536859768,
+            "ci_lower": 31.9114062550156,
+            "ci_upper": 39.27969510204015,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "median": 23.94264531135559,
+          "min": 4.662679672241211,
+          "max": 163.99676275253296,
+          "q25": 7.449512541294098,
+          "q75": 64.2646991610527,
+          "confidence_level": 0.95
+        }
+      },
+      "Standard PSO": {
+        "n_total_trials": 180,
+        "auc_roc": {
+          "name": "Standard PSO_auc_roc",
+          "n": 180,
+          "mean": 0.8760319735364355,
+          "mean_ci": {
+            "mean": 0.8760319735364355,
+            "ci_lower": 0.8694660072071501,
+            "ci_upper": 0.8825979398657209,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "std": 0.04464168637596654,
+          "std_ci": {
+            "mean": 0.04464168637596654,
+            "ci_lower": 0.04045739095789705,
+            "ci_upper": 0.049798932981853804,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "median": 0.8833734582575079,
+          "min": 0.7305484221936887,
+          "max": 0.9623032123032124,
+          "q25": 0.8482342973204381,
+          "q75": 0.9072371018543519,
+          "confidence_level": 0.95
+        },
+        "demographic_divergence": {
+          "name": "Standard PSO_divergence",
+          "n": 180,
+          "mean": 0.02586202925976009,
+          "mean_ci": {
+            "mean": 0.02586202925976009,
+            "ci_lower": 0.021862575417108867,
+            "ci_upper": 0.029861483102411313,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "std": 0.027192092551930804,
+          "std_ci": {
+            "mean": 0.027192092551930804,
+            "ci_lower": 0.024643359349638058,
+            "ci_upper": 0.03033346866033686,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "median": 0.0181088459167094,
+          "min": 0.00016532566404736052,
+          "max": 0.16734983518434407,
+          "q25": 0.0057122628188175616,
+          "q75": 0.03695543188883414,
+          "confidence_level": 0.95
+        },
+        "equalized_odds_gap": {
+          "name": "Standard PSO_eqodds",
+          "n": 180,
+          "mean": 0.6279834394435002,
+          "mean_ci": {
+            "mean": 0.6279834394435002,
+            "ci_lower": 0.5905503889947551,
+            "ci_upper": 0.6654164898922453,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "std": 0.25450549308718173,
+          "std_ci": {
+            "mean": 0.25450549308718173,
+            "ci_lower": 0.2306505213096924,
+            "ci_upper": 0.28390733018064246,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "median": 0.6177442152735925,
+          "min": 0.15546352188496088,
+          "max": 1.4064043162187145,
+          "q25": 0.4365032010176629,
+          "q75": 0.7873471387054745,
+          "confidence_level": 0.95
+        },
+        "wall_clock_seconds": {
+          "name": "Standard PSO_time",
+          "n": 180,
+          "mean": 43.71545788579517,
+          "mean_ci": {
+            "mean": 43.71545788579517,
+            "ci_lower": 37.11420658919406,
+            "ci_upper": 50.31670918239627,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "std": 44.88158715609512,
+          "std_ci": {
+            "mean": 44.88158715609512,
+            "ci_lower": 40.67480567585877,
+            "ci_upper": 50.06654838444642,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "median": 26.34541893005371,
+          "min": 4.158516883850098,
+          "max": 206.48628067970276,
+          "q25": 7.796870231628418,
+          "q75": 63.08301365375519,
+          "confidence_level": 0.95
+        }
+      },
+      "Random": {
+        "n_total_trials": 180,
+        "auc_roc": {
+          "name": "Random_auc_roc",
+          "n": 180,
+          "mean": 0.8772273715293488,
+          "mean_ci": {
+            "mean": 0.8772273715293488,
+            "ci_lower": 0.8707080788621041,
+            "ci_upper": 0.8837466641965935,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "std": 0.044324354413183414,
+          "std_ci": {
+            "mean": 0.044324354413183414,
+            "ci_lower": 0.04016980273433331,
+            "ci_upper": 0.04944494113184733,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "median": 0.8846693332150741,
+          "min": 0.7406407125628502,
+          "max": 0.9634842134842134,
+          "q25": 0.8499928467775955,
+          "q75": 0.9088715568866621,
+          "confidence_level": 0.95
+        },
+        "demographic_divergence": {
+          "name": "Random_divergence",
+          "n": 180,
+          "mean": 0.042458367824581116,
+          "mean_ci": {
+            "mean": 0.042458367824581116,
+            "ci_lower": 0.036918447971777624,
+            "ci_upper": 0.04799828767738461,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "std": 0.037665646184292835,
+          "std_ci": {
+            "mean": 0.037665646184292835,
+            "ci_lower": 0.03413521972548389,
+            "ci_upper": 0.04201698327999611,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "median": 0.03081812113294839,
+          "min": 0.001240328854790777,
+          "max": 0.20045481621314673,
+          "q25": 0.012225316907499107,
+          "q75": 0.06214373862147556,
+          "confidence_level": 0.95
+        },
+        "equalized_odds_gap": {
+          "name": "Random_eqodds",
+          "n": 180,
+          "mean": 0.6185312158172274,
+          "mean_ci": {
+            "mean": 0.6185312158172274,
+            "ci_lower": 0.5811567850418841,
+            "ci_upper": 0.6559056465925707,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "std": 0.2541069407729864,
+          "std_ci": {
+            "mean": 0.2541069407729864,
+            "ci_lower": 0.23028932557311613,
+            "ci_upper": 0.2834627349694037,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "median": 0.6032701559806237,
+          "min": 0.17561233306439553,
+          "max": 1.423492272943904,
+          "q25": 0.42533058143033925,
+          "q75": 0.7867385092496859,
+          "confidence_level": 0.95
+        },
+        "wall_clock_seconds": {
+          "name": "Random_time",
+          "n": 180,
+          "mean": 6.759325769212511,
+          "mean_ci": {
+            "mean": 6.759325769212511,
+            "ci_lower": 6.268742592676967,
+            "ci_upper": 7.2499089457480554,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "std": 3.335451205490526,
+          "std_ci": {
+            "mean": 3.335451205490526,
+            "ci_lower": 3.0228171110078845,
+            "ci_upper": 3.720780385570053,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "median": 5.942109227180481,
+          "min": 2.444131851196289,
+          "max": 12.492339849472046,
+          "q25": 3.442236602306366,
+          "q75": 10.821211874485016,
+          "confidence_level": 0.95
+        }
+      },
+      "Greedy (size)": {
+        "n_total_trials": 180,
+        "auc_roc": {
+          "name": "Greedy (size)_auc_roc",
+          "n": 180,
+          "mean": 0.8810319245793611,
+          "mean_ci": {
+            "mean": 0.8810319245793611,
+            "ci_lower": 0.8745521100072009,
+            "ci_upper": 0.8875117391515213,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "std": 0.044055944760879186,
+          "std_ci": {
+            "mean": 0.044055944760879186,
+            "ci_lower": 0.0399265513000418,
+            "ci_upper": 0.04914552335953896,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "median": 0.8880737522303985,
+          "min": 0.7417924671698687,
+          "max": 0.965149215149215,
+          "q25": 0.854106936159816,
+          "q75": 0.9127259852552803,
+          "confidence_level": 0.95
+        },
+        "demographic_divergence": {
+          "name": "Greedy (size)_divergence",
+          "n": 180,
+          "mean": 0.17017328605364895,
+          "mean_ci": {
+            "mean": 0.17017328605364895,
+            "ci_lower": 0.15052671068022058,
+            "ci_upper": 0.18981986142707732,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "std": 0.1335761123645344,
+          "std_ci": {
+            "mean": 0.1335761123645344,
+            "ci_lower": 0.12105593312615867,
+            "ci_upper": 0.1490075399839552,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "median": 0.1388357761144332,
+          "min": 0.0034814389945096048,
+          "max": 0.8340960331412477,
+          "q25": 0.0678218126156015,
+          "q75": 0.250088216011756,
+          "confidence_level": 0.95
+        },
+        "equalized_odds_gap": {
+          "name": "Greedy (size)_eqodds",
+          "n": 180,
+          "mean": 0.5950698137029284,
+          "mean_ci": {
+            "mean": 0.5950698137029284,
+            "ci_lower": 0.5587595988842979,
+            "ci_upper": 0.631380028521559,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "std": 0.24687138813788095,
+          "std_ci": {
+            "mean": 0.24687138813788095,
+            "ci_lower": 0.22373196617388655,
+            "ci_upper": 0.2753912925573116,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "median": 0.5961717199853322,
+          "min": 0.16358202031870056,
+          "max": 1.3284303088498914,
+          "q25": 0.40269131719014,
+          "q75": 0.7487044413250099,
+          "confidence_level": 0.95
+        },
+        "wall_clock_seconds": {
+          "name": "Greedy (size)_time",
+          "n": 180,
+          "mean": 0.13907716406716242,
+          "mean_ci": {
+            "mean": 0.13907716406716242,
+            "ci_lower": 0.12876078297292565,
+            "ci_upper": 0.1493935451613992,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "std": 0.07014057432639774,
+          "std_ci": {
+            "mean": 0.07014057432639774,
+            "ci_lower": 0.06356625091704032,
+            "ci_upper": 0.07824358898030968,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "median": 0.11997449398040771,
+          "min": 0.05282306671142578,
+          "max": 0.41393065452575684,
+          "q25": 0.07637226581573486,
+          "q75": 0.22093331813812256,
+          "confidence_level": 0.95
+        }
+      },
+      "FedAvg (all)": {
+        "n_total_trials": 180,
+        "auc_roc": {
+          "name": "FedAvg (all)_auc_roc",
+          "n": 180,
+          "mean": 0.8804784409764655,
+          "mean_ci": {
+            "mean": 0.8804784409764655,
+            "ci_lower": 0.8740354671623288,
+            "ci_upper": 0.8869214147906023,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "std": 0.04380546623524306,
+          "std_ci": {
+            "mean": 0.04380546623524306,
+            "ci_lower": 0.039699550295803895,
+            "ci_upper": 0.04886610821364828,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "median": 0.8873642089265019,
+          "min": 0.7420964683858736,
+          "max": 0.9649172149172148,
+          "q25": 0.8521398890819308,
+          "q75": 0.9111157967690406,
+          "confidence_level": 0.95
+        },
+        "demographic_divergence": {
+          "name": "FedAvg (all)_divergence",
+          "n": 180,
+          "mean": 0.06809659791892485,
+          "mean_ci": {
+            "mean": 0.06809659791892485,
+            "ci_lower": 0.05984773245226879,
+            "ci_upper": 0.0763454633855809,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "std": 0.05608363592691124,
+          "std_ci": {
+            "mean": 0.05608363592691124,
+            "ci_lower": 0.05082687884875592,
+            "ci_upper": 0.06256271780105824,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "median": 0.05776830072323971,
+          "min": 0.0016396534816608133,
+          "max": 0.2515867356403182,
+          "q25": 0.018452035416320577,
+          "q75": 0.10069385877789878,
+          "confidence_level": 0.95
+        },
+        "equalized_odds_gap": {
+          "name": "FedAvg (all)_eqodds",
+          "n": 180,
+          "mean": 0.6069358265062055,
+          "mean_ci": {
+            "mean": 0.6069358265062055,
+            "ci_lower": 0.5695899719240438,
+            "ci_upper": 0.6442816810883671,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "std": 0.25391265262256624,
+          "std_ci": {
+            "mean": 0.25391265262256624,
+            "ci_lower": 0.23011324818227036,
+            "ci_upper": 0.2832460016116972,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "median": 0.6100941711356773,
+          "min": 0.17757540408148406,
+          "max": 1.3819562936086003,
+          "q25": 0.40772510459997496,
+          "q75": 0.7773006517851347,
+          "confidence_level": 0.95
+        },
+        "wall_clock_seconds": {
+          "name": "FedAvg (all)_time",
+          "n": 180,
+          "mean": 0.39694448444578384,
+          "mean_ci": {
+            "mean": 0.39694448444578384,
+            "ci_lower": 0.3637989506555573,
+            "ci_upper": 0.4300900182360104,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "std": 0.22535487543207253,
+          "std_ci": {
+            "mean": 0.22535487543207253,
+            "ci_lower": 0.20423221073771874,
+            "ci_upper": 0.2513890771119601,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "median": 0.3363463878631592,
+          "min": 0.0849313735961914,
+          "max": 0.9036252498626709,
+          "q25": 0.18002009391784668,
+          "q75": 0.6600196361541748,
+          "confidence_level": 0.95
+        }
+      },
+      "FedFDP": {
+        "n_total_trials": 180,
+        "auc_roc": {
+          "name": "FedFDP_auc_roc",
+          "n": 180,
+          "mean": 0.8798600308168113,
+          "mean_ci": {
+            "mean": 0.8798600308168113,
+            "ci_lower": 0.87338209411045,
+            "ci_upper": 0.8863379675231726,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "std": 0.044043177242460645,
+          "std_ci": {
+            "mean": 0.044043177242460645,
+            "ci_lower": 0.03991498048974869,
+            "ci_upper": 0.04913128086903995,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "median": 0.8869641706226061,
+          "min": 0.7467302369209476,
+          "max": 0.965045465045465,
+          "q25": 0.8526906026906027,
+          "q75": 0.9114116432643982,
+          "confidence_level": 0.95
+        },
+        "demographic_divergence": {
+          "name": "FedFDP_divergence",
+          "n": 180,
+          "mean": 0.06555287291847328,
+          "mean_ci": {
+            "mean": 0.06555287291847328,
+            "ci_lower": 0.05678530622518327,
+            "ci_upper": 0.0743204396117633,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "std": 0.05961026039023566,
+          "std_ci": {
+            "mean": 0.05961026039023566,
+            "ci_lower": 0.054022950419009425,
+            "ci_upper": 0.0664967568026809,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "median": 0.04752286965794958,
+          "min": 0.0014676626033714255,
+          "max": 0.2536029040047541,
+          "q25": 0.021101198143931223,
+          "q75": 0.09491723697613294,
+          "confidence_level": 0.95
+        },
+        "equalized_odds_gap": {
+          "name": "FedFDP_eqodds",
+          "n": 180,
+          "mean": 0.6058613107092117,
+          "mean_ci": {
+            "mean": 0.6058613107092117,
+            "ci_lower": 0.5690918322664211,
+            "ci_upper": 0.6426307891520022,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "std": 0.24999389922694948,
+          "std_ci": {
+            "mean": 0.24999389922694948,
+            "ci_lower": 0.226561802189419,
+            "ci_upper": 0.27887453284420477,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "median": 0.6053681897558536,
+          "min": 0.15498315256160633,
+          "max": 1.4239369792001373,
+          "q25": 0.4123691103320901,
+          "q75": 0.7683803391976901,
+          "confidence_level": 0.95
+        },
+        "wall_clock_seconds": {
+          "name": "FedFDP_time",
+          "n": 180,
+          "mean": 6.870339941978455,
+          "mean_ci": {
+            "mean": 6.870339941978455,
+            "ci_lower": 6.36048822617442,
+            "ci_upper": 7.38019165778249,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "std": 3.4664570687265845,
+          "std_ci": {
+            "mean": 3.4664570687265845,
+            "ci_lower": 3.1415437061925013,
+            "ci_upper": 3.8669207474860103,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "median": 6.175374627113342,
+          "min": 1.8984284400939941,
+          "max": 15.142341375350952,
+          "q25": 3.4783735871315002,
+          "q75": 11.000365793704987,
+          "confidence_level": 0.95
+        }
+      },
+      "GWO": {
+        "n_total_trials": 180,
+        "auc_roc": {
+          "name": "GWO_auc_roc",
+          "n": 180,
+          "mean": 0.880391324147231,
+          "mean_ci": {
+            "mean": 0.880391324147231,
+            "ci_lower": 0.8738922577461649,
+            "ci_upper": 0.8868903905482971,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "std": 0.04418683701117132,
+          "std_ci": {
+            "mean": 0.04418683701117132,
+            "ci_lower": 0.04004517493130048,
+            "ci_upper": 0.049291536983335466,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "median": 0.8866046791945648,
+          "min": 0.7418762175048701,
+          "max": 0.9645599645599646,
+          "q25": 0.8527569591495722,
+          "q75": 0.9118230248269995,
+          "confidence_level": 0.95
+        },
+        "demographic_divergence": {
+          "name": "GWO_divergence",
+          "n": 180,
+          "mean": 0.053694020247351815,
+          "mean_ci": {
+            "mean": 0.053694020247351815,
+            "ci_lower": 0.04683337500907061,
+            "ci_upper": 0.06055466548563302,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "std": 0.04664519397519513,
+          "std_ci": {
+            "mean": 0.04664519397519513,
+            "ci_lower": 0.04227310843654379,
+            "ci_upper": 0.05203389650501347,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "median": 0.04304594241340947,
+          "min": 0.0015637953949420962,
+          "max": 0.22783130823925438,
+          "q25": 0.016189145002313783,
+          "q75": 0.0811493952601065,
+          "confidence_level": 0.95
+        },
+        "equalized_odds_gap": {
+          "name": "GWO_eqodds",
+          "n": 180,
+          "mean": 0.5988158274251479,
+          "mean_ci": {
+            "mean": 0.5988158274251479,
+            "ci_lower": 0.5623941065289996,
+            "ci_upper": 0.6352375483212963,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "std": 0.24762951254667778,
+          "std_ci": {
+            "mean": 0.24762951254667778,
+            "ci_lower": 0.22441903106975772,
+            "ci_upper": 0.27623699955654146,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "median": 0.6044149784897743,
+          "min": 0.154965516133549,
+          "max": 1.3020139110883968,
+          "q25": 0.40180232423960976,
+          "q75": 0.7554742936015135,
+          "confidence_level": 0.95
+        },
+        "wall_clock_seconds": {
+          "name": "GWO_time",
+          "n": 180,
+          "mean": 0.42676531738705104,
+          "mean_ci": {
+            "mean": 0.42676531738705104,
+            "ci_lower": 0.40916408240084934,
+            "ci_upper": 0.44436655237325273,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "std": 0.11966994234787992,
+          "std_ci": {
+            "mean": 0.11966994234787992,
+            "ci_lower": 0.10845319781834414,
+            "ci_upper": 0.1334948547582809,
+            "confidence": 0.95,
+            "n": 180
+          },
+          "median": 0.4045379161834717,
+          "min": 0.13450837135314941,
+          "max": 0.7151401042938232,
+          "q25": 0.3438311219215393,
+          "q75": 0.5243011713027954,
+          "confidence_level": 0.95
+        }
+      }
+    },
+    "statistical_comparisons": {
+      "n20_k4": {
+        "Standard PSO": {
+          "auc_roc": {
+            "group1_mean": 0.8824110686151427,
+            "group2_mean": 0.8819053885462458,
+            "difference": 0.000505680068896952,
+            "ci_lower": -0.024062555212372973,
+            "ci_upper": 0.025073915350166877,
+            "t_statistic": 0.041201850575797415,
+            "p_value": 0.9672766698567054,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": 0.010638272074199326,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          },
+          "demographic_divergence": {
+            "group1_mean": 0.013151222327338782,
+            "group2_mean": 0.00916448075144998,
+            "difference": 0.003986741575888802,
+            "ci_lower": -0.0008492111592143916,
+            "ci_upper": 0.008822694310991995,
+            "t_statistic": 1.6507471295156733,
+            "p_value": 0.10427821924197253,
+            "p_value_corrected": 0.6256693154518351,
+            "n_comparisons": 6,
+            "cohens_d": 0.4262210760942601,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          },
+          "equalized_odds_gap": {
+            "group1_mean": 0.4194963643683668,
+            "group2_mean": 0.40921367546655124,
+            "difference": 0.010282688901815551,
+            "ci_lower": -0.08412873720923995,
+            "ci_upper": 0.10469411501287106,
+            "t_statistic": 0.21802833046713518,
+            "p_value": 0.8281746339073532,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": 0.056294672860041445,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          }
+        },
+        "Random": {
+          "auc_roc": {
+            "group1_mean": 0.8824110686151427,
+            "group2_mean": 0.8838461102200739,
+            "difference": -0.001435041604931131,
+            "ci_lower": -0.02567416966160893,
+            "ci_upper": 0.02280408645174667,
+            "t_statistic": -0.11850895648526868,
+            "p_value": 0.9060739294537816,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.030598880989591005,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          },
+          "demographic_divergence": {
+            "group1_mean": 0.020651515621481948,
+            "group2_mean": 0.00916448075144998,
+            "difference": 0.011487034870031968,
+            "ci_lower": 0.004900428551852613,
+            "ci_upper": 0.018073641188211323,
+            "t_statistic": 3.5113956288956367,
+            "p_value": 0.0010174166558816415,
+            "p_value_corrected": 0.006104499935289848,
+            "n_comparisons": 6,
+            "cohens_d": 0.906638452843888,
+            "significant": true,
+            "n1": 30,
+            "n2": 30
+          },
+          "equalized_odds_gap": {
+            "group1_mean": 0.40930818438794353,
+            "group2_mean": 0.40921367546655124,
+            "difference": 9.450892139228895e-05,
+            "ci_lower": -0.09257546679929012,
+            "ci_upper": 0.0927644846420747,
+            "t_statistic": 0.002041455808858634,
+            "p_value": 0.9983781631097446,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": 0.0005271016233151921,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          }
+        },
+        "Greedy (size)": {
+          "auc_roc": {
+            "group1_mean": 0.8824110686151427,
+            "group2_mean": 0.8867300724183821,
+            "difference": -0.004319003803239352,
+            "ci_lower": -0.02847432350456085,
+            "ci_upper": 0.019836315898082147,
+            "t_statistic": -0.35790985707433987,
+            "p_value": 0.7217100581796978,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.09241192772615968,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          },
+          "demographic_divergence": {
+            "group1_mean": 0.11285058426420774,
+            "group2_mean": 0.00916448075144998,
+            "difference": 0.10368610351275777,
+            "ci_lower": 0.06568125686331665,
+            "ci_upper": 0.1416909501621989,
+            "t_statistic": 5.576310346988663,
+            "p_value": 4.877256812674229e-06,
+            "p_value_corrected": 2.9263540876045375e-05,
+            "n_comparisons": 6,
+            "cohens_d": 1.4397971404780796,
+            "significant": true,
+            "n1": 30,
+            "n2": 30
+          },
+          "equalized_odds_gap": {
+            "group1_mean": 0.38764906944162875,
+            "group2_mean": 0.40921367546655124,
+            "difference": -0.021564606024922495,
+            "ci_lower": -0.11313842455124362,
+            "ci_upper": 0.07000921250139863,
+            "t_statistic": -0.4713821773676358,
+            "p_value": 0.6391362314616105,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.12171035484292295,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          }
+        },
+        "FedAvg (all)": {
+          "auc_roc": {
+            "group1_mean": 0.8824110686151427,
+            "group2_mean": 0.8873730269441216,
+            "difference": -0.004961958328978833,
+            "ci_lower": -0.029009809840734924,
+            "ci_upper": 0.019085893182777258,
+            "t_statistic": -0.41302842889566166,
+            "p_value": 0.681108832975764,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.10664348177487414,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          },
+          "demographic_divergence": {
+            "group1_mean": 0.03507697640186147,
+            "group2_mean": 0.00916448075144998,
+            "difference": 0.02591249565041149,
+            "ci_lower": 0.014752414879285218,
+            "ci_upper": 0.03707257642153776,
+            "t_statistic": 4.717030364215847,
+            "p_value": 3.911162798652185e-05,
+            "p_value_corrected": 0.00023466976791913113,
+            "n_comparisons": 6,
+            "cohens_d": 1.2179320029441787,
+            "significant": true,
+            "n1": 30,
+            "n2": 30
+          },
+          "equalized_odds_gap": {
+            "group1_mean": 0.3892788045407442,
+            "group2_mean": 0.40921367546655124,
+            "difference": -0.019934870925807036,
+            "ci_lower": -0.1126030746946959,
+            "ci_upper": 0.07273333284308182,
+            "t_statistic": -0.4306147437717723,
+            "p_value": 0.6683451377377628,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.11118424875062988,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          }
+        },
+        "FedFDP": {
+          "auc_roc": {
+            "group1_mean": 0.8824110686151427,
+            "group2_mean": 0.8852557754356253,
+            "difference": -0.0028447068204825454,
+            "ci_lower": -0.026828758630596142,
+            "ci_upper": 0.02113934498963105,
+            "t_statistic": -0.23742089324804777,
+            "p_value": 0.8131670524697328,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.06130181103942519,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          },
+          "demographic_divergence": {
+            "group1_mean": 0.02807748409700966,
+            "group2_mean": 0.00916448075144998,
+            "difference": 0.018913003345559683,
+            "ci_lower": 0.012167921105248426,
+            "ci_upper": 0.02565808558587094,
+            "t_statistic": 5.648358619552053,
+            "p_value": 1.0527335007885935e-06,
+            "p_value_corrected": 6.31640100473156e-06,
+            "n_comparisons": 6,
+            "cohens_d": 1.4583999244621477,
+            "significant": true,
+            "n1": 30,
+            "n2": 30
+          },
+          "equalized_odds_gap": {
+            "group1_mean": 0.4033572587006536,
+            "group2_mean": 0.40921367546655124,
+            "difference": -0.005856416765897654,
+            "ci_lower": -0.10113637253526976,
+            "ci_upper": 0.08942353900347445,
+            "t_statistic": -0.1230499041666053,
+            "p_value": 0.9024951943270219,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.03177134863931206,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          }
+        },
+        "GWO": {
+          "auc_roc": {
+            "group1_mean": 0.8824110686151427,
+            "group2_mean": 0.8866891964896966,
+            "difference": -0.004278127874553839,
+            "ci_lower": -0.028391930052043855,
+            "ci_upper": 0.019835674302936177,
+            "t_statistic": -0.355132854913587,
+            "p_value": 0.7237782737347792,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.09169490885142781,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          },
+          "demographic_divergence": {
+            "group1_mean": 0.03350601375129885,
+            "group2_mean": 0.00916448075144998,
+            "difference": 0.02434153299984887,
+            "ci_lower": 0.01260962647087026,
+            "ci_upper": 0.03607343952882748,
+            "t_statistic": 4.217514968960082,
+            "p_value": 0.00017448361103219475,
+            "p_value_corrected": 0.0010469016661931686,
+            "n_comparisons": 6,
+            "cohens_d": 1.088957682477526,
+            "significant": true,
+            "n1": 30,
+            "n2": 30
+          },
+          "equalized_odds_gap": {
+            "group1_mean": 0.3950765551664403,
+            "group2_mean": 0.40921367546655124,
+            "difference": -0.014137120300110939,
+            "ci_lower": -0.10583982148121854,
+            "ci_upper": 0.07756558088099666,
+            "t_statistic": -0.30858984353494506,
+            "p_value": 0.7587392374254378,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.07967755498797298,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          }
+        }
+      },
+      "n20_k8": {
+        "Standard PSO": {
+          "auc_roc": {
+            "group1_mean": 0.8769921198900249,
+            "group2_mean": 0.876396832280119,
+            "difference": 0.0005952876099059035,
+            "ci_lower": -0.025142736169383326,
+            "ci_upper": 0.026333311389195133,
+            "t_statistic": 0.04629771800903207,
+            "p_value": 0.9632320907786661,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": 0.01195401938775923,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          },
+          "demographic_divergence": {
+            "group1_mean": 0.05137502735383177,
+            "group2_mean": 0.047467752427876576,
+            "difference": 0.003907274925955197,
+            "ci_lower": -0.009248866899108012,
+            "ci_upper": 0.017063416751018405,
+            "t_statistic": 0.5946371231521493,
+            "p_value": 0.5544246667081605,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": 0.1535346450003309,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          },
+          "equalized_odds_gap": {
+            "group1_mean": 0.719715569700768,
+            "group2_mean": 0.714457201971994,
+            "difference": 0.005258367728773972,
+            "ci_lower": -0.1344238390810812,
+            "ci_upper": 0.14494057453862913,
+            "t_statistic": 0.07535533569199673,
+            "p_value": 0.9401913504663637,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": 0.01945666401219818,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          }
+        },
+        "Random": {
+          "auc_roc": {
+            "group1_mean": 0.8769921198900249,
+            "group2_mean": 0.8776215375069246,
+            "difference": -0.000629417616899719,
+            "ci_lower": -0.026110165790125622,
+            "ci_upper": 0.024851330556326184,
+            "t_statistic": -0.04944582600477206,
+            "p_value": 0.9607338954995984,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.012766857377063455,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          },
+          "demographic_divergence": {
+            "group1_mean": 0.07987303120115904,
+            "group2_mean": 0.047467752427876576,
+            "difference": 0.03240527877328247,
+            "ci_lower": 0.016748356853513065,
+            "ci_upper": 0.04806220069305187,
+            "t_statistic": 4.154786255895699,
+            "p_value": 0.00012383284036065502,
+            "p_value_corrected": 0.0007429970421639301,
+            "n_comparisons": 6,
+            "cohens_d": 1.072761198409034,
+            "significant": true,
+            "n1": 30,
+            "n2": 30
+          },
+          "equalized_odds_gap": {
+            "group1_mean": 0.713125645128868,
+            "group2_mean": 0.714457201971994,
+            "difference": -0.001331556843126025,
+            "ci_lower": -0.14151238615481856,
+            "ci_upper": 0.13884927246856651,
+            "t_statistic": -0.01901416480453092,
+            "p_value": 0.9848950899244895,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.004909436241999431,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          }
+        },
+        "Greedy (size)": {
+          "auc_roc": {
+            "group1_mean": 0.8769921198900249,
+            "group2_mean": 0.8798746956432029,
+            "difference": -0.0028825757531779628,
+            "ci_lower": -0.02844627194878667,
+            "ci_upper": 0.022681120442430744,
+            "t_statistic": -0.2257152176541358,
+            "p_value": 0.8222164903973223,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.05827941859733668,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          },
+          "demographic_divergence": {
+            "group1_mean": 0.27198356524422895,
+            "group2_mean": 0.047467752427876576,
+            "difference": 0.22451581281635238,
+            "ci_lower": 0.17726947208151234,
+            "ci_upper": 0.27176215355119243,
+            "t_statistic": 9.689804207945242,
+            "p_value": 6.415211059652508e-11,
+            "p_value_corrected": 3.8491266357915047e-10,
+            "n_comparisons": 6,
+            "cohens_d": 2.501896688358832,
+            "significant": true,
+            "n1": 30,
+            "n2": 30
+          },
+          "equalized_odds_gap": {
+            "group1_mean": 0.6815852831966336,
+            "group2_mean": 0.714457201971994,
+            "difference": -0.03287191877536044,
+            "ci_lower": -0.16933002764727353,
+            "ci_upper": 0.10358619009655265,
+            "t_statistic": -0.4822141117769295,
+            "p_value": 0.6314709293402204,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.12450714828121667,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          }
+        },
+        "FedAvg (all)": {
+          "auc_roc": {
+            "group1_mean": 0.8769921198900249,
+            "group2_mean": 0.8809964412108762,
+            "difference": -0.004004321320851267,
+            "ci_lower": -0.029233472795711576,
+            "ci_upper": 0.02122483015400904,
+            "t_statistic": -0.3177104291458993,
+            "p_value": 0.7518459240110685,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.0820324800665653,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          },
+          "demographic_divergence": {
+            "group1_mean": 0.11746679284653849,
+            "group2_mean": 0.047467752427876576,
+            "difference": 0.06999904041866192,
+            "ci_lower": 0.047715601219705424,
+            "ci_upper": 0.09228247961761843,
+            "t_statistic": 6.3509195537713925,
+            "p_value": 1.5863915048666107e-07,
+            "p_value_corrected": 9.518349029199664e-07,
+            "n_comparisons": 6,
+            "cohens_d": 1.6398003776573096,
+            "significant": true,
+            "n1": 30,
+            "n2": 30
+          },
+          "equalized_odds_gap": {
+            "group1_mean": 0.6945602646526879,
+            "group2_mean": 0.714457201971994,
+            "difference": -0.019896937319306085,
+            "ci_lower": -0.1596932538416225,
+            "ci_upper": 0.11989937920301033,
+            "t_statistic": -0.2849016937987696,
+            "p_value": 0.7767344936262894,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.07356130102592798,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          }
+        },
+        "FedFDP": {
+          "auc_roc": {
+            "group1_mean": 0.8769921198900249,
+            "group2_mean": 0.8794387273536906,
+            "difference": -0.002446607463665651,
+            "ci_lower": -0.027796454241518442,
+            "ci_upper": 0.02290323931418714,
+            "t_statistic": -0.19319333073486247,
+            "p_value": 0.8474825404313457,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.04988230350229759,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          },
+          "demographic_divergence": {
+            "group1_mean": 0.11772889671655155,
+            "group2_mean": 0.047467752427876576,
+            "difference": 0.07026114428867497,
+            "ci_lower": 0.04482684122209927,
+            "ci_upper": 0.09569544735525068,
+            "t_statistic": 5.5975631572549105,
+            "p_value": 2.2136087503993905e-06,
+            "p_value_corrected": 1.3281652502396343e-05,
+            "n_comparisons": 6,
+            "cohens_d": 1.4452845924928315,
+            "significant": true,
+            "n1": 30,
+            "n2": 30
+          },
+          "equalized_odds_gap": {
+            "group1_mean": 0.6944817717525352,
+            "group2_mean": 0.714457201971994,
+            "difference": -0.0199754302194588,
+            "ci_lower": -0.1580039925678536,
+            "ci_upper": 0.118053132128936,
+            "t_statistic": -0.28968847793200486,
+            "p_value": 0.7730878057064597,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.07479724337458864,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          }
+        },
+        "GWO": {
+          "auc_roc": {
+            "group1_mean": 0.8769921198900249,
+            "group2_mean": 0.8796309183841383,
+            "difference": -0.0026387984941134146,
+            "ci_lower": -0.028092857089044913,
+            "ci_upper": 0.022815260100818083,
+            "t_statistic": -0.2075161963271606,
+            "p_value": 0.8363336521015355,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.053580451496226776,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          },
+          "demographic_divergence": {
+            "group1_mean": 0.09965822960666568,
+            "group2_mean": 0.047467752427876576,
+            "difference": 0.0521904771787891,
+            "ci_lower": 0.029486031123652376,
+            "ci_upper": 0.07489492323392583,
+            "t_statistic": 4.648944737498897,
+            "p_value": 3.738735681268497e-05,
+            "p_value_corrected": 0.0002243241408761098,
+            "n_comparisons": 6,
+            "cohens_d": 1.2003523697181226,
+            "significant": true,
+            "n1": 30,
+            "n2": 30
+          },
+          "equalized_odds_gap": {
+            "group1_mean": 0.6864242946088983,
+            "group2_mean": 0.714457201971994,
+            "difference": -0.028032907363095716,
+            "ci_lower": -0.16494071727884088,
+            "ci_upper": 0.10887490255264945,
+            "t_statistic": -0.40987377347827186,
+            "p_value": 0.6834097316432896,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.10582895324856921,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          }
+        }
+      },
+      "n50_k4": {
+        "Standard PSO": {
+          "auc_roc": {
+            "group1_mean": 0.8760770524554157,
+            "group2_mean": 0.8757658515124092,
+            "difference": 0.0003112009430065177,
+            "ci_lower": -0.023009892496893742,
+            "ci_upper": 0.023632294382906777,
+            "t_statistic": 0.02671192606939934,
+            "p_value": 0.9787813009406505,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": 0.00689698965412716,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          },
+          "demographic_divergence": {
+            "group1_mean": 0.007267561130376715,
+            "group2_mean": 0.0044044099974933455,
+            "difference": 0.0028631511328833696,
+            "ci_lower": 0.0001869920727168824,
+            "ci_upper": 0.005539310193049857,
+            "t_statistic": 2.1575370349231036,
+            "p_value": 0.03658837815707426,
+            "p_value_corrected": 0.21953026894244557,
+            "n_comparisons": 6,
+            "cohens_d": 0.5570736670055274,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          },
+          "equalized_odds_gap": {
+            "group1_mean": 0.4872265793487368,
+            "group2_mean": 0.4854128691007784,
+            "difference": 0.0018137102479584,
+            "ci_lower": -0.10945173762617738,
+            "ci_upper": 0.11307915812209418,
+            "t_statistic": 0.03262980672495607,
+            "p_value": 0.9740818815075218,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": 0.00842497986904811,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          }
+        },
+        "Random": {
+          "auc_roc": {
+            "group1_mean": 0.8760770524554157,
+            "group2_mean": 0.8771085931860102,
+            "difference": -0.0010315407305945268,
+            "ci_lower": -0.024384723867033838,
+            "ci_upper": 0.022321642405844784,
+            "t_statistic": -0.08842026490719225,
+            "p_value": 0.9298475398949528,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.022830014230186914,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          },
+          "demographic_divergence": {
+            "group1_mean": 0.014046904449917021,
+            "group2_mean": 0.0044044099974933455,
+            "difference": 0.009642494452423676,
+            "ci_lower": 0.005969789036555984,
+            "ci_upper": 0.01331519986829137,
+            "t_statistic": 5.324258171416732,
+            "p_value": 5.527970202374116e-06,
+            "p_value_corrected": 3.3167821214244694e-05,
+            "n_comparisons": 6,
+            "cohens_d": 1.3747175485870504,
+            "significant": true,
+            "n1": 30,
+            "n2": 30
+          },
+          "equalized_odds_gap": {
+            "group1_mean": 0.4762100929405536,
+            "group2_mean": 0.4854128691007784,
+            "difference": -0.009202776160224801,
+            "ci_lower": -0.11937276680177422,
+            "ci_upper": 0.10096721448132462,
+            "t_statistic": -0.16721465409780847,
+            "p_value": 0.8677838013005424,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.04317463803750973,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          }
+        },
+        "Greedy (size)": {
+          "auc_roc": {
+            "group1_mean": 0.8760770524554157,
+            "group2_mean": 0.8819922966892545,
+            "difference": -0.005915244233838823,
+            "ci_lower": -0.029204554809354622,
+            "ci_upper": 0.017374066341676975,
+            "t_statistic": -0.5084299081512403,
+            "p_value": 0.6130829291892385,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.13127603779890137,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          },
+          "demographic_divergence": {
+            "group1_mean": 0.08146369944899791,
+            "group2_mean": 0.0044044099974933455,
+            "difference": 0.07705928945150456,
+            "ci_lower": 0.0577135147468883,
+            "ci_upper": 0.09640506415612082,
+            "t_statistic": 8.14384002207067,
+            "p_value": 5.247620278536517e-09,
+            "p_value_corrected": 3.14857216712191e-08,
+            "n_comparisons": 6,
+            "cohens_d": 2.102730451977143,
+            "significant": true,
+            "n1": 30,
+            "n2": 30
+          },
+          "equalized_odds_gap": {
+            "group1_mean": 0.4584475608272639,
+            "group2_mean": 0.4854128691007784,
+            "difference": -0.02696530827351451,
+            "ci_lower": -0.13845082394525737,
+            "ci_upper": 0.08452020739822834,
+            "t_statistic": -0.48416392919623097,
+            "p_value": 0.6300933029662547,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.12501058897408998,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          }
+        },
+        "FedAvg (all)": {
+          "auc_roc": {
+            "group1_mean": 0.8760770524554157,
+            "group2_mean": 0.8814646922438532,
+            "difference": -0.005387639788437482,
+            "ci_lower": -0.028645872622646708,
+            "ci_upper": 0.017870593045771745,
+            "t_statistic": -0.4637018442706873,
+            "p_value": 0.6445996082596412,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.11972730136440245,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          },
+          "demographic_divergence": {
+            "group1_mean": 0.02576262552667468,
+            "group2_mean": 0.0044044099974933455,
+            "difference": 0.021358215529181334,
+            "ci_lower": 0.013039293434035027,
+            "ci_upper": 0.02967713762432764,
+            "t_statistic": 5.241276352910767,
+            "p_value": 1.1470897904353441e-05,
+            "p_value_corrected": 6.882538742612065e-05,
+            "n_comparisons": 6,
+            "cohens_d": 1.3532917351796103,
+            "significant": true,
+            "n1": 30,
+            "n2": 30
+          },
+          "equalized_odds_gap": {
+            "group1_mean": 0.4684930209239671,
+            "group2_mean": 0.4854128691007784,
+            "difference": -0.016919848176811303,
+            "ci_lower": -0.12865289490245058,
+            "ci_upper": 0.09481319854882796,
+            "t_statistic": -0.30312312581994844,
+            "p_value": 0.7628808052811069,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.07826605454339973,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          }
+        },
+        "FedFDP": {
+          "auc_roc": {
+            "group1_mean": 0.8760770524554157,
+            "group2_mean": 0.8805546565884812,
+            "difference": -0.004477604133065527,
+            "ci_lower": -0.027899710477670252,
+            "ci_upper": 0.018944502211539198,
+            "t_statistic": -0.3826732917074347,
+            "p_value": 0.7033616800335039,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.09880581905475115,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          },
+          "demographic_divergence": {
+            "group1_mean": 0.021998919222232922,
+            "group2_mean": 0.0044044099974933455,
+            "difference": 0.017594509224739575,
+            "ci_lower": 0.012282645304944894,
+            "ci_upper": 0.022906373144534257,
+            "t_statistic": 6.744936166672557,
+            "p_value": 1.2315877444054663e-07,
+            "p_value_corrected": 7.389526466432798e-07,
+            "n_comparisons": 6,
+            "cohens_d": 1.741535029650327,
+            "significant": true,
+            "n1": 30,
+            "n2": 30
+          },
+          "equalized_odds_gap": {
+            "group1_mean": 0.4659724927432132,
+            "group2_mean": 0.4854128691007784,
+            "difference": -0.019440376357565237,
+            "ci_lower": -0.1290993913671361,
+            "ci_upper": 0.09021863865200563,
+            "t_statistic": -0.3548848967116866,
+            "p_value": 0.7239664351634002,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.09163088631899342,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          }
+        },
+        "GWO": {
+          "auc_roc": {
+            "group1_mean": 0.8760770524554157,
+            "group2_mean": 0.8814202011273591,
+            "difference": -0.00534314867194341,
+            "ci_lower": -0.028766290695918326,
+            "ci_upper": 0.018079993352031507,
+            "t_statistic": -0.45662582650734196,
+            "p_value": 0.6496465384815787,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.1179002814340755,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          },
+          "demographic_divergence": {
+            "group1_mean": 0.021012354428642983,
+            "group2_mean": 0.0044044099974933455,
+            "difference": 0.016607944431149636,
+            "ci_lower": 0.01007536208459632,
+            "ci_upper": 0.023140526777702952,
+            "t_statistic": 5.184326678953958,
+            "p_value": 1.2534200211637375e-05,
+            "p_value_corrected": 7.520520126982425e-05,
+            "n_comparisons": 6,
+            "cohens_d": 1.338587392592499,
+            "significant": true,
+            "n1": 30,
+            "n2": 30
+          },
+          "equalized_odds_gap": {
+            "group1_mean": 0.4505519605063847,
+            "group2_mean": 0.4854128691007784,
+            "difference": -0.034860908594393725,
+            "ci_lower": -0.1443974347637746,
+            "ci_upper": 0.07467561757498714,
+            "t_statistic": -0.6371023767839048,
+            "p_value": 0.5265722492256029,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.16449912634088174,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          }
+        }
+      },
+      "n50_k8": {
+        "Standard PSO": {
+          "auc_roc": {
+            "group1_mean": 0.8717492778518117,
+            "group2_mean": 0.8740707116885348,
+            "difference": -0.002321433836723119,
+            "ci_lower": -0.02599704239524161,
+            "ci_upper": 0.021354174721795374,
+            "t_statistic": -0.19627182293821743,
+            "p_value": 0.8450835008812161,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.050677166771299124,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          },
+          "demographic_divergence": {
+            "group1_mean": 0.04094024929347788,
+            "group2_mean": 0.02805382233854068,
+            "difference": 0.012886426954937198,
+            "ci_lower": -0.001377830081427724,
+            "ci_upper": 0.02715068399130212,
+            "t_statistic": 1.8117503104661468,
+            "p_value": 0.07565810877550179,
+            "p_value_corrected": 0.45394865265301076,
+            "n_comparisons": 6,
+            "cohens_d": 0.46779191866143355,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          },
+          "equalized_odds_gap": {
+            "group1_mean": 0.7866481476422551,
+            "group2_mean": 0.7923146637370746,
+            "difference": -0.005666516094819496,
+            "ci_lower": -0.09842729186788743,
+            "ci_upper": 0.08709425967824844,
+            "t_statistic": -0.12228857343206936,
+            "p_value": 0.9030946480733549,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.0315747738889245,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          }
+        },
+        "Random": {
+          "auc_roc": {
+            "group1_mean": 0.8717492778518117,
+            "group2_mean": 0.8749454050609887,
+            "difference": -0.0031961272091770576,
+            "ci_lower": -0.026720543705855415,
+            "ci_upper": 0.0203282892875013,
+            "t_statistic": -0.27196300585099115,
+            "p_value": 0.786616443320829,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.0702205461630266,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          },
+          "demographic_divergence": {
+            "group1_mean": 0.06669857173761432,
+            "group2_mean": 0.02805382233854068,
+            "difference": 0.038644749399073634,
+            "ci_lower": 0.022156135561067207,
+            "ci_upper": 0.05513336323708006,
+            "t_statistic": 4.713666772806077,
+            "p_value": 2.1602912780330775e-05,
+            "p_value_corrected": 0.00012961747668198466,
+            "n_comparisons": 6,
+            "cohens_d": 1.217063527376613,
+            "significant": true,
+            "n1": 30,
+            "n2": 30
+          },
+          "equalized_odds_gap": {
+            "group1_mean": 0.7896825704318847,
+            "group2_mean": 0.7923146637370746,
+            "difference": -0.0026320933051898754,
+            "ci_lower": -0.09409914488727811,
+            "ci_upper": 0.08883495827689836,
+            "t_statistic": -0.057603457413169065,
+            "p_value": 0.9542626889564125,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.01487314874967813,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          }
+        },
+        "Greedy (size)": {
+          "auc_roc": {
+            "group1_mean": 0.8717492778518117,
+            "group2_mean": 0.8784127008820646,
+            "difference": -0.006663423030252913,
+            "ci_lower": -0.03015303778823561,
+            "ci_upper": 0.016826191727729783,
+            "t_statistic": -0.567841330754041,
+            "p_value": 0.5723350787294712,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.14661600115324389,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          },
+          "demographic_divergence": {
+            "group1_mean": 0.2640457997257297,
+            "group2_mean": 0.02805382233854068,
+            "difference": 0.23599197738718905,
+            "ci_lower": 0.1771798404628991,
+            "ci_upper": 0.29480411431147896,
+            "t_statistic": 8.191832996777553,
+            "p_value": 3.5696001283419836e-09,
+            "p_value_corrected": 2.14176007700519e-08,
+            "n_comparisons": 6,
+            "cohens_d": 2.115122184762124,
+            "significant": true,
+            "n1": 30,
+            "n2": 30
+          },
+          "equalized_odds_gap": {
+            "group1_mean": 0.7563362876035508,
+            "group2_mean": 0.7923146637370746,
+            "difference": -0.03597837613352384,
+            "ci_lower": -0.12751232962299433,
+            "ci_upper": 0.055555577355946656,
+            "t_statistic": -0.7868140889123849,
+            "p_value": 0.4345974257049288,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.20315452419460195,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          }
+        },
+        "FedAvg (all)": {
+          "auc_roc": {
+            "group1_mean": 0.8717492778518117,
+            "group2_mean": 0.8778776077515908,
+            "difference": -0.0061283298997791835,
+            "ci_lower": -0.029521105739953597,
+            "ci_upper": 0.01726444594039523,
+            "t_statistic": -0.5244079065621082,
+            "p_value": 0.6019947126551921,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.13540153924896936,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          },
+          "demographic_divergence": {
+            "group1_mean": 0.11093154829634061,
+            "group2_mean": 0.02805382233854068,
+            "difference": 0.08287772595779994,
+            "ci_lower": 0.06272194179498472,
+            "ci_upper": 0.10303351012061515,
+            "t_statistic": 8.3037611557552,
+            "p_value": 2.521993025032514e-10,
+            "p_value_corrected": 1.5131958150195084e-09,
+            "n_comparisons": 6,
+            "cohens_d": 2.144021911141596,
+            "significant": true,
+            "n1": 30,
+            "n2": 30
+          },
+          "equalized_odds_gap": {
+            "group1_mean": 0.7704129601086981,
+            "group2_mean": 0.7923146637370746,
+            "difference": -0.021901703628376512,
+            "ci_lower": -0.11373962835028285,
+            "ci_upper": 0.06993622109352983,
+            "t_statistic": -0.4773895190687232,
+            "p_value": 0.634881636793927,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.12326144380047553,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          }
+        },
+        "FedFDP": {
+          "auc_roc": {
+            "group1_mean": 0.8717492778518117,
+            "group2_mean": 0.8776777977481669,
+            "difference": -0.005928519896355233,
+            "ci_lower": -0.029397463101861355,
+            "ci_upper": 0.01754042330915089,
+            "t_statistic": -0.5056602978024809,
+            "p_value": 0.615012244982027,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.1305609274818194,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          },
+          "demographic_divergence": {
+            "group1_mean": 0.10174459597397581,
+            "group2_mean": 0.02805382233854068,
+            "difference": 0.07369077363543514,
+            "ci_lower": 0.05002787084020943,
+            "ci_upper": 0.09735367643066084,
+            "t_statistic": 6.307074014048438,
+            "p_value": 2.2803701230475783e-07,
+            "p_value_corrected": 1.368222073828547e-06,
+            "n_comparisons": 6,
+            "cohens_d": 1.6284795079804777,
+            "significant": true,
+            "n1": 30,
+            "n2": 30
+          },
+          "equalized_odds_gap": {
+            "group1_mean": 0.7659102931202146,
+            "group2_mean": 0.7923146637370746,
+            "difference": -0.026404370616859962,
+            "ci_lower": -0.11500672300746319,
+            "ci_upper": 0.06219798177374326,
+            "t_statistic": -0.5965445888061736,
+            "p_value": 0.5531352539212248,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.15402715051443078,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          }
+        },
+        "GWO": {
+          "auc_roc": {
+            "group1_mean": 0.8717492778518117,
+            "group2_mean": 0.877977851798137,
+            "difference": -0.006228573946325366,
+            "ci_lower": -0.0296271691867185,
+            "ci_upper": 0.017170021294067767,
+            "t_statistic": -0.5328530477633481,
+            "p_value": 0.5961723875413715,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.1375820653308875,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          },
+          "demographic_divergence": {
+            "group1_mean": 0.08234473900307321,
+            "group2_mean": 0.02805382233854068,
+            "difference": 0.05429091666453253,
+            "ci_lower": 0.038160095259591714,
+            "ci_upper": 0.07042173806947334,
+            "t_statistic": 6.765893212300795,
+            "p_value": 1.6273740078146562e-08,
+            "p_value_corrected": 9.764244046887938e-08,
+            "n_comparisons": 6,
+            "cohens_d": 1.7469461155639188,
+            "significant": true,
+            "n1": 30,
+            "n2": 30
+          },
+          "equalized_odds_gap": {
+            "group1_mean": 0.759563425542209,
+            "group2_mean": 0.7923146637370746,
+            "difference": -0.032751238194865584,
+            "ci_lower": -0.12279826065586663,
+            "ci_upper": 0.05729578426613546,
+            "t_statistic": -0.7280499132459627,
+            "p_value": 0.4695121996820833,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.18798167928062454,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          }
+        }
+      },
+      "n100_k4": {
+        "Standard PSO": {
+          "auc_roc": {
+            "group1_mean": 0.8718286408443071,
+            "group2_mean": 0.8733432788372176,
+            "difference": -0.001514637992910517,
+            "ci_lower": -0.02222652858028051,
+            "ci_upper": 0.019197252594459476,
+            "t_statistic": -0.1463844301806329,
+            "p_value": 0.8841256930528312,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.03779629734891024,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          },
+          "demographic_divergence": {
+            "group1_mean": 0.006688014319123972,
+            "group2_mean": 0.0038849362403770757,
+            "difference": 0.0028030780787468962,
+            "ci_lower": -0.0010869158041419617,
+            "ci_upper": 0.006693071961635754,
+            "t_statistic": 1.4526146550563752,
+            "p_value": 0.15348862245953712,
+            "p_value_corrected": 0.9209317347572228,
+            "n_comparisons": 6,
+            "cohens_d": 0.3750634911660115,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          },
+          "equalized_odds_gap": {
+            "group1_mean": 0.5790014502121668,
+            "group2_mean": 0.573283963074159,
+            "difference": 0.005717487138007793,
+            "ci_lower": -0.10013684131819417,
+            "ci_upper": 0.11157181559420976,
+            "t_statistic": 0.10811944969744391,
+            "p_value": 0.9142742845043559,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": 0.02791632187195406,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          }
+        },
+        "Random": {
+          "auc_roc": {
+            "group1_mean": 0.8718286408443071,
+            "group2_mean": 0.8741987056583753,
+            "difference": -0.002370064814068207,
+            "ci_lower": -0.023303011878090512,
+            "ci_upper": 0.0185628822499541,
+            "t_statistic": -0.22663800374223614,
+            "p_value": 0.8215021263687594,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.05851768094075832,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          },
+          "demographic_divergence": {
+            "group1_mean": 0.013552384718353029,
+            "group2_mean": 0.0038849362403770757,
+            "difference": 0.009667448477975953,
+            "ci_lower": 0.004458767309863549,
+            "ci_upper": 0.014876129646088357,
+            "t_statistic": 3.7614917577694773,
+            "p_value": 0.0005882561184579368,
+            "p_value_corrected": 0.003529536710747621,
+            "n_comparisons": 6,
+            "cohens_d": 0.9712129956491766,
+            "significant": true,
+            "n1": 30,
+            "n2": 30
+          },
+          "equalized_odds_gap": {
+            "group1_mean": 0.5576306344654292,
+            "group2_mean": 0.573283963074159,
+            "difference": -0.01565332860872981,
+            "ci_lower": -0.12049021368635911,
+            "ci_upper": 0.08918355646889949,
+            "t_statistic": -0.29889019447083826,
+            "p_value": 0.7660940331534148,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.07717311636868351,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          }
+        },
+        "Greedy (size)": {
+          "auc_roc": {
+            "group1_mean": 0.8718286408443071,
+            "group2_mean": 0.8795410601450072,
+            "difference": -0.007712419300700102,
+            "ci_lower": -0.028444704251058033,
+            "ci_upper": 0.01301986564965783,
+            "t_statistic": -0.7446438656271098,
+            "p_value": 0.45949444688253166,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.19226621936195396,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          },
+          "demographic_divergence": {
+            "group1_mean": 0.07600055325295142,
+            "group2_mean": 0.0038849362403770757,
+            "difference": 0.07211561701257435,
+            "ci_lower": 0.045704589807842505,
+            "ci_upper": 0.0985266442173062,
+            "t_statistic": 5.582231994475733,
+            "p_value": 4.882087837273515e-06,
+            "p_value_corrected": 2.9292527023641088e-05,
+            "n_comparisons": 6,
+            "cohens_d": 1.4413261032847156,
+            "significant": true,
+            "n1": 30,
+            "n2": 30
+          },
+          "equalized_odds_gap": {
+            "group1_mean": 0.5325477474469319,
+            "group2_mean": 0.573283963074159,
+            "difference": -0.04073621562722707,
+            "ci_lower": -0.14186520742921283,
+            "ci_upper": 0.0603927761747587,
+            "t_statistic": -0.8065695542233238,
+            "p_value": 0.4232571243071907,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.20825536340432488,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          }
+        },
+        "FedAvg (all)": {
+          "auc_roc": {
+            "group1_mean": 0.8718286408443071,
+            "group2_mean": 0.8774923377517134,
+            "difference": -0.005663696907406313,
+            "ci_lower": -0.02647731054983045,
+            "ci_upper": 0.015149916735017824,
+            "t_statistic": -0.5446981512434813,
+            "p_value": 0.5880495777837657,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.14064045789839813,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          },
+          "demographic_divergence": {
+            "group1_mean": 0.024347400517266023,
+            "group2_mean": 0.0038849362403770757,
+            "difference": 0.02046246427688895,
+            "ci_lower": 0.0113123011549174,
+            "ci_upper": 0.029612627398860496,
+            "t_statistic": 4.558772803858295,
+            "p_value": 7.404369639332188e-05,
+            "p_value_corrected": 0.00044426217835993127,
+            "n_comparisons": 6,
+            "cohens_d": 1.1770700765657645,
+            "significant": true,
+            "n1": 30,
+            "n2": 30
+          },
+          "equalized_odds_gap": {
+            "group1_mean": 0.5514790869641111,
+            "group2_mean": 0.573283963074159,
+            "difference": -0.02180487611004789,
+            "ci_lower": -0.12514451788823105,
+            "ci_upper": 0.08153476566813528,
+            "t_statistic": -0.4224138230049051,
+            "p_value": 0.6742930600058193,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.10906678011372033,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          }
+        },
+        "FedFDP": {
+          "auc_roc": {
+            "group1_mean": 0.8718286408443071,
+            "group2_mean": 0.8774039642748295,
+            "difference": -0.005575323430522361,
+            "ci_lower": -0.02659343721004955,
+            "ci_upper": 0.01544279034900483,
+            "t_statistic": -0.5309826377858715,
+            "p_value": 0.5974586095212695,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.13709912755133105,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          },
+          "demographic_divergence": {
+            "group1_mean": 0.025983069062610383,
+            "group2_mean": 0.0038849362403770757,
+            "difference": 0.02209813282223331,
+            "ci_lower": 0.01084304317197964,
+            "ci_upper": 0.033353222472486975,
+            "t_statistic": 4.006752464795136,
+            "p_value": 0.0003656594466976937,
+            "p_value_corrected": 0.002193956680186162,
+            "n_comparisons": 6,
+            "cohens_d": 1.0345390379018053,
+            "significant": true,
+            "n1": 30,
+            "n2": 30
+          },
+          "equalized_odds_gap": {
+            "group1_mean": 0.5384018696000273,
+            "group2_mean": 0.573283963074159,
+            "difference": -0.034882093474131626,
+            "ci_lower": -0.13773098324425603,
+            "ci_upper": 0.06796679629599277,
+            "t_statistic": -0.6789991599545401,
+            "p_value": 0.4998575245257289,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.1753168292395173,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          }
+        },
+        "GWO": {
+          "auc_roc": {
+            "group1_mean": 0.8718286408443071,
+            "group2_mean": 0.8786800664440687,
+            "difference": -0.006851425599761596,
+            "ci_lower": -0.027618744220971898,
+            "ci_upper": 0.013915893021448706,
+            "t_statistic": -0.660396504688959,
+            "p_value": 0.5116142112064374,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.17051364430359514,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          },
+          "demographic_divergence": {
+            "group1_mean": 0.018525570140814632,
+            "group2_mean": 0.0038849362403770757,
+            "difference": 0.014640633900437556,
+            "ci_lower": 0.006696755700320059,
+            "ci_upper": 0.02258451210055505,
+            "t_statistic": 3.7532780287948673,
+            "p_value": 0.0006925074102368341,
+            "p_value_corrected": 0.004155044461421004,
+            "n_comparisons": 6,
+            "cohens_d": 0.9690922199472481,
+            "significant": true,
+            "n1": 30,
+            "n2": 30
+          },
+          "equalized_odds_gap": {
+            "group1_mean": 0.5392504335021485,
+            "group2_mean": 0.573283963074159,
+            "difference": -0.034033529572010446,
+            "ci_lower": -0.13592998668059253,
+            "ci_upper": 0.06786292753657162,
+            "t_statistic": -0.6687280771703189,
+            "p_value": 0.5063502014945264,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.17266484706813023,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          }
+        }
+      },
+      "n100_k8": {
+        "Standard PSO": {
+          "auc_roc": {
+            "group1_mean": 0.8724806664019419,
+            "group2_mean": 0.8747097783540863,
+            "difference": -0.002229111952144369,
+            "ci_lower": -0.023872148061344852,
+            "ci_upper": 0.019413924157056114,
+            "t_statistic": -0.20616640342981768,
+            "p_value": 0.8373830327944519,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.05323193646874424,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          },
+          "demographic_divergence": {
+            "group1_mean": 0.035750101134411426,
+            "group2_mean": 0.016944214352090717,
+            "difference": 0.01880588678232071,
+            "ci_lower": 0.007906291464361268,
+            "ci_upper": 0.02970548210028015,
+            "t_statistic": 3.4851176570665183,
+            "p_value": 0.0011913401370367903,
+            "p_value_corrected": 0.007148040822220742,
+            "n_comparisons": 6,
+            "cohens_d": 0.8998535096928023,
+            "significant": true,
+            "n1": 30,
+            "n2": 30
+          },
+          "equalized_odds_gap": {
+            "group1_mean": 0.775812525388708,
+            "group2_mean": 0.774186998650036,
+            "difference": 0.0016255267386720007,
+            "ci_lower": -0.11015537370906398,
+            "ci_upper": 0.11340642718640798,
+            "t_statistic": 0.029110117402621018,
+            "p_value": 0.9768768608540371,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": 0.007516199993766261,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          }
+        },
+        "Random": {
+          "auc_roc": {
+            "group1_mean": 0.8724806664019419,
+            "group2_mean": 0.8756438775437199,
+            "difference": -0.0031632111417779774,
+            "ci_lower": -0.024817868190073714,
+            "ci_upper": 0.01849144590651776,
+            "t_statistic": -0.2924023320406952,
+            "p_value": 0.7710226214781369,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.07549795749238826,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          },
+          "demographic_divergence": {
+            "group1_mean": 0.0599277992189613,
+            "group2_mean": 0.016944214352090717,
+            "difference": 0.04298358486687058,
+            "ci_lower": 0.030660317084373133,
+            "ci_upper": 0.05530685264936803,
+            "t_statistic": 7.0610965977479445,
+            "p_value": 2.033652960411779e-08,
+            "p_value_corrected": 1.2201917762470674e-07,
+            "n_comparisons": 6,
+            "cohens_d": 1.8231673019359762,
+            "significant": true,
+            "n1": 30,
+            "n2": 30
+          },
+          "equalized_odds_gap": {
+            "group1_mean": 0.7652301675486854,
+            "group2_mean": 0.774186998650036,
+            "difference": -0.008956831101350593,
+            "ci_lower": -0.11998961040638426,
+            "ci_upper": 0.10207594820368307,
+            "t_statistic": -0.16148524893746413,
+            "p_value": 0.8722740713350406,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.04169531198619718,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          }
+        },
+        "Greedy (size)": {
+          "auc_roc": {
+            "group1_mean": 0.8724806664019419,
+            "group2_mean": 0.879640721698255,
+            "difference": -0.007160055296313139,
+            "ci_lower": -0.02870712399594704,
+            "ci_upper": 0.014387013403320763,
+            "t_statistic": -0.6651739105584661,
+            "p_value": 0.5085769774231879,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.17174716519497343,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          },
+          "demographic_divergence": {
+            "group1_mean": 0.21469551438577808,
+            "group2_mean": 0.016944214352090717,
+            "difference": 0.19775130003368735,
+            "ci_lower": 0.16076555719114144,
+            "ci_upper": 0.23473704287623326,
+            "t_statistic": 10.920720664598386,
+            "p_value": 5.865823992166593e-12,
+            "p_value_corrected": 3.5194943952999553e-11,
+            "n_comparisons": 6,
+            "cohens_d": 2.819717950838183,
+            "significant": true,
+            "n1": 30,
+            "n2": 30
+          },
+          "equalized_odds_gap": {
+            "group1_mean": 0.7538529337015627,
+            "group2_mean": 0.774186998650036,
+            "difference": -0.02033406494847334,
+            "ci_lower": -0.12750582785727702,
+            "ci_upper": 0.08683769796033033,
+            "t_statistic": -0.37993352444927286,
+            "p_value": 0.7054065788207976,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.09809841419052814,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          }
+        },
+        "FedAvg (all)": {
+          "auc_roc": {
+            "group1_mean": 0.8724806664019419,
+            "group2_mean": 0.8776665399566376,
+            "difference": -0.005185873554695686,
+            "ci_lower": -0.026801751208446817,
+            "ci_upper": 0.016430004099055446,
+            "t_statistic": -0.48023509128161057,
+            "p_value": 0.6328669644719503,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.12399616738653842,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          },
+          "demographic_divergence": {
+            "group1_mean": 0.0949942439248678,
+            "group2_mean": 0.016944214352090717,
+            "difference": 0.07805002957277708,
+            "ci_lower": 0.0613653496348476,
+            "ci_upper": 0.09473470951070656,
+            "t_statistic": 9.509790558032467,
+            "p_value": 4.5386297247879165e-11,
+            "p_value_corrected": 2.72317783487275e-10,
+            "n_comparisons": 6,
+            "cohens_d": 2.4554173638120194,
+            "significant": true,
+            "n1": 30,
+            "n2": 30
+          },
+          "equalized_odds_gap": {
+            "group1_mean": 0.7673908218470246,
+            "group2_mean": 0.774186998650036,
+            "difference": -0.006796176803011478,
+            "ci_lower": -0.11607575524922957,
+            "ci_upper": 0.10248340164320661,
+            "t_statistic": -0.12450891867565721,
+            "p_value": 0.9013462115131263,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.03214806456567427,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          }
+        },
+        "FedFDP": {
+          "auc_roc": {
+            "group1_mean": 0.8724806664019419,
+            "group2_mean": 0.8788292635000737,
+            "difference": -0.006348597098131847,
+            "ci_lower": -0.027932523698767506,
+            "ci_upper": 0.015235329502503812,
+            "t_statistic": -0.5887800243039678,
+            "p_value": 0.5582957470862113,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.15202234858059105,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          },
+          "demographic_divergence": {
+            "group1_mean": 0.09778427243845937,
+            "group2_mean": 0.016944214352090717,
+            "difference": 0.08084005808636865,
+            "ci_lower": 0.061332969079501254,
+            "ci_upper": 0.10034714709323606,
+            "t_statistic": 8.437345676725778,
+            "p_value": 1.104105078764501e-09,
+            "p_value_corrected": 6.624630472587006e-09,
+            "n_comparisons": 6,
+            "cohens_d": 2.178513286143606,
+            "significant": true,
+            "n1": 30,
+            "n2": 30
+          },
+          "equalized_odds_gap": {
+            "group1_mean": 0.767044178338626,
+            "group2_mean": 0.774186998650036,
+            "difference": -0.007142820311410003,
+            "ci_lower": -0.11749386353164935,
+            "ci_upper": 0.10320822290882935,
+            "t_statistic": -0.12957990670930816,
+            "p_value": 0.8973491536413116,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.03345738804588408,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          }
+        },
+        "GWO": {
+          "auc_roc": {
+            "group1_mean": 0.8724806664019419,
+            "group2_mean": 0.8779497106399858,
+            "difference": -0.005469044238043952,
+            "ci_lower": -0.027298322730604663,
+            "ci_upper": 0.01636023425451676,
+            "t_statistic": -0.501504752942148,
+            "p_value": 0.617914294595572,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.12948797041258697,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          },
+          "demographic_divergence": {
+            "group1_mean": 0.06711721455361558,
+            "group2_mean": 0.016944214352090717,
+            "difference": 0.05017300020152486,
+            "ci_lower": 0.0368121720456392,
+            "ci_upper": 0.06353382835741052,
+            "t_statistic": 7.611934472954915,
+            "p_value": 4.762068500988028e-09,
+            "p_value_corrected": 2.8572411005928167e-08,
+            "n_comparisons": 6,
+            "cohens_d": 1.9653930297451012,
+            "significant": true,
+            "n1": 30,
+            "n2": 30
+          },
+          "equalized_odds_gap": {
+            "group1_mean": 0.7620282952248064,
+            "group2_mean": 0.774186998650036,
+            "difference": -0.012158703425229622,
+            "ci_lower": -0.12073825241861375,
+            "ci_upper": 0.0964208455681545,
+            "t_statistic": -0.22420179690775818,
+            "p_value": 0.8233964603255332,
+            "p_value_corrected": 1.0,
+            "n_comparisons": 6,
+            "cohens_d": -0.05788865504090167,
+            "significant": false,
+            "n1": 30,
+            "n2": 30
+          }
+        }
+      }
+    },
+    "summary": "Real Federated Learning Experiment Summary\n============================================================\nFairSwarm:      AUC-ROC = 0.8753 [0.8687, 0.8818], DemDiv = 0.0183\nStandard PSO:   AUC-ROC = 0.8760 [0.8695, 0.8826], DemDiv = 0.0259\nRandom:         AUC-ROC = 0.8772 [0.8707, 0.8837], DemDiv = 0.0425\nGreedy (size):  AUC-ROC = 0.8810 [0.8746, 0.8875], DemDiv = 0.1702\nFedAvg (all):   AUC-ROC = 0.8805 [0.8740, 0.8869], DemDiv = 0.0681\nFedFDP:         AUC-ROC = 0.8799 [0.8734, 0.8863], DemDiv = 0.0656\nGWO:            AUC-ROC = 0.8804 [0.8739, 0.8869], DemDiv = 0.0537\n\nFairSwarm fairness gradient reduces demographic divergence by 29.2% vs Standard PSO\n============================================================"
+  },
+  "n_total_trials": 1260,
+  "execution_time_seconds": 1812.9841005802155,
+  "execution_mode": "parallel",
+  "n_workers": 10,
+  "timestamp": "2026-02-16T13:59:07.205799",
+  "code_version": "53bf3ba4e43dd64dfeede6895f371345967845f1"
+}

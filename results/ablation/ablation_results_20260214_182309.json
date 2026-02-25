@@ -1,0 +1,410 @@
+{
+  "config": {
+    "n_clients": 20,
+    "n_demographic_groups": 4,
+    "coalition_size": 10,
+    "n_iterations": 100,
+    "n_trials": 30,
+    "output_dir": "results/ablation",
+    "seed": 42
+  },
+  "ablations": {
+    "fairness_gradient": {
+      "ablation": "fairness_gradient",
+      "analysis": {
+        "full_fairswarm": {
+          "avg_fitness": 0.7057145999611893,
+          "fitness_ci": {
+            "mean": 0.7057145999611893,
+            "ci_lower": 0.7004136644347391,
+            "ci_upper": 0.7110155354876396,
+            "confidence": 0.95,
+            "n": 30
+          },
+          "avg_fairness": 0.10922023405899646,
+          "fairness_ci": {
+            "mean": 0.10922023405899646,
+            "ci_lower": 0.1028095515441665,
+            "ci_upper": 0.11563091657382642,
+            "confidence": 0.95,
+            "n": 30
+          },
+          "n_trials": 30
+        },
+        "no_fairness_gradient": {
+          "avg_fitness": 0.6919211387279663,
+          "fitness_ci": {
+            "mean": 0.6919211387279663,
+            "ci_lower": 0.6862452339879385,
+            "ci_upper": 0.6975970434679942,
+            "confidence": 0.95,
+            "n": 30
+          },
+          "avg_fairness": 0.13154275909826496,
+          "fairness_ci": {
+            "mean": 0.13154275909826496,
+            "ci_lower": 0.12245847488211593,
+            "ci_upper": 0.140627043314414,
+            "confidence": 0.95,
+            "n": 30
+          },
+          "n_trials": 30
+        },
+        "improvement": {
+          "fitness_change": 0.013793461233223003,
+          "fairness_improvement": 0.0223225250392685,
+          "fairness_improvement_pct": 16.969786244633312,
+          "fitness_comparison": {
+            "group1_mean": 0.7057145999611893,
+            "group2_mean": 0.6919211387279663,
+            "difference": 0.013793461233223003,
+            "ci_lower": 0.006191610190592361,
+            "ci_upper": 0.021395312275853645,
+            "t_statistic": 3.632450856107772,
+            "p_value": 0.0005978810908584037,
+            "cohens_d": 0.9378947781081518,
+            "significant": "True",
+            "n1": 30,
+            "n2": 30
+          },
+          "fairness_comparison": {
+            "group1_mean": 0.13154275909826496,
+            "group2_mean": 0.10922023405899646,
+            "difference": 0.0223225250392685,
+            "ci_lower": 0.011414489475793628,
+            "ci_upper": 0.033230560602743375,
+            "t_statistic": 4.1061910121521565,
+            "p_value": 0.00014219104983582138,
+            "cohens_d": 1.0602139604274585,
+            "significant": "True",
+            "n1": 30,
+            "n2": 30
+          }
+        }
+      },
+      "conclusion": "Fairness gradient improves demographic balance by 17.0% (full: 0.1092 [0.1028, 0.1156] vs no gradient: 0.1315 [0.1225, 0.1406], p=0.0001, 95% CI)"
+    },
+    "swarm_size": {
+      "ablation": "swarm_size",
+      "analysis": {
+        "swarm_10": {
+          "swarm_size": 10,
+          "avg_fitness": 0.6681271566289193,
+          "fitness_ci": {
+            "mean": 0.6681271566289193,
+            "ci_lower": 0.6557093961461496,
+            "ci_upper": 0.680544917111689,
+            "confidence": 0.95,
+            "n": 30
+          },
+          "avg_fairness": 0.11628093032196604,
+          "fairness_ci": {
+            "mean": 0.11628093032196604,
+            "ci_lower": 0.10667478235281465,
+            "ci_upper": 0.12588707829111742,
+            "confidence": 0.95,
+            "n": 30
+          },
+          "n_trials": 30
+        },
+        "swarm_20": {
+          "swarm_size": 20,
+          "avg_fitness": 0.6864828766275831,
+          "fitness_ci": {
+            "mean": 0.6864828766275831,
+            "ci_lower": 0.6737021017530345,
+            "ci_upper": 0.6992636515021318,
+            "confidence": 0.95,
+            "n": 30
+          },
+          "avg_fairness": 0.11077818960733828,
+          "fairness_ci": {
+            "mean": 0.11077818960733828,
+            "ci_lower": 0.10455274888404911,
+            "ci_upper": 0.11700363033062744,
+            "confidence": 0.95,
+            "n": 30
+          },
+          "n_trials": 30
+        },
+        "swarm_30": {
+          "swarm_size": 30,
+          "avg_fitness": 0.7009816082721421,
+          "fitness_ci": {
+            "mean": 0.7009816082721421,
+            "ci_lower": 0.693674930212798,
+            "ci_upper": 0.7082882863314861,
+            "confidence": 0.95,
+            "n": 30
+          },
+          "avg_fairness": 0.1128693463377268,
+          "fairness_ci": {
+            "mean": 0.1128693463377268,
+            "ci_lower": 0.10497094830941311,
+            "ci_upper": 0.12076774436604049,
+            "confidence": 0.95,
+            "n": 30
+          },
+          "n_trials": 30
+        },
+        "swarm_50": {
+          "swarm_size": 50,
+          "avg_fitness": 0.7160037098027375,
+          "fitness_ci": {
+            "mean": 0.7160037098027375,
+            "ci_lower": 0.7122444380852246,
+            "ci_upper": 0.7197629815202504,
+            "confidence": 0.95,
+            "n": 30
+          },
+          "avg_fairness": 0.11531094601001028,
+          "fairness_ci": {
+            "mean": 0.11531094601001028,
+            "ci_lower": 0.11005348615082307,
+            "ci_upper": 0.1205684058691975,
+            "confidence": 0.95,
+            "n": 30
+          },
+          "n_trials": 30
+        },
+        "swarm_100": {
+          "swarm_size": 100,
+          "avg_fitness": 0.7182597718141072,
+          "fitness_ci": {
+            "mean": 0.7182597718141072,
+            "ci_lower": 0.7140199137262948,
+            "ci_upper": 0.7224996299019195,
+            "confidence": 0.95,
+            "n": 30
+          },
+          "avg_fairness": 0.11550418237468917,
+          "fairness_ci": {
+            "mean": 0.11550418237468917,
+            "ci_lower": 0.11199529951157607,
+            "ci_upper": 0.11901306523780227,
+            "confidence": 0.95,
+            "n": 30
+          },
+          "n_trials": 30
+        }
+      },
+      "best_swarm_size": 100,
+      "conclusion": "Optimal swarm size: 100 particles (fitness: 0.7183 [0.7140, 0.7225], 95% CI)"
+    },
+    "coalition_size": {
+      "ablation": "coalition_size",
+      "analysis": {
+        "coalition_3": {
+          "coalition_size": 3,
+          "avg_fitness": 0.3087970399893537,
+          "fitness_ci": {
+            "mean": 0.3087970399893537,
+            "ci_lower": 0.3000514331031105,
+            "ci_upper": 0.3175426468755969,
+            "confidence": 0.95,
+            "n": 30
+          },
+          "avg_fairness": 0.15416069056173248,
+          "fairness_ci": {
+            "mean": 0.15416069056173248,
+            "ci_lower": 0.13611949546039614,
+            "ci_upper": 0.17220188566306882,
+            "confidence": 0.95,
+            "n": 30
+          },
+          "n_trials": 30
+        },
+        "coalition_5": {
+          "coalition_size": 5,
+          "avg_fitness": 0.4497993146350472,
+          "fitness_ci": {
+            "mean": 0.4497993146350472,
+            "ci_lower": 0.4410473525121114,
+            "ci_upper": 0.45855127675798296,
+            "confidence": 0.95,
+            "n": 30
+          },
+          "avg_fairness": 0.1042668774934705,
+          "fairness_ci": {
+            "mean": 0.1042668774934705,
+            "ci_lower": 0.09768408315183078,
+            "ci_upper": 0.11084967183511021,
+            "confidence": 0.95,
+            "n": 30
+          },
+          "n_trials": 30
+        },
+        "coalition_8": {
+          "coalition_size": 8,
+          "avg_fitness": 0.6178845229690317,
+          "fitness_ci": {
+            "mean": 0.6178845229690317,
+            "ci_lower": 0.6098183702391875,
+            "ci_upper": 0.625950675698876,
+            "confidence": 0.95,
+            "n": 30
+          },
+          "avg_fairness": 0.10051028789254457,
+          "fairness_ci": {
+            "mean": 0.10051028789254457,
+            "ci_lower": 0.09505189126581605,
+            "ci_upper": 0.10596868451927309,
+            "confidence": 0.95,
+            "n": 30
+          },
+          "n_trials": 30
+        },
+        "coalition_10": {
+          "coalition_size": 10,
+          "avg_fitness": 0.705221190467214,
+          "fitness_ci": {
+            "mean": 0.705221190467214,
+            "ci_lower": 0.6983652144938579,
+            "ci_upper": 0.7120771664405701,
+            "confidence": 0.95,
+            "n": 30
+          },
+          "avg_fairness": 0.11229894938439343,
+          "fairness_ci": {
+            "mean": 0.11229894938439343,
+            "ci_lower": 0.10559411371766649,
+            "ci_upper": 0.11900378505112037,
+            "confidence": 0.95,
+            "n": 30
+          },
+          "n_trials": 30
+        },
+        "coalition_15": {
+          "coalition_size": 15,
+          "avg_fitness": 0.8670804132661575,
+          "fitness_ci": {
+            "mean": 0.8670804132661575,
+            "ci_lower": 0.8632549579626425,
+            "ci_upper": 0.8709058685696724,
+            "confidence": 0.95,
+            "n": 30
+          },
+          "avg_fairness": 0.14309245701323428,
+          "fairness_ci": {
+            "mean": 0.14309245701323428,
+            "ci_lower": 0.13856878480672719,
+            "ci_upper": 0.14761612921974138,
+            "confidence": 0.95,
+            "n": 30
+          },
+          "n_trials": 30
+        }
+      },
+      "conclusion": "Best fairness at coalition size 8: divergence 0.1005 [0.0951, 0.1060] (95% CI)"
+    },
+    "component_weights": {
+      "ablation": "component_weights",
+      "analysis": {
+        "accuracy_focused": {
+          "weights": {
+            "w_acc": 0.7,
+            "w_fair": 0.2,
+            "w_cost": 0.1
+          },
+          "avg_fitness": 0.7155401126458247,
+          "fitness_ci": {
+            "mean": 0.7155401126458247,
+            "ci_lower": 0.7096059149889495,
+            "ci_upper": 0.7214743103026999,
+            "confidence": 0.95,
+            "n": 30
+          },
+          "avg_fairness": 0.10930001653947331,
+          "fairness_ci": {
+            "mean": 0.10930001653947331,
+            "ci_lower": 0.10364115367290964,
+            "ci_upper": 0.11495887940603698,
+            "confidence": 0.95,
+            "n": 30
+          },
+          "n_trials": 30
+        },
+        "fairness_focused": {
+          "weights": {
+            "w_acc": 0.3,
+            "w_fair": 0.6,
+            "w_cost": 0.1
+          },
+          "avg_fitness": 0.6639195917564624,
+          "fitness_ci": {
+            "mean": 0.6639195917564624,
+            "ci_lower": 0.6544378879531678,
+            "ci_upper": 0.673401295559757,
+            "confidence": 0.95,
+            "n": 30
+          },
+          "avg_fairness": 0.10434346984906603,
+          "fairness_ci": {
+            "mean": 0.10434346984906603,
+            "ci_lower": 0.09784193414509643,
+            "ci_upper": 0.11084500555303564,
+            "confidence": 0.95,
+            "n": 30
+          },
+          "n_trials": 30
+        },
+        "balanced": {
+          "weights": {
+            "w_acc": 0.4,
+            "w_fair": 0.4,
+            "w_cost": 0.2
+          },
+          "avg_fitness": 0.6964147156491244,
+          "fitness_ci": {
+            "mean": 0.6964147156491244,
+            "ci_lower": 0.6913730686269837,
+            "ci_upper": 0.7014563626712651,
+            "confidence": 0.95,
+            "n": 30
+          },
+          "avg_fairness": 0.10884935776870498,
+          "fairness_ci": {
+            "mean": 0.10884935776870498,
+            "ci_lower": 0.10239110469725535,
+            "ci_upper": 0.11530761084015462,
+            "confidence": 0.95,
+            "n": 30
+          },
+          "n_trials": 30
+        },
+        "cost_aware": {
+          "weights": {
+            "w_acc": 0.4,
+            "w_fair": 0.3,
+            "w_cost": 0.3
+          },
+          "avg_fitness": 0.7033265628771603,
+          "fitness_ci": {
+            "mean": 0.7033265628771603,
+            "ci_lower": 0.6956993216747451,
+            "ci_upper": 0.7109538040795755,
+            "confidence": 0.95,
+            "n": 30
+          },
+          "avg_fairness": 0.10792086501196048,
+          "fairness_ci": {
+            "mean": 0.10792086501196048,
+            "ci_lower": 0.10317453392904588,
+            "ci_upper": 0.11266719609487508,
+            "confidence": 0.95,
+            "n": 30
+          },
+          "n_trials": 30
+        }
+      },
+      "best_config": "fairness_focused",
+      "conclusion": "Best fairness with 'fairness_focused' weights: divergence 0.1043 [0.0978, 0.1108] (95% CI)"
+    }
+  },
+  "timestamp": "2026-02-14T18:21:02.572825",
+  "analysis": {
+    "summary": "Fairness gradient (novel contribution) improves demographic balance by 17.0% (p=0.0001, statistically significant)",
+    "key_finding": "Fairness gradient improves demographic balance by 17.0% (full: 0.1092 [0.1028, 0.1156] vs no gradient: 0.1315 [0.1225, 0.1406], p=0.0001, 95% CI)",
+    "fairness_gradient_validated": "True"
+  }
+}

@@ -1,0 +1,351 @@
+# FairSwarm Experiment Configurations
+# ====================================
+# Configuration file for all thesis experiments validating Theorems 1-4
+#
+# Author: Tenicka Norwood
+# Advisor: Dr. Uttam Ghosh
+# Institution: Meharry Medical College
+#
+# Usage:
+#   python run_convergence.py --config config/experiment_configs.yaml
+#   python run_fairness.py --config config/experiment_configs.yaml
+
+# ==============================================================================
+# Global Settings
+# ==============================================================================
+global:
+  seed: 42
+  n_trials: 50
+  output_base_dir: "results"
+
+  # Client generation
+  n_clients: 20
+  n_demographic_groups: 4
+  coalition_size: 10
+
+  # Target demographics (US Census-like distribution)
+  target_distribution:
+    age_18_44: 0.20
+    age_45_64: 0.35
+    age_65_84: 0.35
+    age_85_plus: 0.10
+
+# ==============================================================================
+# Theorem 1: Convergence Validation
+# ==============================================================================
+# Theorem 1 states: Under Assumptions 1-3, FairSwarm converges to a stationary
+# point with probability 1 when: omega + (c1 + c2) / 2 < 2
+#
+# This experiment tests convergence under different PSO parameter combinations.
+theorem1_convergence:
+  description: "Validate Theorem 1 convergence conditions"
+  output_dir: "results/convergence"
+
+  # PSO parameters to test
+  inertia_values: [0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+  cognitive_values: [0.5, 1.0, 1.5, 2.0]
+  social_values: [0.5, 1.0, 1.5, 2.0]
+
+  # FairSwarm specific
+  fairness_coefficient: 0.5
+  swarm_size: 30
+
+  # Convergence detection
+  n_iterations: 200
+  convergence_window: 20
+  convergence_threshold: 0.0001
+
+  # Validation criteria
+  expected_convergence_rate: 0.90  # 90% of trials should converge
+
+  metrics:
+    - convergence_rate
+    - convergence_iteration
+    - final_fitness_variance
+    - improvement_rate
+
+# ==============================================================================
+# Theorem 2: ε-Fairness Validation
+# ==============================================================================
+# Theorem 2 states: With T >= T_min iterations and lambda >= lambda_min,
+# the output coalition satisfies: DemDiv(S*) <= epsilon + O(1/sqrt(T))
+# with probability >= 1 - delta
+#
+# This experiment tests fairness guarantees under different configurations.
+theorem2_fairness:
+  description: "Validate Theorem 2 epsilon-fairness bounds"
+  output_dir: "results/fairness"
+
+  # Fairness targets to test
+  epsilon_values: [0.01, 0.02, 0.05, 0.10, 0.20]
+  lambda_values: [0.1, 0.2, 0.3, 0.5, 0.7]
+
+  # Confidence level (1 - delta)
+  delta: 0.1
+
+  # PSO parameters (fixed)
+  inertia: 0.7
+  cognitive: 1.5
+  social: 1.5
+  fairness_coefficient: 0.5
+  swarm_size: 30
+  n_iterations: 100
+
+  # Baselines for comparison
+  baselines:
+    - name: "random"
+      description: "Uniform random selection"
+    - name: "fedavg"
+      description: "FedAvg with all clients"
+    - name: "fair_dpfl"
+      description: "FedFDP (state-of-the-art, Ling et al. 2024)"
+      privacy_budget: 4.0
+
+  # Validation criteria
+  expected_satisfaction_rate: 0.90  # 90% should achieve epsilon-fairness
+
+  metrics:
+    - demographic_divergence
+    - epsilon_satisfied
+    - fitness
+    - coalition_distribution
+
+# ==============================================================================
+# Theorem 3: Approximation Ratio Validation
+# ==============================================================================
+# Theorem 3 states: FairSwarm achieves (1 - 1/e - eta) approximation
+# when the accuracy function is submodular.
+#
+# This experiment validates the approximation quality.
+theorem3_approximation:
+  description: "Validate Theorem 3 approximation ratio"
+  output_dir: "results/approximation"
+
+  # Test with known submodular fitness functions
+  fitness_functions:
+    - name: "submodular_coverage"
+      description: "Set coverage objective (known submodular)"
+    - name: "demographic_fitness"
+      description: "Standard demographic fitness"
+
+  # Compare with optimal (brute force for small instances)
+  small_instance:
+    n_clients: 10
+    coalition_size: 5
+    compute_optimal: true
+
+  # Large instance (approximation only)
+  large_instance:
+    n_clients: 50
+    coalition_size: 15
+    compute_optimal: false
+
+  # Expected approximation ratio
+  expected_ratio: 0.53  # 1 - 1/e ≈ 0.632, with eta = 0.1 -> 0.532
+
+  metrics:
+    - approximation_ratio
+    - fitness_gap
+    - computation_time
+
+# ==============================================================================
+# Theorem 4: Privacy-Fairness Tradeoff Validation
+# ==============================================================================
+# Theorem 4 states: For any (epsilon_DP, delta)-DP mechanism with epsilon_F-fairness,
+# the utility loss is at least: Omega(sqrt(k * log(1/delta)) / (epsilon_DP * epsilon_F))
+#
+# This experiment validates the privacy-fairness tradeoff bound.
+theorem4_privacy:
+  description: "Validate Theorem 4 privacy-fairness tradeoff"
+  output_dir: "results/privacy"
+
+  # Privacy budgets to test
+  epsilon_dp_values: [1.0, 2.0, 4.0, 8.0, 16.0]
+
+  # Fairness targets
+  epsilon_fair_values: [0.02, 0.05, 0.10]
+
+  # Privacy parameters
+  delta: 0.00001  # 1e-5
+
+  # Use FairSwarm-DP variant
+  algorithm: "fairswarm_dp"
+
+  n_iterations: 100
+  swarm_size: 30
+
+  # Compare utility at different privacy/fairness levels
+  metrics:
+    - utility_achieved
+    - fairness_achieved
+    - privacy_spent
+    - theoretical_bound
+    - empirical_vs_bound_ratio
+
+# ==============================================================================
+# Ablation Studies
+# ==============================================================================
+ablation_studies:
+  description: "Component ablation studies"
+  output_dir: "results/ablation"
+
+  # Ablation 1: Fairness Gradient (Novel Contribution)
+  fairness_gradient:
+    description: "Effect of fairness-aware velocity update"
+    variants:
+      - name: "full_fairswarm"
+        fairness_coefficient: 0.5
+      - name: "no_fairness_gradient"
+        fairness_coefficient: 0.0
+    metrics: [fitness, fairness_divergence, convergence_iteration]
+
+  # Ablation 2: Swarm Size
+  swarm_size:
+    description: "Effect of particle population"
+    values: [10, 20, 30, 50, 100]
+    metrics: [fitness, fairness_divergence, computation_time]
+
+  # Ablation 3: Coalition Size
+  coalition_size:
+    description: "Effect of selection size"
+    values: [3, 5, 8, 10, 15]
+    metrics: [fitness, fairness_divergence, diversity]
+
+  # Ablation 4: Adaptive Lambda
+  adaptive_lambda:
+    description: "Fixed vs adaptive fairness weight"
+    variants:
+      - name: "fixed_lambda"
+        adaptive: false
+        lambda_value: 0.3
+      - name: "adaptive_lambda"
+        adaptive: true
+        lambda_init: 0.3
+    metrics: [fairness_trajectory, fitness_trajectory]
+
+  # Ablation 5: Component Weights
+  component_weights:
+    description: "Sensitivity to fitness component weights"
+    configurations:
+      - name: "accuracy_focused"
+        weights: {accuracy: 0.7, fairness: 0.2, cost: 0.1}
+      - name: "fairness_focused"
+        weights: {accuracy: 0.3, fairness: 0.6, cost: 0.1}
+      - name: "balanced"
+        weights: {accuracy: 0.4, fairness: 0.4, cost: 0.2}
+
+# ==============================================================================
+# Baseline Comparison
+# ==============================================================================
+baseline_comparison:
+  description: "Compare FairSwarm with baseline algorithms"
+  output_dir: "results/baselines"
+
+  algorithms:
+    - name: "fairswarm"
+      type: "fairswarm"
+      config:
+        swarm_size: 30
+        n_iterations: 100
+        fairness_coefficient: 0.5
+
+    - name: "random"
+      type: "random_selection"
+      config:
+        n_iterations: 100
+
+    - name: "fedavg"
+      type: "fedavg"
+      config:
+        n_rounds: 50
+        participation_rate: 1.0
+
+    - name: "fedavg_partial"
+      type: "fedavg"
+      config:
+        n_rounds: 50
+        participation_rate: 0.5
+
+    - name: "fair_dpfl_scs"
+      type: "fair_dpfl"
+      config:
+        n_rounds: 50
+        fairness_threshold: 0.05
+        privacy_budget: 4.0
+
+    - name: "greedy_selection"
+      type: "greedy"
+      config:
+        criterion: "fitness"
+
+  metrics:
+    - fitness
+    - demographic_divergence
+    - convergence_rounds
+    - computation_time
+    - fairness_vs_accuracy_tradeoff
+
+# ==============================================================================
+# Healthcare Application (SwarmClinical)
+# ==============================================================================
+swarmclinical:
+  description: "Healthcare FL application experiments"
+  output_dir: "results/swarmclinical"
+
+  # Data configuration
+  data:
+    source: "mimic-iii"  # or "synthetic" for testing
+    partition_by: "icu_unit"
+    min_patients_per_unit: 100
+
+  # Model configuration
+  model:
+    type: "mortality_lstm"
+    hidden_dim: 64
+    num_layers: 2
+    dropout: 0.3
+
+  # Training configuration
+  training:
+    n_rounds: 50
+    local_epochs: 5
+    local_batch_size: 32
+    learning_rate: 0.001
+    coalition_size: 4
+
+  # Fairness target (healthcare-specific)
+  fairness:
+    target: "us_census_age"  # Age-based demographic balance
+    epsilon: 0.05
+
+  # Evaluation metrics
+  metrics:
+    - auc_roc
+    - accuracy
+    - sensitivity
+    - specificity
+    - demographic_divergence
+    - equalized_odds_gap
+
+# ==============================================================================
+# Reproducibility
+# ==============================================================================
+reproducibility:
+  # All experiments should be reproducible with these seeds
+  master_seed: 42
+
+  # Seeds for different experiment types
+  seeds:
+    convergence: 42
+    fairness: 123
+    privacy: 456
+    ablation: 789
+    baseline: 321
+    clinical: 999
+
+  # Save full experiment state for reproducibility
+  save_checkpoints: true
+  checkpoint_frequency: 10  # Every 10 trials
+
+  # Log level
+  logging: "INFO"
