@@ -102,7 +102,7 @@ Full API documentation is available in the source code docstrings. For the forma
 ## Citation
 
 ```bibtex
-@phdthesis{norwood2025fairswarm,
+@phdthesis{norwood2026fairswarm,
   title={FairSwarm: A Provably Fair Particle Swarm Optimization Algorithm
          for Federated Learning Coalition Selection with Applications in Healthcare},
   author={Norwood, Tenicka},
