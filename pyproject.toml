@@ -7,10 +7,10 @@ name = "fairswarm"
 dynamic = ["version"]
 description = "Provably fair particle swarm optimization for federated learning coalition selection"
 readme = "README.md"
-license = "Apache-2.0"
+license = "LicenseRef-PolyForm-Noncommercial-1.0.0"
 requires-python = ">=3.9"
 authors = [
-    { name = "Tenicka Norwood", email = "tnorwood@example.edu" },
+    { name = "Tenicka Norwood", email = "tenicka.norwood@gmail.com" },
 ]
 keywords = [
     "federated-learning",
@@ -22,7 +22,7 @@ keywords = [
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: Apache Software License",
+    "License :: Other/Proprietary License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
@@ -36,6 +36,7 @@ dependencies = [
     "numpy>=1.24.0",
     "scipy>=1.10.0",
     "pydantic>=2.0.0",
+    "typing_extensions>=4.0.0; python_version < '3.10'",
 ]
 
 [project.optional-dependencies]
@@ -55,9 +56,10 @@ full = [
 ]
 
 [project.urls]
-Documentation = "https://github.com/dataeducator/fairswarm#readme"
-Issues = "https://github.com/dataeducator/fairswarm/issues"
-Source = "https://github.com/dataeducator/fairswarm"
+Homepage = "https://github.com/dataeducator/fairswarm-library"
+Documentation = "https://github.com/dataeducator/fairswarm-library#readme"
+Issues = "https://github.com/dataeducator/fairswarm-library/issues"
+Source = "https://github.com/dataeducator/fairswarm-library"
 
 [tool.hatch.version]
 path = "src/fairswarm/__version__.py"

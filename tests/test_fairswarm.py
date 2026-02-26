@@ -9,7 +9,6 @@ Tests cover:
 - Result structure and metrics
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 import numpy as np

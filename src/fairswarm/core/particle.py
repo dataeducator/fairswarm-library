@@ -14,7 +14,6 @@ Algorithm Reference (Algorithm 1 in the paper):
             pBestFitₚ ← Fitness(Sₚ)           // Personal best fitness
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 from __future__ import annotations

@@ -11,7 +11,6 @@ Key Classes:
     - PrivacyConstraint: Enforces privacy budget constraints
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 from fairswarm.constraints.base import Constraint, ConstraintResult, ConstraintSet

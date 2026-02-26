@@ -9,7 +9,6 @@ Tests cover:
 - Gradient computation for fairness-aware updates
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 import numpy as np

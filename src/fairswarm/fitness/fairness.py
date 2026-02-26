@@ -13,7 +13,6 @@ Definition 2 (Demographic Divergence):
     - D_KL is the Kullback-Leibler divergence
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 from __future__ import annotations

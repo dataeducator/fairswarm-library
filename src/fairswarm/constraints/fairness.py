@@ -8,7 +8,6 @@ Definition 2: DemDiv(S) = D_KL(δ_S || δ*)
 Theorem 2: DemDiv(S*) ≤ ε with probability ≥ 1 - δ
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 from __future__ import annotations

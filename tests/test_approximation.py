@@ -19,7 +19,6 @@ Key Properties Tested:
     5. η decreases with more iterations
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 import numpy as np

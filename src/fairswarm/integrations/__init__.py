@@ -6,7 +6,6 @@ This module provides integration with popular FL frameworks:
 - Future: TensorFlow Federated, PySyft
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 from fairswarm.integrations.flower import (

@@ -11,7 +11,6 @@ Research Foundation:
     - Theorem 4 (Privacy): Controls ε_DP budget
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 from __future__ import annotations

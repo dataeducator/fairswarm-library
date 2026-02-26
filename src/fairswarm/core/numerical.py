@@ -5,7 +5,6 @@ This module provides functions for ensuring numerical stability
 in FairSwarm computations, particularly for distributions and gradients.
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 from __future__ import annotations

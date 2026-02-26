@@ -17,7 +17,6 @@ Theoretical Guarantees:
     - Theorem 3: (1-1/e-η) approximation for submodular objectives
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 from fairswarm.algorithms.fairswarm import FairSwarm, run_fairswarm

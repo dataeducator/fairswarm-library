@@ -6,7 +6,6 @@ enabling integration with sklearn's cross-validation, grid search,
 and pipeline APIs.
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 from __future__ import annotations

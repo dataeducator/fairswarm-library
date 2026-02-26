@@ -5,7 +5,6 @@ Constraints define feasibility conditions for coalitions during
 PSO optimization.
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 from __future__ import annotations

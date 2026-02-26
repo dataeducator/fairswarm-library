@@ -21,7 +21,6 @@ Mathematical Foundation:
     - CommCost(S): Communication/computation cost
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 from fairswarm.fitness.base import FitnessFunction, FitnessResult

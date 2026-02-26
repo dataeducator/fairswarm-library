@@ -4,7 +4,6 @@ Tests for FairSwarm constraints module.
 Tests constraint evaluation, violation tracking, and constraint sets.
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 import pytest

@@ -14,7 +14,6 @@ Data Sources:
     - US Census 2010: https://www.census.gov/2010census
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 from __future__ import annotations

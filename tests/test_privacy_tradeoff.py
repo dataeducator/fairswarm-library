@@ -18,7 +18,6 @@ Key Properties Tested:
     4. The tradeoff bound direction holds empirically
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 import numpy as np

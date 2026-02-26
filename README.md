@@ -2,7 +2,7 @@
 
 > Provably fair particle swarm optimization for federated learning coalition selection
 
-[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![License](https://img.shields.io/badge/License-PolyForm_Noncommercial-blue.svg)](https://polyformproject.org/licenses/noncommercial/1.0.0/)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 
 ## Overview
@@ -93,18 +93,11 @@ print(f"Fitness: {result.fitness:.4f}")
 print(f"ε-fair: {result.is_epsilon_fair(0.05)}")
 ```
 
-## Research Foundation
-
-FairSwarm builds upon the foundational research of:
-
-- **Dr. Uttam Ghosh** (Meharry Medical College): Privacy-preserving federated learning, Zero Trust security
-- **Dr. Elizabeth Serena Bentley** (AFRL): Digital twins, PSO optimization, FSL-SAGE
-
 ## Documentation
 
 Full API documentation is available in the source code docstrings. For the formal algorithm specification, theoretical proofs, and experimental methodology, please refer to:
 
-> T. Norwood and U. Ghosh, "FairSwarm: Provably Fair Particle Swarm Optimization for Federated Learning Coalition Selection," *IEEE Trans. Neural Netw. Learn. Syst.*, 2026.
+> T. Norwood, "FairSwarm: Provably Fair Particle Swarm Optimization for Federated Learning Coalition Selection," *IEEE Trans. Neural Netw. Learn. Syst.*, 2026.
 
 ## Citation
 
@@ -113,11 +106,15 @@ Full API documentation is available in the source code docstrings. For the forma
   title={FairSwarm: A Provably Fair Particle Swarm Optimization Algorithm
          for Federated Learning Coalition Selection with Applications in Healthcare},
   author={Norwood, Tenicka},
-  year={2025},
+  year={2026},
   school={Meharry Medical College}
 }
 ```
 
 ## License
 
-Apache 2.0 - See [LICENSE](LICENSE) for details.
+This project is licensed under the [PolyForm Noncommercial License 1.0.0](https://polyformproject.org/licenses/noncommercial/1.0.0/). You are free to use, modify, and distribute it for any noncommercial purpose, including academic research, education, and personal projects.
+
+**Commercial licensing is available.** For commercial use inquiries, please contact [Tenicka Norwood](mailto:tenicka.norwood@gmail.com).
+
+See [LICENSE](LICENSE) for full terms.

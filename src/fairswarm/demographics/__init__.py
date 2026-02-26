@@ -33,7 +33,6 @@ Example:
     >>> print(f"Divergence from census: {divergence:.4f}")
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 from fairswarm.demographics.distribution import DemographicDistribution

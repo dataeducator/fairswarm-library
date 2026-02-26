@@ -25,12 +25,8 @@ Example:
 
 References:
     - Norwood, T. "FairSwarm: Provably Fair PSO for FL" (PhD Thesis)
-    - Ghosh, U. "Zero Trust Federated Learning" (Springer, 2025)
-    - Bentley, E.S. "FSL-SAGE" (ICML, 2025)
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
-Institution: Meharry Medical College
 """
 
 from fairswarm.__version__ import __version__
@@ -55,10 +51,10 @@ def __getattr__(name: str) -> type:
         from fairswarm.integrations.flower import FairSwarmStrategy
 
         return FairSwarmStrategy
-    elif name == "BentleyDigitalTwin":
-        from fairswarm.digital_twin.twin import BentleyDigitalTwin
+    elif name == "DigitalTwin":
+        from fairswarm.digital_twin.twin import DigitalTwin
 
-        return BentleyDigitalTwin
+        return DigitalTwin
     elif name == "VirtualEnvironment":
         from fairswarm.digital_twin.simulator import VirtualEnvironment
 
@@ -95,7 +91,7 @@ __all__ = [
     # Integration (Phase 11)
     "FairSwarmStrategy",
     # Digital Twin (Phase 12)
-    "BentleyDigitalTwin",
+    "DigitalTwin",
     "VirtualEnvironment",
     "DriftDetector",
     "SimToRealAdapter",

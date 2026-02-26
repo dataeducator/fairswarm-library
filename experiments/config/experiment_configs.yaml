@@ -3,8 +3,6 @@
 # Configuration file for all thesis experiments validating Theorems 1-4
 #
 # Author: Tenicka Norwood
-# Advisor: Dr. Uttam Ghosh
-# Institution: Meharry Medical College
 #
 # Usage:
 #   python run_convergence.py --config config/experiment_configs.yaml

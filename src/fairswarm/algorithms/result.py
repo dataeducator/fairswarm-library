@@ -5,7 +5,6 @@ This module provides structured containers for FairSwarm optimization
 results, including convergence metrics and fairness analysis.
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 from __future__ import annotations

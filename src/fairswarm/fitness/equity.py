@@ -44,7 +44,6 @@ References:
       AAAI (2024)
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 from __future__ import annotations

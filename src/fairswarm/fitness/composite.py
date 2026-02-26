@@ -15,7 +15,6 @@ Mathematical Foundation:
     F(S) = w_1·ValAcc(S) - w_2·DemDiv(S) - w_3·CommCost(S)
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 from __future__ import annotations

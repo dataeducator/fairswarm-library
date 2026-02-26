@@ -10,7 +10,6 @@ Key Allocators:
     - ShapleyAllocator: Based on Shapley values
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 from __future__ import annotations

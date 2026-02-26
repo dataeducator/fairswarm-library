@@ -13,7 +13,6 @@ Key Modifications:
     4. Auto-calibrated noise_multiplier to use full budget
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 from __future__ import annotations

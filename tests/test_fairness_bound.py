@@ -19,7 +19,6 @@ Key Properties Tested:
     5. ε-threshold satisfaction with sufficient iterations
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 import numpy as np

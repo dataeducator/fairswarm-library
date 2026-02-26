@@ -2,7 +2,7 @@
 Virtual Environment for Digital Twin Simulation.
 
 This module implements the simulated federated learning environment
-for the Bentley Digital Twin framework.
+for the Digital Twin framework.
 
 Simulation Architecture:
     The VirtualEnvironment creates a simulated FL system that mirrors
@@ -18,12 +18,7 @@ Key Features:
     - SimulationConfig: Configuration for simulation runs
     - SimulationResult: Results with performance metrics
 
-Research Attribution:
-    - Digital Twin Architecture: Dr. Elizabeth Bentley (Computer Networks 2023)
-    - FairSwarm Algorithm: Novel contribution (this thesis)
-
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 from __future__ import annotations
@@ -262,7 +257,7 @@ class VirtualEnvironment:
         - What-if analysis for different strategies
 
     Integration with Digital Twin:
-        The VirtualEnvironment is used by BentleyDigitalTwin for:
+        The VirtualEnvironment is used by DigitalTwin for:
         1. Testing coalition strategies before deployment
         2. Predicting performance of FairSwarm configurations
         3. Verifying Theorem 2 (ε-fairness) guarantees
@@ -290,7 +285,6 @@ class VirtualEnvironment:
         >>> print(result.summary())
 
     Author: Tenicka Norwood
-    Advisor: Dr. Uttam Ghosh
     """
 
     def __init__(

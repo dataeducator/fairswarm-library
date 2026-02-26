@@ -13,7 +13,6 @@ Shapley Value:
     φ_i(v) = Σ_{S⊆N\\{i}} (|S|!(n-|S|-1)!/n!) [v(S∪{i}) - v(S)]
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 from fairswarm.incentives.allocation import (

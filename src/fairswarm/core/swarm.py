@@ -9,7 +9,6 @@ Algorithm Reference:
     gBest that represents the best solution found by any particle.
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 from __future__ import annotations

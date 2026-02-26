@@ -2,7 +2,6 @@
 Tests for Digital Twin framework (Phase 12).
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 from __future__ import annotations
@@ -84,17 +83,17 @@ class TestSyncResult:
         assert result.metrics_transferred == 5
 
 
-class TestBentleyDigitalTwin:
-    """Tests for BentleyDigitalTwin."""
+class TestDigitalTwin:
+    """Tests for DigitalTwin."""
 
     def test_initialization(self):
         """Test twin initialization."""
-        from fairswarm.digital_twin.twin import BentleyDigitalTwin, TwinState
+        from fairswarm.digital_twin.twin import DigitalTwin, TwinState
 
         clients = create_test_clients(10)
         target = CensusTarget.US_2020.as_distribution()
 
-        twin = BentleyDigitalTwin(
+        twin = DigitalTwin(
             physical_clients=clients,
             target_distribution=target,
             coalition_size=5,
@@ -106,19 +105,19 @@ class TestBentleyDigitalTwin:
 
     def test_initialization_without_clients(self):
         """Test initialization without clients."""
-        from fairswarm.digital_twin.twin import BentleyDigitalTwin, TwinState
+        from fairswarm.digital_twin.twin import DigitalTwin, TwinState
 
-        twin = BentleyDigitalTwin()
+        twin = DigitalTwin()
 
         assert twin.state == TwinState.UNINITIALIZED
         assert len(twin.physical_clients) == 0
 
     def test_sync_physical_to_virtual(self):
         """Test physical to virtual synchronization."""
-        from fairswarm.digital_twin.twin import BentleyDigitalTwin
+        from fairswarm.digital_twin.twin import DigitalTwin
 
         clients = create_test_clients(10)
-        twin = BentleyDigitalTwin(physical_clients=clients)
+        twin = DigitalTwin(physical_clients=clients)
 
         result = twin.sync_physical_to_virtual(
             physical_metrics={"accuracy": 0.85, "loss": 0.35},
@@ -130,10 +129,10 @@ class TestBentleyDigitalTwin:
 
     def test_deploy_to_physical_raises(self):
         """Test that deploy_to_physical raises NotImplementedError."""
-        from fairswarm.digital_twin.twin import BentleyDigitalTwin
+        from fairswarm.digital_twin.twin import DigitalTwin
 
         clients = create_test_clients(10)
-        twin = BentleyDigitalTwin(physical_clients=clients)
+        twin = DigitalTwin(physical_clients=clients)
 
         coalition = [0, 2, 4, 6, 8]
         with pytest.raises(NotImplementedError):
@@ -141,10 +140,10 @@ class TestBentleyDigitalTwin:
 
     def test_prepare_deployment(self):
         """Test deployment configuration preparation."""
-        from fairswarm.digital_twin.twin import BentleyDigitalTwin
+        from fairswarm.digital_twin.twin import DigitalTwin
 
         clients = create_test_clients(10)
-        twin = BentleyDigitalTwin(physical_clients=clients)
+        twin = DigitalTwin(physical_clients=clients)
 
         coalition = [0, 2, 4, 6, 8]
         config = twin.prepare_deployment(coalition=coalition)
@@ -154,12 +153,12 @@ class TestBentleyDigitalTwin:
 
     def test_simulate(self):
         """Test simulation in virtual environment."""
-        from fairswarm.digital_twin.twin import BentleyDigitalTwin
+        from fairswarm.digital_twin.twin import DigitalTwin
 
         clients = create_test_clients(10)
         target = CensusTarget.US_2020.as_distribution()
 
-        twin = BentleyDigitalTwin(
+        twin = DigitalTwin(
             physical_clients=clients,
             target_distribution=target,
             coalition_size=5,
@@ -176,10 +175,10 @@ class TestBentleyDigitalTwin:
 
     def test_get_metrics(self):
         """Test metrics retrieval."""
-        from fairswarm.digital_twin.twin import BentleyDigitalTwin, TwinMetrics
+        from fairswarm.digital_twin.twin import DigitalTwin, TwinMetrics
 
         clients = create_test_clients(10)
-        twin = BentleyDigitalTwin(physical_clients=clients)
+        twin = DigitalTwin(physical_clients=clients)
 
         metrics = twin.get_metrics()
 
@@ -188,10 +187,10 @@ class TestBentleyDigitalTwin:
 
     def test_update_physical_clients(self):
         """Test updating physical clients."""
-        from fairswarm.digital_twin.twin import BentleyDigitalTwin
+        from fairswarm.digital_twin.twin import DigitalTwin
 
         clients = create_test_clients(10)
-        twin = BentleyDigitalTwin(physical_clients=clients)
+        twin = DigitalTwin(physical_clients=clients)
 
         new_clients = create_test_clients(15)
         twin.update_physical_clients(new_clients, auto_sync=True)
@@ -201,10 +200,10 @@ class TestBentleyDigitalTwin:
 
     def test_reset(self):
         """Test twin reset."""
-        from fairswarm.digital_twin.twin import BentleyDigitalTwin, TwinState
+        from fairswarm.digital_twin.twin import DigitalTwin, TwinState
 
         clients = create_test_clients(10)
-        twin = BentleyDigitalTwin(physical_clients=clients)
+        twin = DigitalTwin(physical_clients=clients)
 
         twin.reset()
 
@@ -213,14 +212,14 @@ class TestBentleyDigitalTwin:
 
     def test_repr(self):
         """Test string representation."""
-        from fairswarm.digital_twin.twin import BentleyDigitalTwin
+        from fairswarm.digital_twin.twin import DigitalTwin
 
         clients = create_test_clients(10)
-        twin = BentleyDigitalTwin(physical_clients=clients)
+        twin = DigitalTwin(physical_clients=clients)
 
         repr_str = repr(twin)
 
-        assert "BentleyDigitalTwin" in repr_str
+        assert "DigitalTwin" in repr_str
         assert "physical_clients=10" in repr_str
 
 

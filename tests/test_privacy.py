@@ -4,7 +4,6 @@ Tests for FairSwarm privacy module.
 Tests differential privacy mechanisms and privacy accountants.
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 import numpy as np

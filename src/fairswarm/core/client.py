@@ -11,7 +11,6 @@ Research Foundation:
     - Demographic distribution δ_i ∈ Δ^(k-1)
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 from __future__ import annotations
@@ -68,7 +67,7 @@ class Client:
         ... )
         >>> print(f"Hospital has {hospital.dataset_size} patients")
 
-    Security Note (Ghosh Framework):
+    Security Note:
         - Client IDs should not contain PHI
         - Demographics should be aggregated, not individual-level
         - All client data is validated at construction time

@@ -4,7 +4,6 @@ Tests for FairSwarm incentives module.
 Tests Shapley value computation and reward allocation mechanisms.
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 import numpy as np

@@ -14,7 +14,6 @@ Properties:
     4. Additivity: φ(v+w) = φ(v) + φ(w)
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 from __future__ import annotations

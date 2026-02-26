@@ -7,7 +7,6 @@ based on Theorem 4 (Privacy-Fairness Tradeoff).
 Theorem 4: UtilityLoss ≥ Ω(√(k·log(1/δ))/(ε_DP·ε_F))
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 from __future__ import annotations

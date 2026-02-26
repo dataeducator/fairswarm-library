@@ -10,7 +10,6 @@ Key Accountants:
     - RDPAccountant: Rényi Differential Privacy accounting
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 from __future__ import annotations

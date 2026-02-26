@@ -13,10 +13,8 @@ Integration Architecture:
 Research Attribution:
     - FairSwarm Algorithm: Novel contribution (this thesis)
     - Flower Framework: Beutel et al. "Flower: A Friendly FL Framework"
-    - Privacy mechanisms: Dr. Uttam Ghosh (IEEE TNSE 2023)
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 from __future__ import annotations
@@ -394,7 +392,6 @@ class FairSwarmStrategy(Strategy if FLOWER_AVAILABLE else object):  # type: igno
         ... )
 
     Author: Tenicka Norwood
-    Advisor: Dr. Uttam Ghosh
     """
 
     def __init__(

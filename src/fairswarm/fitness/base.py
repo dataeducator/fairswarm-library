@@ -5,7 +5,6 @@ This module defines the interface for fitness evaluation in the
 FairSwarm PSO algorithm.
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 from __future__ import annotations

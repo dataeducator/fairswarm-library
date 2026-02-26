@@ -9,7 +9,6 @@ This module provides the fundamental building blocks:
 - Position utilities: sigmoid, decode_coalition
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 from fairswarm.core.client import Client, create_synthetic_clients

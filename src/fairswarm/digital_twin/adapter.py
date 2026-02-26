@@ -11,13 +11,7 @@ Adaptation Strategies:
     3. Adversarial Adaptation: Learn domain-invariant representations
     4. Calibration: Adjust model confidence for domain shift
 
-Research Attribution:
-    - Digital Twin Framework: Dr. Elizabeth Bentley (Computer Networks 2023)
-    - Domain Adaptation Theory: Ben-David et al. (2010)
-    - FairSwarm Algorithm: Novel contribution (this thesis)
-
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 from __future__ import annotations
@@ -119,7 +113,7 @@ class SimToRealAdapter:
         - calibrate_predictions(): Adjust model confidence
 
     Integration with Digital Twin:
-        Used by BentleyDigitalTwin to ensure that policies
+        Used by DigitalTwin to ensure that policies
         optimized in simulation transfer effectively to production.
 
     Example:
@@ -138,7 +132,6 @@ class SimToRealAdapter:
         >>> weighted_coalition = adapter.reweight_coalition(coalition)
 
     Author: Tenicka Norwood
-    Advisor: Dr. Uttam Ghosh
     """
 
     def __init__(

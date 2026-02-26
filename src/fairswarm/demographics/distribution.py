@@ -9,7 +9,6 @@ Research Foundation:
     where Δ^(k-1) is the (k-1)-dimensional probability simplex.
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 from __future__ import annotations

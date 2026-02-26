@@ -16,7 +16,6 @@ Key Properties Tested:
     5. Velocity boundedness: Velocities stay within [-v_max, v_max]
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 import numpy as np

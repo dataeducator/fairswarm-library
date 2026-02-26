@@ -19,7 +19,6 @@ Key Functions:
     - total_variation_distance: L1-based distance
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 from __future__ import annotations

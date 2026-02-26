@@ -16,13 +16,7 @@ Detection Methods:
     - Sliding window comparison
     - CUSUM and ADWIN algorithms
 
-Research Attribution:
-    - Digital Twin Framework: Dr. Elizabeth Bentley (Computer Networks 2023)
-    - Drift Detection: Gama et al. (2014) "A Survey on Concept Drift"
-    - FairSwarm Algorithm: Novel contribution (this thesis)
-
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 from __future__ import annotations
@@ -224,7 +218,6 @@ class DriftDetector:
         ...         handle_drift(result)
 
     Author: Tenicka Norwood
-    Advisor: Dr. Uttam Ghosh
     """
 
     def __init__(

@@ -4,7 +4,6 @@ Tests for FairSwarm-DP algorithm.
 Tests differential privacy integration with FairSwarm PSO.
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 import numpy as np

@@ -1,10 +1,10 @@
 """
-Bentley Digital Twin for Federated Learning.
+Digital Twin for Federated Learning.
 
 This module implements the core digital twin architecture with
 bidirectional synchronization between physical and virtual environments.
 
-The Bentley Framework:
+The Digital Twin Framework:
     Digital twins create a virtual representation of the federated
     learning system that can be used for:
     1. Pre-deployment testing and validation
@@ -16,13 +16,7 @@ Bidirectional Sync:
     - Physical → Virtual: Real client metrics update the simulation
     - Virtual → Physical: Optimized policies deploy to production
 
-Research Attribution:
-    - Digital Twin Architecture: Dr. Elizabeth Bentley (Computer Networks 2023)
-    - FSL-SAGE: Dr. Elizabeth Bentley (ICML 2025)
-    - FairSwarm: Novel contribution (this thesis)
-
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 from __future__ import annotations
@@ -160,11 +154,11 @@ class VirtualState:
     timestamp: datetime = field(default_factory=datetime.now)
 
 
-class BentleyDigitalTwin:
+class DigitalTwin:
     """
     Digital Twin with bidirectional sim-to-real transfer.
 
-    Implements the Bentley Framework for federated learning:
+    Implements the Digital Twin Framework for federated learning:
     - Maintains synchronized virtual representation of FL system
     - Enables policy optimization in simulation
     - Supports deployment of optimized policies to production
@@ -189,11 +183,11 @@ class BentleyDigitalTwin:
         before deploying coalition selection policies.
 
     Example:
-        >>> from fairswarm.digital_twin import BentleyDigitalTwin
+        >>> from fairswarm.digital_twin import DigitalTwin
         >>> from fairswarm.demographics import CensusTarget
         >>>
         >>> # Create digital twin
-        >>> twin = BentleyDigitalTwin(
+        >>> twin = DigitalTwin(
         ...     physical_clients=production_clients,
         ...     target_distribution=CensusTarget.US_2020.as_distribution(),
         ... )
@@ -208,12 +202,7 @@ class BentleyDigitalTwin:
         >>> if opt_result.is_fair:
         ...     deploy_config = twin.prepare_deployment()
 
-    Research Attribution:
-        - Dr. Elizabeth Bentley (Computer Networks 2023)
-        - Dr. Elizabeth Bentley (FSL-SAGE, ICML 2025)
-
     Author: Tenicka Norwood
-    Advisor: Dr. Uttam Ghosh
     """
 
     def __init__(
@@ -228,7 +217,7 @@ class BentleyDigitalTwin:
         on_drift: Callable[[float], None] | None = None,
     ):
         """
-        Initialize BentleyDigitalTwin.
+        Initialize DigitalTwin.
 
         Args:
             physical_clients: Initial physical client list
@@ -267,7 +256,7 @@ class BentleyDigitalTwin:
             self._initialize_virtual_environment()
 
         logger.info(
-            f"Initialized BentleyDigitalTwin with {len(physical_clients or [])} clients"
+            f"Initialized DigitalTwin with {len(physical_clients or [])} clients"
         )
 
     @property
@@ -428,7 +417,7 @@ class BentleyDigitalTwin:
         Deploy optimized policy to physical system.
 
         This method is not implemented in the base digital twin because
-        physical deployment is platform-specific. Subclass BentleyDigitalTwin
+        physical deployment is platform-specific. Subclass DigitalTwin
         and override this method with your deployment logic, or use
         prepare_deployment() to generate a deployment configuration.
 
@@ -443,7 +432,7 @@ class BentleyDigitalTwin:
         raise NotImplementedError(
             "Physical deployment requires platform-specific implementation. "
             "Use prepare_deployment() to generate deployment configuration, "
-            "or subclass BentleyDigitalTwin and override deploy_to_physical() "
+            "or subclass DigitalTwin and override deploy_to_physical() "
             "with your platform-specific deployment logic."
         )
 
@@ -701,7 +690,7 @@ class BentleyDigitalTwin:
 
     def __repr__(self) -> str:
         return (
-            f"BentleyDigitalTwin(state={self._state.value}, "
+            f"DigitalTwin(state={self._state.value}, "
             f"physical_clients={len(self._physical_state.clients)}, "
             f"virtual_clients={len(self._virtual_state.clients)})"
         )

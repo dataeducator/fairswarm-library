@@ -4,7 +4,6 @@ Cardinality constraints for FairSwarm.
 These constraints enforce limits on coalition size.
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 from __future__ import annotations

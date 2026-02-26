@@ -14,7 +14,6 @@ Mathematical Foundation:
     Gaussian Mechanism: M(x) = f(x) + N(0, σ²) where σ = Δf·√(2ln(1.25/δ))/ε
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 from __future__ import annotations

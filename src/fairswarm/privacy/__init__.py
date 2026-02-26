@@ -14,7 +14,6 @@ Theorem 4 Connection:
     UtilityLoss ≥ Ω(√(k·log(1/δ))/(ε_DP·ε_F))
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 from fairswarm.privacy.accountant import (
