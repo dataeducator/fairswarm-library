@@ -94,7 +94,7 @@ class FairSwarm:
     """
     FairSwarm: Provably Fair PSO for Federated Learning.
 
-    Implements Algorithm 1 from CLAUDE.md, a novel particle swarm
+    Implements Algorithm 1 from the paper, a novel particle swarm
     optimization algorithm that incorporates a fairness gradient
     to achieve provably fair coalition selection.
 
@@ -130,7 +130,7 @@ class FairSwarm:
         >>> print(result.summary())
 
     Research Reference:
-        Algorithm 1 in CLAUDE.md, Theorems 1-3 for guarantees.
+        Algorithm 1 in the paper, Theorems 1-3 for guarantees.
     """
 
     def __init__(
@@ -216,7 +216,7 @@ class FairSwarm:
             OptimizationResult with optimized coalition and metrics
 
         Algorithm Reference:
-            Implements Algorithm 1 from CLAUDE.md
+            Implements Algorithm 1 from the paper
         """
         n_iterations = n_iterations or self.config.max_iterations
 

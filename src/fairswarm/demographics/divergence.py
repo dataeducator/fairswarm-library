@@ -4,7 +4,7 @@ Divergence metrics for demographic distributions.
 This module implements divergence measures used in FairSwarm for
 quantifying demographic dissimilarity between coalitions and targets.
 
-Mathematical Foundation (Definition 2 from CLAUDE.md):
+Mathematical Foundation (Definition 2 from the paper):
     DemDiv(S) = D_KL(δ_S || δ*)
 
     where:
@@ -48,7 +48,7 @@ def kl_divergence(
     Compute Kullback-Leibler divergence D_KL(P || Q).
 
     This is the PRIMARY divergence measure for FairSwarm, implementing
-    Definition 2 from CLAUDE.md exactly:
+    Definition 2 from the paper exactly:
 
         DemDiv(S) = D_KL(δ_S || δ*)
 
@@ -83,7 +83,7 @@ def kl_divergence(
         0.1206...
 
     Research Reference:
-        Definition 2 in CLAUDE.md defines DemDiv(S) = D_KL(δ_S || δ*)
+        Definition 2 in the paper defines DemDiv(S) = D_KL(δ_S || δ*)
         Theorem 2 bounds this divergence for FairSwarm output.
 
     Security Note:
@@ -285,7 +285,7 @@ def coalition_demographic_divergence(
     """
     Compute demographic divergence for a coalition from target.
 
-    This is the complete implementation of Definition 2 from CLAUDE.md:
+    This is the complete implementation of Definition 2 from the paper:
 
         DemDiv(S) = D_KL(δ_S || δ*)
 
@@ -392,7 +392,7 @@ def is_epsilon_fair(
     """
     Check if a divergence value satisfies ε-fairness.
 
-    Definition 3 from CLAUDE.md:
+    Definition 3 from the paper:
         A coalition S is ε-fair if DemDiv(S) ≤ ε
 
     Args:

@@ -2,7 +2,7 @@
 Unit tests for FairSwarm demographics module.
 
 Tests for DemographicDistribution, divergence functions, and preset targets.
-Validates that KL divergence matches Definition 2 from CLAUDE.md exactly.
+Validates that KL divergence matches Definition 2 from the paper exactly.
 
 Author: Tenicka Norwood
 """
@@ -224,7 +224,7 @@ class TestKLDivergence:
     Tests for KL divergence implementation.
 
     CRITICAL: These tests validate that kl_divergence matches
-    Definition 2 from CLAUDE.md exactly.
+    Definition 2 from the paper exactly.
     """
 
     def test_identical_distributions_zero_divergence(self):

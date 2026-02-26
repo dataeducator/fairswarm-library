@@ -5,7 +5,7 @@ This module defines the Client dataclass representing a participant
 in the federated learning coalition (e.g., a hospital).
 
 Research Foundation:
-    Corresponds to c_i in C = {c_1, ..., c_n} from Definition 1 in CLAUDE.md.
+    Corresponds to c_i in C = {c_1, ..., c_n} from Definition 1 in the paper.
     Each client has:
     - Local dataset D_i
     - Demographic distribution δ_i ∈ Δ^(k-1)
@@ -50,7 +50,7 @@ class Client:
             When set, LocalPrivacyConstraint checks this value against its bounds.
         metadata: Optional additional information
 
-    Mathematical Notation (from CLAUDE.md):
+    Mathematical Notation (from the paper):
         - id → c_i
         - demographics → δ_i ∈ Δ^(k-1) (probability simplex)
         - dataset_size → |D_i|

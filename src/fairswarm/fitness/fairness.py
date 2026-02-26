@@ -2,7 +2,7 @@
 Fairness-based fitness functions for FairSwarm.
 
 This module implements the demographic fairness component of the
-FairSwarm fitness function, based on Definition 2 in CLAUDE.md.
+FairSwarm fitness function, based on Definition 2 in the paper.
 
 Definition 2 (Demographic Divergence):
     DemDiv(S) = D_KL(δ_S || δ*)
@@ -113,7 +113,7 @@ def compute_fairness_gradient(
     reduce demographic divergence. This is the novel contribution
     of the FairSwarm algorithm.
 
-    Mathematical Derivation (from CLAUDE.md Algorithm 1):
+    Mathematical Derivation (from Algorithm 1 in the paper):
         ∇_fair[i] = -∂DemDiv/∂x[i] ≈ (δ* - δ_current) · δ[i]
 
         where:
@@ -222,7 +222,7 @@ def compute_fairness_gradient(
             # We want to REDUCE divergence, so negate
             gradient[i] = -np.dot(kl_grad_demo, d_coalition_d_pos)
     else:
-        # Simplified approximation from CLAUDE.md Algorithm 1:
+        # Simplified approximation from Algorithm 1 in the paper:
         # ∇_fair[i] = (δ* - δ_current) · δ[i]
         #
         # Intuition: The gap (δ* - δ_current) shows which demographics

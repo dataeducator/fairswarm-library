@@ -4,7 +4,7 @@ Greedy selection baseline for FairSwarm comparison.
 Myopic baseline that greedily adds the client with the highest
 marginal fitness gain at each step.
 
-Reference: CLAUDE.md Section 4.2 (Baselines)
+Reference: Section 4.2 (Baselines)
 """
 
 from __future__ import annotations

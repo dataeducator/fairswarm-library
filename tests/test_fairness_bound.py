@@ -2,7 +2,7 @@
 Theorem 2 (ε-Fairness) Validation Tests.
 
 This module uses Hypothesis property-based testing to empirically validate
-Theorem 2 from CLAUDE.md:
+Theorem 2 from the paper:
 
     Theorem 2 (ε-Fairness Bound): For any ε > 0 and δ > 0, with appropriate
     hyperparameters, FairSwarm produces a coalition S* such that:

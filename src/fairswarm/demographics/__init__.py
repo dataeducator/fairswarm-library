@@ -7,7 +7,7 @@ and computing divergence metrics used in fair coalition selection.
 Key Components:
     - DemographicDistribution: Class for representing and manipulating
       demographic probability distributions
-    - kl_divergence: KL divergence matching Definition 2 in CLAUDE.md
+    - kl_divergence: KL divergence matching Definition 2 in the paper
     - js_divergence: Jensen-Shannon divergence (symmetric alternative)
     - CensusTarget: Preset demographic targets (e.g., US Census 2020)
 

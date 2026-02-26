@@ -1,7 +1,7 @@
 """
 Theorem 4 (Privacy-Fairness Tradeoff) Validation Tests.
 
-This module empirically validates Theorem 4 from CLAUDE.md:
+This module empirically validates Theorem 4 from the paper:
 
     Theorem 4 (Impossibility Result): For any (epsilon_DP, delta)-differentially
     private coalition selection mechanism that achieves epsilon_F-fairness,

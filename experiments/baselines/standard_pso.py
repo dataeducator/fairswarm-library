@@ -5,7 +5,7 @@ Ablation baseline: standard PSO for coalition selection without the
 fairness-aware velocity term (c3 = 0). This isolates the contribution
 of the fairness gradient (the key novel contribution of FairSwarm).
 
-Reference: CLAUDE.md Section 4.2 (Baselines), Algorithm 1 ablation
+Reference: Section 4.2 (Baselines), Algorithm 1 ablation
 """
 
 from __future__ import annotations

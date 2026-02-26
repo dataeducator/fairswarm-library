@@ -2,7 +2,7 @@
 Theorem 3 (Approximation Ratio) Validation Tests.
 
 This module uses Hypothesis property-based testing to empirically validate
-Theorem 3 from CLAUDE.md:
+Theorem 3 from the paper:
 
     Theorem 3 (Approximation Guarantee): For submodular fitness functions,
     FairSwarm achieves a (1 - 1/e - η)-approximation to the optimal

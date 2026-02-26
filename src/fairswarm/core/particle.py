@@ -4,7 +4,7 @@ Particle representation for FairSwarm PSO.
 This module implements the Particle class used in the FairSwarm algorithm.
 Each particle represents a candidate coalition selection in the search space.
 
-Algorithm Reference (Algorithm 1 in CLAUDE.md):
+Algorithm Reference (Algorithm 1 in the paper):
     Initialize:
         For each particle p ∈ {1, ..., P}:
             xₚ ← random vector in [0,1]ⁿ      // Position (selection probabilities)
@@ -59,7 +59,7 @@ class Particle:
         >>> print(f"Selected clients: {coalition}")
 
     Research Reference:
-        Algorithm 1 in CLAUDE.md defines the particle structure and update rules.
+        Algorithm 1 in the paper defines the particle structure and update rules.
     """
 
     position: NDArray[np.float64]

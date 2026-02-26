@@ -9,7 +9,7 @@ Key Classes:
     - OptimizationResult: Container for optimization results
 
 Algorithm Reference:
-    Algorithm 1 in CLAUDE.md defines the FairSwarm PSO procedure.
+    Algorithm 1 in the paper defines the FairSwarm PSO procedure.
 
 Theoretical Guarantees:
     - Theorem 1: Convergence when ω + (c₁+c₂)/2 < 2

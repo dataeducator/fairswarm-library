@@ -4,7 +4,7 @@ Random selection baseline for FairSwarm comparison.
 This is the lower bound baseline: selects m clients uniformly at random.
 Expected demographic divergence is O(1/sqrt(m)) by concentration inequalities.
 
-Reference: CLAUDE.md Section 4.2 (Baselines)
+Reference: Section 4.2 (Baselines)
 """
 
 from __future__ import annotations

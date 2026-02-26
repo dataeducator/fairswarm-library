@@ -3,7 +3,7 @@ Configuration for FairSwarm optimizer.
 
 This module defines FairSwarmConfig, which holds all hyperparameters
 for the FairSwarm algorithm. Parameters are validated against the
-theoretical requirements from Theorems 1-4 in CLAUDE.md.
+theoretical requirements from Theorems 1-4 in the paper.
 
 Research Foundation:
     - Theorem 1 (Convergence): Requires ω + (c₁+c₂)/2 < 2
@@ -66,7 +66,7 @@ class FairSwarmConfig:
         >>> print(f"Convergence metric: {config.convergence_metric:.2f}")
 
     References:
-        Algorithm 1 in CLAUDE.md defines the parameter usage
+        Algorithm 1 in the paper defines the parameter usage
     """
 
     # === Swarm Parameters ===

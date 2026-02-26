@@ -1,7 +1,7 @@
 """
 Baseline algorithms for experimental comparison with FairSwarm.
 
-Implements the baselines from Section 4.2 of CLAUDE.md:
+Implements the baselines from Section 4.2 of the paper:
     - Random selection (lower bound)
     - FedAvg with all clients (no selection)
     - Greedy selection (myopic comparison)

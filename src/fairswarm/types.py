@@ -12,7 +12,7 @@ Type Aliases:
     FitnessValue: Scalar fitness value from optimization
 
 Research Foundation:
-    These types map directly to the mathematical notation in CLAUDE.md:
+    These types map directly to the mathematical notation in the paper:
     - ClientId → c_i in C = {c_1, ..., c_n}
     - Coalition → S ⊆ C
     - DemographicVector → δ_i ∈ Δ^(k-1)

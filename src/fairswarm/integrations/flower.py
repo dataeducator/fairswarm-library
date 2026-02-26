@@ -367,7 +367,7 @@ class FairSwarmStrategy(Strategy if FLOWER_AVAILABLE else object):  # type: igno
         - Integration with standard FL aggregation
 
     Algorithm Reference:
-        Uses Algorithm 1 from CLAUDE.md for client selection.
+        Uses Algorithm 1 from the paper for client selection.
 
     Theoretical Guarantees:
         - Theorem 1: Convergence to stationary point
@@ -509,7 +509,7 @@ class FairSwarmStrategy(Strategy if FLOWER_AVAILABLE else object):  # type: igno
         a demographically fair coalition of clients.
 
         Algorithm Reference:
-            Uses Algorithm 1 from CLAUDE.md
+            Uses Algorithm 1 from the paper
 
         Args:
             server_round: Current round number

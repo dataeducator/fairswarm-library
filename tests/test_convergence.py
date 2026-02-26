@@ -2,7 +2,7 @@
 Theorem 1 (Convergence) Validation Tests.
 
 This module uses Hypothesis property-based testing to empirically validate
-Theorem 1 from CLAUDE.md:
+Theorem 1 from the paper:
 
     Theorem 1 (Convergence): Under the FairSwarm velocity update rule with
     hyperparameters satisfying ω + (c₁ + c₂)/2 < 2, the swarm converges
