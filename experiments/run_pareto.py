@@ -11,7 +11,6 @@ CIA-Availability: Parallel execution, graceful error handling.
 Output: JSON with Pareto-optimal points for each algorithm.
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 
 Usage:
     python experiments/run_pareto.py --parallel

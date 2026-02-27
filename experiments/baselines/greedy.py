@@ -15,7 +15,6 @@ Theoretical Background:
     This makes it a strong baseline for comparing FairSwarm.
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 """
 
 from __future__ import annotations

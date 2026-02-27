@@ -24,7 +24,6 @@ Metrics:
     - Theoretical bound comparison
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 
 Usage:
     python run_privacy.py --epsilon_dp 4.0 --epsilon_fair 0.05

@@ -18,7 +18,6 @@ Metrics:
     - Improvement over iterations
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 
 Usage:
     python run_convergence.py --config config/convergence.yaml

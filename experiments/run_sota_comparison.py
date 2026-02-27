@@ -30,7 +30,6 @@ Output:
 - Console summary with key findings
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 Institution: Meharry Medical College
 
 Usage:

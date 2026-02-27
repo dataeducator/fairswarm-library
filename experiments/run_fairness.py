@@ -20,7 +20,6 @@ Metrics:
     - Comparison with baselines
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 
 Usage:
     python run_fairness.py --epsilon 0.05 --n_trials 50

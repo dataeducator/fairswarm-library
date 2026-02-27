@@ -14,7 +14,6 @@ Key design choices:
 - Tracks both final DemDiv and epsilon-satisfaction rate vs T
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 
 Usage:
     python run_fairness_scaling.py                    # Standard (30 trials)

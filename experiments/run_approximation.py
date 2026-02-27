@@ -24,7 +24,6 @@ Metrics:
     - Computation time comparison
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 
 Usage:
     python run_approximation.py --n_clients 10 --coalition_size 5

@@ -12,7 +12,6 @@ Figures Generated:
     5. Baseline comparison bar charts
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 
 Usage:
     from analysis.plots import create_thesis_figures

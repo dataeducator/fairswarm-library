@@ -12,7 +12,6 @@ Ablations:
     5. Component Weights: Sensitivity to fitness component weights
 
 Author: Tenicka Norwood
-Advisor: Dr. Uttam Ghosh
 
 Usage:
     python run_ablation.py --ablation fairness_gradient
