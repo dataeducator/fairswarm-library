@@ -10,12 +10,27 @@ Implements the baselines from Section 4.2 of the paper:
     - Grey Wolf Optimizer (alternative swarm algorithm)
 """
 
-from experiments.baselines.greedy_selection import GreedySelection
-from experiments.baselines.random_selection import RandomSelection
-from experiments.baselines.standard_pso import StandardPSO
+from baselines.fedavg import FedAvgBaseline, FedAvgConfig
+from baselines.fair_dpfl_scs import FairDPFL_SCS, FairDPFLConfig
+from baselines.greedy import GreedyBaseline, GreedyConfig, GreedyCriterion
+from baselines.greedy_selection import GreedySelection
+from baselines.random_selection import RandomSelectionBaseline, RandomSelectionConfig
+from baselines.standard_pso import StandardPSO
+
+# Backward-compatible aliases
+RandomSelection = RandomSelectionBaseline
 
 __all__ = [
-    "RandomSelection",
+    "FedAvgBaseline",
+    "FedAvgConfig",
+    "FairDPFL_SCS",
+    "FairDPFLConfig",
+    "GreedyBaseline",
+    "GreedyConfig",
+    "GreedyCriterion",
     "GreedySelection",
+    "RandomSelection",
+    "RandomSelectionBaseline",
+    "RandomSelectionConfig",
     "StandardPSO",
 ]

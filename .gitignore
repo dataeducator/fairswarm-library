@@ -27,3 +27,19 @@ Thumbs.db
 
 # Reference PDFs (local only, not for repo)
 references/pdfs/
+
+# Publications (manuscripts managed separately via Overleaf)
+publications/
+
+# PhysioNet / MIMIC-III data (requires credentialed access agreement)
+# DO NOT commit patient data — violates PhysioNet Data Use Agreement
+data/processed/mimic_fl_cohort.parquet
+data/processed/mimic_fl_meta.json
+data/processed/experiment_results.json
+data/raw/
+
+# MIMIC-derived experiment results (contain demographic breakdowns)
+results/mimic_fl/
+
+# Hypothesis test cache
+.hypothesis/

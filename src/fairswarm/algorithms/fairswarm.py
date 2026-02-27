@@ -60,6 +60,7 @@ from __future__ import annotations
 
 import dataclasses
 import logging
+import warnings
 from typing import TYPE_CHECKING, Any, Callable
 
 import numpy as np
@@ -222,6 +223,33 @@ class FairSwarm:
         self._initialize_swarm()
         if self.swarm is None:
             raise RuntimeError("Swarm initialization failed: swarm is None")
+
+        # Pre-flight checks: warn when theorem conditions are not met
+        if self.target_distribution is not None:
+            # Theorem 2: check T >= T_min
+            if self.config.fairness_weight > 0:
+                t_min = self.config.compute_t_min(n_clients=self.n_clients)
+                if n_iterations < t_min:
+                    warnings.warn(
+                        f"Running {n_iterations} iterations but Theorem 2 "
+                        f"(ε-fairness) requires T >= {t_min}. "
+                        f"Fairness bound may not hold. "
+                        f"Increase iterations or relax epsilon_fair.",
+                        UserWarning,
+                        stacklevel=2,
+                    )
+
+            # Theorem 2: λ=0 and c3=0 voids fairness guarantees
+            if (
+                self.config.fairness_weight == 0
+                and self.config.fairness_coefficient == 0
+            ):
+                warnings.warn(
+                    "Both fairness_weight and fairness_coefficient are 0. "
+                    "Theorem 2 (ε-fairness) guarantees do not apply.",
+                    UserWarning,
+                    stacklevel=2,
+                )
 
         # Track convergence
         fitness_history: list[float] = []

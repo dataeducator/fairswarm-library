@@ -253,27 +253,40 @@ class FairSwarmConfig:
         phi = self.cognitive + self.social
         return self.convergence_metric < 2.0 or phi < 4.0
 
-    @property
-    def min_iterations_for_fairness(self) -> int:
+    def compute_t_min(self, n_clients: int, delta: float = 0.1) -> int:
         """
         Compute minimum iterations for ε-fairness guarantee (Theorem 2).
 
         Based on: T_min = n² log(P/δ) / (ε² λ²)
-        Uses conservative estimates.
+
+        Args:
+            n_clients: Number of clients (n)
+            delta: Failure probability (1 - confidence)
+
+        Returns:
+            Minimum iterations required for Theorem 2
+        """
+        import math
+
+        epsilon = self.epsilon_fair
+        lambda_ = max(self.fairness_weight, 1e-10)
+
+        t_min = (n_clients**2 * math.log(self.swarm_size / delta)) / (
+            epsilon**2 * lambda_**2
+        )
+        return int(math.ceil(t_min))
+
+    @property
+    def min_iterations_for_fairness(self) -> int:
+        """
+        Compute minimum iterations assuming 50 clients.
+
+        For actual values, use compute_t_min(n_clients) instead.
 
         Returns:
             Minimum recommended iterations
         """
-        import math
-
-        # Conservative estimates
-        n = 50  # Assume 50 clients
-        delta = 0.1  # 90% confidence
-        epsilon = self.epsilon_fair
-        lambda_ = max(self.fairness_weight, 0.1)
-
-        t_min = (n**2 * math.log(self.swarm_size / delta)) / (epsilon**2 * lambda_**2)
-        return int(math.ceil(t_min))
+        return self.compute_t_min(n_clients=50)
 
     def with_updates(self, **kwargs: object) -> FairSwarmConfig:
         """

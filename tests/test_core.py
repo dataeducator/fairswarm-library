@@ -203,6 +203,20 @@ class TestFairSwarmConfig:
         with pytest.raises(ValueError, match="Unknown preset"):
             get_preset_config("nonexistent")
 
+    def test_compute_t_min_uses_actual_values(self):
+        """Test that compute_t_min uses actual n_clients, not hardcoded."""
+        config = FairSwarmConfig(epsilon_fair=0.05, fairness_weight=0.3)
+        t_min_10 = config.compute_t_min(n_clients=10)
+        t_min_50 = config.compute_t_min(n_clients=50)
+        # T_min scales as n^2, so 50 clients should need ~25x more iterations
+        assert t_min_50 > t_min_10
+        assert t_min_50 / t_min_10 == pytest.approx(25, rel=0.01)
+
+    def test_min_iterations_for_fairness_backward_compat(self):
+        """Test that the old property still works as a convenience wrapper."""
+        config = FairSwarmConfig(epsilon_fair=0.05, fairness_weight=0.3)
+        assert config.min_iterations_for_fairness == config.compute_t_min(n_clients=50)
+
 
 class TestTypeValidation:
     """Tests for type validation utilities."""

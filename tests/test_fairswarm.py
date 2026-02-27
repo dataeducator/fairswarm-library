@@ -11,6 +11,8 @@ Tests cover:
 Author: Tenicka Norwood
 """
 
+import warnings
+
 import numpy as np
 import pytest
 
@@ -669,3 +671,71 @@ class TestFairSwarmIntegration:
         assert state2["initialized"] is True
         assert state2["n_particles"] > 0
         assert state2["g_best_coalition"] is not None
+
+
+# =============================================================================
+# Theorem Condition Warning Tests
+# =============================================================================
+
+
+class TestTheoremWarnings:
+    """Tests for pre-flight warnings about theorem conditions."""
+
+    def test_low_iterations_warns(self, sample_clients, target_distribution):
+        """Warn when T < T_min (Theorem 2)."""
+        config = FairSwarmConfig(
+            swarm_size=10,
+            fairness_weight=0.3,
+            fairness_coefficient=0.5,
+            epsilon_fair=0.05,
+        )
+        optimizer = FairSwarm(
+            clients=sample_clients,
+            coalition_size=5,
+            config=config,
+            target_distribution=target_distribution,
+            seed=42,
+        )
+        fitness = MockFitness(mode="mean_quality")
+
+        with pytest.warns(UserWarning, match="Theorem 2"):
+            optimizer.optimize(fitness, n_iterations=5)
+
+    def test_zero_fairness_warns(self, sample_clients, target_distribution):
+        """Warn when λ=0 and c3=0 with a target distribution."""
+        config = FairSwarmConfig(
+            swarm_size=10,
+            fairness_weight=0.0,
+            fairness_coefficient=0.0,
+        )
+        optimizer = FairSwarm(
+            clients=sample_clients,
+            coalition_size=5,
+            config=config,
+            target_distribution=target_distribution,
+            seed=42,
+        )
+        fitness = MockFitness(mode="mean_quality")
+
+        with pytest.warns(UserWarning, match="Theorem 2"):
+            optimizer.optimize(fitness, n_iterations=10)
+
+    def test_no_target_no_warning(self, sample_clients):
+        """No warnings when target_distribution is None (e.g. StandardPSO)."""
+        config = FairSwarmConfig(
+            swarm_size=10,
+            fairness_weight=0.0,
+            fairness_coefficient=0.0,
+        )
+        optimizer = FairSwarm(
+            clients=sample_clients,
+            coalition_size=5,
+            config=config,
+            target_distribution=None,
+            seed=42,
+        )
+        fitness = MockFitness(mode="mean_quality")
+
+        with warnings.catch_warnings():
+            warnings.simplefilter("error")
+            optimizer.optimize(fitness, n_iterations=10)

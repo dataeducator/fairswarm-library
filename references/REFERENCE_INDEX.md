@@ -97,7 +97,7 @@ Organized bibliography for the FairSwarm TNNLS paper.
 ## Convergence Rate Comparisons
 
 54. **li2025emulating** — Li et al., "Emulating full participation: An effective and fair client selection strategy," arXiv:2405.13584, 2025.
-55. **wang2024subtrunc** — Wang et al., "Submodular maximization approaches for equitable client selection in FL," arXiv:2408.13683, 2024.
+55. **castillo2024subtrunc** — Castillo Jiménez et al., "Submodular maximization approaches for equitable client selection in FL," arXiv:2408.13683, 2024.
 
 ## SOTA Fair FL Methods (2022-2025)
 
