@@ -1,9 +1,8 @@
 % References for FairSwarm paper
 % Organized by topic
 
-% ============================================================================
+
 % FEDERATED LEARNING: Foundations
-% ============================================================================
 
 @inproceedings{mcmahan2017communication,
   title={Communication-efficient learning of deep networks from decentralized data},
@@ -14,52 +13,9 @@
   publisher={PMLR}
 }
 
-@inproceedings{karimireddy2020scaffold,
-  title={{SCAFFOLD}: Stochastic controlled averaging for federated learning},
-  author={Karimireddy, Sai Praneeth and Kale, Satyen and Mohri, Mehryar and Reddi, Sashank and Stich, Sebastian and Suresh, Ananda Theertha},
-  booktitle={International Conference on Machine Learning},
-  pages={5132--5143},
-  year={2020},
-  organization={PMLR}
-}
 
-@inproceedings{li2020fedprox,
-  title={Federated optimization in heterogeneous networks},
-  author={Li, Tian and Sahu, Anit Kumar and Zaheer, Manzil and Sanjabi, Maziar and Talwalkar, Ameet and Smith, Virginia},
-  booktitle={Machine Learning and Systems},
-  volume={2},
-  pages={429--450},
-  year={2020}
-}
+% CLIENT SELECTION
 
-@inproceedings{wang2020fednova,
-  title={Tackling the objective inconsistency problem in heterogeneous federated optimization},
-  author={Wang, Jianyu and Liu, Qinghua and Liang, Hao and Joshi, Gauri and Poor, H Vincent},
-  booktitle={Advances in Neural Information Processing Systems},
-  volume={33},
-  pages={7611--7623},
-  year={2020}
-}
-
-@article{li2020convergence,
-  title={On the convergence of {FedAvg} on non-{IID} data},
-  author={Li, Xiang and Huang, Kaixuan and Yang, Wenhao and Wang, Shusen and Zhang, Zhihua},
-  journal={arXiv preprint arXiv:1907.02189},
-  year={2020}
-}
-
-% ============================================================================
-% FEDERATED LEARNING: Client Selection
-% ============================================================================
-
-@inproceedings{nishio2019client,
-  title={Client selection for federated learning with heterogeneous resources in mobile edge},
-  author={Nishio, Takayuki and Yonetani, Ryo},
-  booktitle={IEEE International Conference on Communications},
-  pages={1--7},
-  year={2019},
-  organization={IEEE}
-}
 
 @inproceedings{lai2021oort,
   title={Oort: Efficient federated learning via guided participant selection},
@@ -78,40 +34,37 @@
   organization={PMLR}
 }
 
-@article{chen2022optimal,
-  title={Optimal client sampling for federated learning},
-  author={Chen, Wenlin and Horvath, Samuel and Richtarik, Peter},
-  journal={Transactions on Machine Learning Research},
+@inproceedings{balakrishnan2022divfl,
+  title={Diverse Client Selection for Federated Learning via Submodular Maximization},
+  author={Balakrishnan, Ravikumar and Li, Tian and Zhou, Tianyi and Himber, Nageen and Smith, Virginia and Bilmes, Jeff},
+  booktitle={International Conference on Learning Representations (ICLR)},
   year={2022}
 }
 
-@inproceedings{papadaki2022minimax,
-  title={Minimax Demographic Group Fairness in Federated Learning},
-  author={Papadaki, Afroditi and Mart{\'i}nez, Natalia and Bertr{\'a}n, Mart{\'i}n and Sapiro, Guillermo and Rodrigues, Miguel R. D.},
-  booktitle={ACM Conference on Fairness, Accountability, and Transparency},
-  pages={1--13},
-  year={2022},
-  organization={ACM}
+@article{castillo2024subtrunc,
+  title={Submodular Maximization Approaches for Equitable Client Selection in Federated Learning},
+  author={Castillo Jim{\'e}nez, Andr{\'e}s Catalino and Kaya, Ege C. and Ye, Lintao and Hashemi, Abolfazl},
+  journal={arXiv preprint arXiv:2408.13683},
+  year={2024}
 }
 
-% ============================================================================
-% FAIRNESS IN ML
-% ============================================================================
+@article{mane2025flfaith,
+  title={{FL-FAITH}: A Hybrid {MCDM-DDPG} Framework for Multi-Objective Client Selection in Federated Learning},
+  author={Mane, Tushar and Phansalkar, Shraddha},
+  journal={Preprint (Research Square)},
+  year={2025},
+  doi={10.21203/rs.3.rs-7171186/v1}
+}
+
+
+% FAIRNESS
+
 
 @inproceedings{li2020fair,
   title={Fair resource allocation in federated learning},
   author={Li, Tian and Sanjabi, Maziar and Beirami, Ahmad and Smith, Virginia},
   booktitle={International Conference on Learning Representations},
   year={2020}
-}
-
-@inproceedings{mohri2019agnostic,
-  title={Agnostic federated learning},
-  author={Mohri, Mehryar and Sivek, Gary and Suresh, Ananda Theertha},
-  booktitle={International Conference on Machine Learning},
-  pages={4615--4625},
-  year={2019},
-  organization={PMLR}
 }
 
 @inproceedings{hardt2016equality,
@@ -122,51 +75,6 @@
   year={2016}
 }
 
-@inproceedings{dwork2012fairness,
-  title={Fairness through awareness},
-  author={Dwork, Cynthia and Hardt, Moritz and Pitassi, Toniann and Reingold, Omer and Zemel, Richard},
-  booktitle={Innovations in Theoretical Computer Science},
-  pages={214--226},
-  year={2012},
-  organization={ACM}
-}
-
-@article{chouldechova2017fair,
-  title={Fair prediction with disparate impact: A study of bias in recidivism prediction instruments},
-  author={Chouldechova, Alexandra},
-  journal={Big Data},
-  volume={5},
-  number={2},
-  pages={153--163},
-  year={2017}
-}
-
-@inproceedings{li2021ditto,
-  title={Ditto: Fair and robust federated learning through personalization},
-  author={Li, Tian and Hu, Shengyuan and Beirami, Ahmad and Smith, Virginia},
-  booktitle={International Conference on Machine Learning},
-  pages={6357--6368},
-  year={2021},
-  organization={PMLR}
-}
-
-@inproceedings{ezzeldin2023fairfed,
-  title={{FairFed}: Enabling group fairness in federated learning},
-  author={Ezzeldin, Yahya H and Yan, Shen and He, Chaoyang and Ferrara, Emilio and Avestimehr, A Salman},
-  booktitle={AAAI Conference on Artificial Intelligence},
-  volume={37},
-  number={6},
-  pages={7494--7502},
-  year={2023}
-}
-
-@inproceedings{cummings2019compatibility,
-  title={On the compatibility of privacy and fairness},
-  author={Cummings, Rachel and Gupta, Varun and Kimpara, Dhamma and Morgenstern, Jamie},
-  booktitle={ACM Conference on User Modeling, Adaptation and Personalization},
-  year={2019}
-}
-
 @article{ling2024fedfdp,
   title={{FedFDP}: Fairness-Aware Federated Learning with Differential Privacy},
   author={Ling, Xinpeng and Fu, Jie and Wang, Kuncan and Li, Huifa and Cheng, Tong and Chen, Zhili},
@@ -174,9 +82,9 @@
   year={2024}
 }
 
-% ============================================================================
-% PARTICLE SWARM OPTIMIZATION: Theory
-% ============================================================================
+
+% PARTICLE SWARM OPTIMIZATION
+
 
 @inproceedings{kennedy1995particle,
   title={Particle swarm optimization},
@@ -210,61 +118,19 @@
   publisher={Elsevier}
 }
 
-@article{vandenbergh2006study,
-  title={A study of particle swarm optimization particle trajectories},
-  author={Van den Bergh, Frans and Engelbrecht, Andries P},
-  journal={Information Sciences},
-  volume={176},
-  number={8},
-  pages={937--971},
-  year={2006},
+@article{mirjalili2014grey,
+  title={Grey wolf optimizer},
+  author={Mirjalili, Seyedali and Mirjalili, Seyed Mohammad and Lewis, Andrew},
+  journal={Advances in Engineering Software},
+  volume={69},
+  pages={46--61},
+  year={2014},
   publisher={Elsevier}
 }
 
-@article{bonyadi2017particle,
-  title={Particle swarm optimization for single objective continuous space problems: a review},
-  author={Bonyadi, Mohammad Reza and Michalewicz, Zbigniew},
-  journal={Evolutionary Computation},
-  volume={25},
-  number={1},
-  pages={1--54},
-  year={2017},
-  publisher={MIT Press}
-}
 
-@article{poli2007particle,
-  title={Particle swarm optimization: An overview},
-  author={Poli, Riccardo and Kennedy, James and Blackwell, Tim},
-  journal={Swarm Intelligence},
-  volume={1},
-  number={1},
-  pages={33--57},
-  year={2007},
-  publisher={Springer}
-}
-
-@inproceedings{shi1998modified,
-  title={A modified particle swarm optimizer},
-  author={Shi, Yuhui and Eberhart, Russell},
-  booktitle={IEEE International Conference on Evolutionary Computation},
-  pages={69--73},
-  year={1998},
-  organization={IEEE}
-}
-
-@inproceedings{kennedy1997discrete,
-  title={A discrete binary version of the particle swarm algorithm},
-  author={Kennedy, James and Eberhart, Russell C.},
-  booktitle={IEEE International Conference on Systems, Man, and Cybernetics},
-  volume={5},
-  pages={4104--4108},
-  year={1997},
-  organization={IEEE}
-}
-
-% ============================================================================
 % SUBMODULAR OPTIMIZATION
-% ============================================================================
+
 
 @article{calinescu2011maximizing,
   title={Maximizing a monotone submodular function subject to a matroid constraint},
@@ -275,15 +141,6 @@
   pages={1740--1766},
   year={2011},
   publisher={SIAM}
-}
-
-@inproceedings{vondrak2008optimal,
-  title={Optimal approximation for the submodular welfare problem in the value oracle model},
-  author={Vondr{\'a}k, Jan},
-  booktitle={ACM Symposium on Theory of Computing},
-  pages={67--74},
-  year={2008},
-  organization={ACM}
 }
 
 @article{nemhauser1978analysis,
@@ -297,53 +154,9 @@
   publisher={Springer}
 }
 
-@inproceedings{wei2015submodularity,
-  title={Submodularity in data subset selection and active learning},
-  author={Wei, Kai and Iyer, Rishabh and Bilmes, Jeff},
-  booktitle={International Conference on Machine Learning},
-  pages={1954--1963},
-  year={2015},
-  organization={PMLR}
-}
 
-% ============================================================================
-% DIFFERENTIAL PRIVACY
-% ============================================================================
+% CONVERGENCE ANALYSIS
 
-@inproceedings{dwork2006differential,
-  title={Differential privacy},
-  author={Dwork, Cynthia},
-  booktitle={International Colloquium on Automata, Languages, and Programming},
-  pages={1--12},
-  year={2006},
-  organization={Springer}
-}
-
-@inproceedings{abadi2016deep,
-  title={Deep learning with differential privacy},
-  author={Abadi, Martin and Chu, Andy and Goodfellow, Ian and McMahan, H Brendan and Mironov, Ilya and Talwar, Kunal and Zhang, Li},
-  booktitle={ACM SIGSAC Conference on Computer and Communications Security},
-  pages={308--318},
-  year={2016}
-}
-
-@article{geyer2017differentially,
-  title={Differentially private federated learning: A client level perspective},
-  author={Geyer, Robin C and Klein, Tassilo and Neel, Moin},
-  journal={arXiv preprint arXiv:1712.07557},
-  year={2017}
-}
-
-@inproceedings{mcmahan2018learning,
-  title={Learning differentially private recurrent language models},
-  author={McMahan, H Brendan and Ramage, Daniel and Talwar, Kunal and Zhang, Li},
-  booktitle={International Conference on Learning Representations},
-  year={2018}
-}
-
-% ============================================================================
-% CONVERGENCE ANALYSIS / DRIFT ANALYSIS
-% ============================================================================
 
 @article{he2001drift,
   title={Drift analysis and average time complexity of evolutionary algorithms},
@@ -356,29 +169,9 @@
   publisher={Elsevier}
 }
 
-@article{robbins1971convergence,
-  title={A convergence theorem for non negative almost supermartingales and some applications},
-  author={Robbins, Herbert and Siegmund, David},
-  journal={Optimizing Methods in Statistics},
-  pages={233--257},
-  year={1971},
-  publisher={Academic Press}
-}
 
-@article{hajek1982hitting,
-  title={Hitting-time and occupation-time bounds implied by drift analysis with applications},
-  author={Hajek, Bruce},
-  journal={Advances in Applied Probability},
-  volume={14},
-  number={3},
-  pages={502--525},
-  year={1982},
-  publisher={Cambridge University Press}
-}
+% HEALTHCARE / CLINICAL DATA
 
-% ============================================================================
-% HEALTHCARE FL / CLINICAL AI
-% ============================================================================
 
 @article{johnson2016mimic,
   title={{MIMIC-III}, a freely accessible critical care database},
@@ -391,353 +184,35 @@
   publisher={Nature Publishing Group}
 }
 
-@article{pollard2018eicu,
-  title={The {eICU} Collaborative Research Database, a freely available multi-center database for critical care research},
-  author={Pollard, Tom J and Johnson, Alistair EW and Raffa, Jesse D and Celi, Leo A and Mark, Roger G and Badawi, Omar},
-  journal={Scientific Data},
-  volume={5},
-  number={1},
-  pages={1--13},
-  year={2018},
-  publisher={Nature Publishing Group}
-}
 
-@article{hyland2020hirid,
-  title={Early prediction of circulatory failure in the intensive care unit using machine learning},
-  author={Hyland, Stephanie L and Faltys, Martin and H{\"u}ser, Matthias and others},
-  journal={Nature Medicine},
-  volume={26},
-  number={3},
-  pages={364--373},
-  year={2020},
-  publisher={Nature Publishing Group}
-}
+% SUPPLEMENTARY MATERIAL
 
-@article{rajkomar2018scalable,
-  title={Scalable and accurate deep learning with electronic health records},
-  author={Rajkomar, Alvin and Oren, Eyal and Chen, Kai and Dai, Andrew M and Hajaj, Nissan and Hardt, Michaela and Liu, Peter J and Liu, Xiaobing and Marcus, Jake and Sun, Mimi and others},
-  journal={npj Digital Medicine},
-  volume={1},
-  number={1},
-  pages={18},
-  year={2018},
-  publisher={Nature Publishing Group}
-}
 
-@article{sheller2020federated,
-  title={Federated learning in medicine: facilitating multi-institutional collaborations without sharing patient data},
-  author={Sheller, Micah J and Edwards, Brandon and Reina, G Anthony and Martin, Jason and Pati, Sarthak and Kotrotsou, Aikaterini and Milchenko, Mikhail and Xu, Weilin and Marcus, Daniel and Colen, Rivka R and Bakas, Spyridon},
-  journal={Scientific Reports},
-  volume={10},
-  number={1},
-  pages={12598},
-  year={2020},
-  publisher={Nature Publishing Group}
-}
-
-% ============================================================================
-% ADVISORS' WORK
-% ============================================================================
-
-@article{ghosh2023zerotrust,
-  title={Zero trust federated learning for healthcare {IoT}},
-  author={Ghosh, Uttam and others},
-  journal={IEEE Transactions on Network Science and Engineering},
-  year={2023},
-  publisher={IEEE}
-}
-
-@article{bentley2023digital,
-  title={Digital twins for wireless network management},
-  author={Bentley, Elizabeth Serena and others},
-  journal={Computer Networks},
-  year={2023},
-  publisher={Elsevier}
-}
-
-% ============================================================================
-% SWARM INTELLIGENCE IN ML/FL
-% ============================================================================
-
-@article{mirjalili2014grey,
-  title={Grey wolf optimizer},
-  author={Mirjalili, Seyedali and Mirjalili, Seyed Mohammad and Lewis, Andrew},
-  journal={Advances in Engineering Software},
-  volume={69},
-  pages={46--61},
-  year={2014},
-  publisher={Elsevier}
-}
-
-@article{khan2024swarm,
-  title={Swarm Intelligence-Driven Client Selection for Federated Learning in Cybersecurity Applications},
-  author={Khan, Koffka and Goodridge, Wayne},
-  journal={arXiv preprint arXiv:2411.18877},
-  year={2024}
-}
-
-@article{dorigo2006ant,
-  title={Ant colony optimization},
-  author={Dorigo, Marco and Blum, Christian},
-  journal={Computational Intelligence Magazine, IEEE},
-  volume={1},
-  number={4},
-  pages={28--39},
-  year={2006},
-  publisher={IEEE}
-}
-
-@article{del2008particle,
-  title={Particle Swarm Optimization: Basic Concepts, Variants and Applications in Power Systems},
-  author={Del Valle, Yamille and Venayagamoorthy, Ganesh Kumar and Mohagheghi, Sarangapani and Hernandez, Jean-Carlos and Harley, Ronald G},
-  journal={IEEE Transactions on Evolutionary Computation},
-  volume={12},
-  number={2},
-  pages={171--195},
-  year={2008},
-  publisher={IEEE}
-}
-
-% ============================================================================
-% SHAPLEY VALUES / GAME THEORY IN FL
-% ============================================================================
-
-@inproceedings{ghorbani2019data,
-  title={Data {Shapley}: Equitable valuation of data for machine learning},
-  author={Ghorbani, Amirata and Zou, James},
-  booktitle={International Conference on Machine Learning},
-  pages={2242--2251},
-  year={2019},
-  organization={PMLR}
-}
-
-@inproceedings{jia2019towards,
-  title={Towards efficient data valuation based on the {Shapley} value},
-  author={Jia, Ruoxi and Dao, David and Wang, Boxin and Hubis, Frances Ann and Hynes, Nick and G{\"u}rel, Nezihe Merve and Li, Bo and Zhang, Ce and Song, Dawn and Spanos, Costas J},
-  booktitle={International Conference on Artificial Intelligence and Statistics},
-  pages={1167--1176},
-  year={2019},
-  organization={PMLR}
-}
-
-% ============================================================================
-% OPTIMIZATION THEORY
-% ============================================================================
-
-@book{nocedal2006numerical,
-  title={Numerical Optimization},
-  author={Nocedal, Jorge and Wright, Stephen J},
-  year={2006},
-  edition={2nd},
-  publisher={Springer}
-}
-
-@article{shalev2012online,
-  title={Online learning and online convex optimization},
-  author={Shalev-Shwartz, Shai},
-  journal={Foundations and Trends in Machine Learning},
-  volume={4},
-  number={2},
-  pages={107--194},
-  year={2012},
-  publisher={Now Publishers}
-}
-
-% ============================================================================
-% CONVERGENCE RATE COMPARISONS
-% ============================================================================
-
-@article{li2025emulating,
-  title={Emulating Full Participation: An Effective and Fair Client Selection Strategy for Federated Learning},
-  author={Li, Qingming and Miao, Juzheng and Zhao, Puning and Zhou, Li and Zhao, H. Vicky and Ji, Shouling and Zhou, Bowen and Liu, Furui},
-  journal={arXiv preprint arXiv:2405.13584},
-  year={2025}
-}
-
-@article{castillo2024subtrunc,
-  title={Submodular Maximization Approaches for Equitable Client Selection in Federated Learning},
-  author={Castillo Jim{\'e}nez, Andr{\'e}s Catalino and Kaya, Ege C. and Ye, Lintao and Hashemi, Abolfazl},
-  journal={arXiv preprint arXiv:2408.13683},
-  year={2024}
-}
-
-% ============================================================================
-% SOTA FAIR FL METHODS (2022-2025)
-% ============================================================================
-
-@inproceedings{balakrishnan2022divfl,
-  title={Diverse Client Selection for Federated Learning via Submodular Maximization},
-  author={Balakrishnan, Ravikumar and Li, Tian and Zhou, Tianyi and Himber, Nageen and Smith, Virginia and Bilmes, Jeff},
-  booktitle={International Conference on Learning Representations (ICLR)},
-  year={2022}
-}
-
-@article{xia2025flexfair,
-  title={Achieving Flexible Fairness Metrics in Federated Medical Imaging},
-  author={Xia, Yuning and others},
-  journal={Nature Communications},
-  volume={16},
-  number={1},
-  pages={3342},
-  year={2025},
-  publisher={Nature Publishing Group}
-}
-
-@article{li2025fairfml,
-  title={{FairFML}: Fair Federated Machine Learning with a Case Study on Reducing Gender Disparities in Cardiac Arrest Outcome Prediction},
-  author={Li, Sichang and Wu, Qian and Zhou, Doudou and others},
-  journal={npj Health Systems},
-  volume={2},
-  pages={29},
-  year={2025},
-  publisher={Nature Publishing Group}
-}
-
-@article{mukhtiar2025fairness,
-  title={Fairness in Federated Learning: Trends, Challenges, and Opportunities},
-  author={Mukhtiar, Nasir and others},
-  journal={Advanced Intelligent Systems},
-  year={2025},
-  publisher={Wiley}
-}
-
-% ============================================================================
-% BANDIT-BASED CLIENT SELECTION
-% ============================================================================
-
-@article{xia2020multi,
-  title={Multi-Armed Bandit-Based Client Scheduling for Federated Learning},
-  author={Xia, Wenqiang and Quek, Tony Q. S. and Guo, Kun and Jin, Wen and Zhu, Hongbo},
-  journal={IEEE Transactions on Wireless Communications},
-  volume={19},
-  number={11},
-  pages={7108--7123},
-  year={2020},
-  publisher={IEEE}
-}
-
-% ============================================================================
-% GROUP FAIRNESS SURVEYS & MULTI-OBJECTIVE CLIENT SELECTION
-% ============================================================================
-
-@article{salazar2026group,
-  title={A survey on group fairness in federated learning: challenges, taxonomy of solutions and directions for future research},
-  author={Salazar, Teresa and Araujo, Helder and Cano, Alberto and Abreu, Pedro Henriques},
-  journal={Artificial Intelligence Review},
-  volume={59},
-  pages={81},
+@misc{fairswarm_supplementary,
+  title={{FairSwarm}: Supplementary Material with Complete Proofs},
+  author={Norwood, Tenicka},
   year={2026},
-  publisher={Springer},
-  doi={10.1007/s10462-025-11475-5}
+  note={Available at \url{https://github.com/dataeducator/fairswarm-library}}
 }
 
-@article{mane2025flfaith,
-  title={{FL-FAITH}: A Hybrid {MCDM-DDPG} Framework for Multi-Objective Client Selection in Federated Learning},
-  author={Mane, Tushar and Phansalkar, Shraddha},
-  journal={Preprint (Research Square)},
+@ARTICLE{10839304,
+  author={Das, Debashis and Chatterjee, Pushpita and Banerjee, Sourav and Ghosh, Uttam and Al-Numay, Mohammed S.},
+  journal={IEEE Transactions on Consumer Electronics}, 
+  title={Blockchain-Enabled Federated Learning for Security and Privacy in Consumer Electronics Devices}, 
   year={2025},
-  doi={10.21203/rs.3.rs-7171186/v1}
-}
+  volume={71},
+  number={1},
+  pages={2262-2270},
+  keywords={Security;Authentication;Blockchains;Cryptography;Privacy;Data privacy;Data models;Consumer electronics;Encryption;Elliptic curves;Consumer electronic devices;secure communication;attack resistance;data privacy;decentralized learning;secure aggregation},
+  doi={10.1109/TCE.2025.3528934}}
 
-@article{kim2024addressing,
-  title={Addressing Bias and Fairness Using Fair Federated Learning: A Synthetic Review},
-  author={Kim, Dohyoung and Woo, Hyekyung and Lee, Youngho},
-  journal={Electronics},
-  volume={13},
-  number={23},
-  pages={4664},
+@ARTICLE{10342702,
+  author={Chatterjee, Pushpita and Das, Debashis and Rawat, Danda B.},
+  journal={IEEE Transactions on Consumer Electronics}, 
+  title={Federated Learning Empowered Recommendation Model for Financial Consumer Services}, 
   year={2024},
-  publisher={MDPI}
-}
-
-% ============================================================================
-% POST-QUANTUM CRYPTOGRAPHY
-% ============================================================================
-
-@techreport{nist2024pqc,
-  title={{Module-Lattice-Based Key-Encapsulation Mechanism Standard (FIPS 203)}},
-  author={{National Institute of Standards and Technology}},
-  institution={U.S. Department of Commerce},
-  year={2024},
-  note={Federal Information Processing Standards Publication 203},
-  url={https://doi.org/10.6028/NIST.FIPS.203}
-}
-
-% ============================================================================
-% SOTA COMPARISON ADDITIONS (Feb 2026)
-% ============================================================================
-
-@inproceedings{kiani2025adaptive,
-  title={Differentially Private Federated Learning With Time-Adaptive Privacy Spending},
-  author={Kiani, Shahrzad and Kulkarni, Nupur and Dziedzic, Adam and Draper, Stark and Boenisch, Franziska},
-  booktitle={International Conference on Learning Representations},
-  year={2025}
-}
-
-@inproceedings{badar2024fairtrade,
-  title={{FairTrade}: Achieving {Pareto}-Optimal Trade-Offs between Balanced Accuracy and Fairness in Federated Learning},
-  author={Badar, Maryam and Sikdar, Sandipan and Nejdl, Wolfgang and Fisichella, Marco},
-  booktitle={AAAI Conference on Artificial Intelligence},
-  volume={38},
-  number={10},
-  pages={10962--10970},
-  year={2024}
-}
-
-@inproceedings{tran2025fairdp,
-  title={{FairDP}: Achieving Fairness Certification with Differential Privacy},
-  author={Tran, Khang and Fioretto, Ferdinando and Khalil, Issa and Thai, My T. and Phan, Linh Thi Xuan and Phan, Nhat Hai},
-  booktitle={IEEE Conference on Secure and Trustworthy Machine Learning (SaTML)},
-  pages={956--976},
-  year={2025}
-}
-
-% ============================================================================
-% ADVERSARIAL REVIEW ADDITIONS (Feb 2026)
-% ============================================================================
-
-@incollection{lengler2020drift,
-  title={Drift analysis},
-  author={Lengler, Johannes},
-  booktitle={Theory of Evolutionary Computation: Recent Developments in Discrete Optimization},
-  pages={89--131},
-  year={2020},
-  publisher={Springer}
-}
-
-@article{obermeyer2019dissecting,
-  title={Dissecting racial bias in an algorithm used to manage the health of populations},
-  author={Obermeyer, Ziad and Powers, Brian and Vogeli, Christine and Mullainathan, Sendhil},
-  journal={Science},
-  volume={366},
-  number={6464},
-  pages={447--453},
-  year={2019},
-  publisher={American Association for the Advancement of Science}
-}
-
-@inproceedings{das2011submodular,
-  title={Submodular meets spectral: Greedy algorithms for subset selection, sparse approximation and dictionary selection},
-  author={Das, Abhimanyu and Kempe, David},
-  booktitle={Proceedings of the 28th International Conference on Machine Learning (ICML)},
-  pages={1057--1064},
-  year={2011}
-}
-
-@inproceedings{dwork2010boosting,
-  title={Boosting and differential privacy},
-  author={Dwork, Cynthia and Rothblum, Guy N. and Vadhan, Salil},
-  booktitle={IEEE 51st Annual Symposium on Foundations of Computer Science},
-  pages={51--60},
-  year={2010},
-  organization={IEEE}
-}
-
-@inproceedings{mironov2017renyi,
-  title={R\'{e}nyi differential privacy},
-  author={Mironov, Ilya},
-  booktitle={IEEE 30th Computer Security Foundations Symposium (CSF)},
-  pages={263--275},
-  year={2017},
-  organization={IEEE}
-}
+  volume={70},
+  number={1},
+  pages={2508-2516},
+  keywords={Data models;Federated learning;Predictive models;Blockchains;Data privacy;Analytical models;Computational modeling;Federated learning;recommendation model;financial consumer services;blockchain;data privacy},
+  doi={10.1109/TCE.2023.3339702}}
