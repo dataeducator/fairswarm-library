@@ -97,7 +97,8 @@ print(f"ε-fair: {result.is_epsilon_fair(0.05)}")
 
 Full API documentation is available in the source code docstrings. For the formal algorithm specification, theoretical proofs, and experimental methodology, please refer to:
 
-> T. Norwood, D. Das, P. Chatterjee, E. Bentley, and U. Ghosh, "FairSwarm: Provably Fair Particle Swarm Optimization for Federated Learning Coalition Selection," *IEEE Trans. Consum. Electron.*, 2026.
+> T. Norwood, D. Das, P. Chatterjee, E. Bentley, and U. Ghosh, "FairSwarm: Trustworthy Coalition Selection for Fair
+and Secure Federated Intelligence," *IEEE Trans. Consum. Electron.*, 2026.
 
 ## Citation
 
