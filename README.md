@@ -99,6 +99,7 @@ Full API documentation is available in the source code docstrings. For the forma
 
 > T. Norwood, D. Das, P. Chatterjee, E. Bentley, and U. Ghosh, "FairSwarm: Trustworthy Coalition Selection for Fair
 and Secure Federated Intelligence," *IEEE Trans. Consum. Electron.*, 2026.
+> note : Submitted
 
 ## Citation
 
