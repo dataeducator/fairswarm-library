@@ -31,15 +31,45 @@ references/pdfs/
 # Publications (manuscripts managed separately via Overleaf)
 publications/
 
-# PhysioNet / MIMIC-III data (requires credentialed access agreement)
+# ── PhysioNet / Clinical Data Protection ──────────────────────────
 # DO NOT commit patient data — violates PhysioNet Data Use Agreement
-data/processed/mimic_fl_cohort.parquet
-data/processed/mimic_fl_meta.json
-data/processed/experiment_results.json
+# Broad directory rules (catch current and future files)
+data/processed/
 data/raw/
+data/mimic*/
+data/eicu*/
 
-# MIMIC-derived experiment results (contain demographic breakdowns)
-results/mimic_fl/
+# MIMIC / eICU-derived experiment results (contain demographic breakdowns)
+results/mimic*/
+
+# ── Data file extensions (defense-in-depth) ──────────────────────
+*.csv
+*.parquet
+*.pkl
+*.pickle
+*.h5
+*.hdf5
+*.feather
+*.arrow
+*.npy
+*.npz
+*.db
+*.sqlite
+
+# Model checkpoints
+*.pt
+*.pth
+*.ckpt
+
+# Raw binary data
+*.dat
+
+# ── Secrets & credentials ────────────────────────────────────────
+.env
+*.pem
+*.key
+credentials.json
+token.json
 
 # Hypothesis test cache
 .hypothesis/
