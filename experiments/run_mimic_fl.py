@@ -43,7 +43,7 @@ from fairswarm import Client, FairSwarm, FairSwarmConfig
 from fairswarm.demographics.distribution import DemographicDistribution
 from fairswarm.demographics.divergence import kl_divergence
 from fairswarm.fitness import AccuracyFairnessFitness
-from experiments.baselines import GreedySelection, RandomSelection
+from experiments.baselines import GreedySelection, RandomSelection, RandomSelectionConfig
 
 
 # Constants
@@ -375,9 +375,10 @@ def select_random(
         target_distribution=target,
         fairness_weight=0.3,
     )
-    selector = RandomSelection(clients, COALITION_SIZE, seed=seed)
-    coalition, _ = selector.select(fitness, n_trials=100)
-    return [clients[i].id for i in coalition]
+    config = RandomSelectionConfig(coalition_size=COALITION_SIZE, n_iterations=100, seed=seed)
+    selector = RandomSelection(clients, config=config)
+    result = selector.run(fitness_fn=fitness)
+    return [clients[i].id for i in result.coalition]
 
 
 def select_greedy_fair(

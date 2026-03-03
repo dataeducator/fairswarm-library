@@ -73,3 +73,6 @@ token.json
 
 # Hypothesis test cache
 .hypothesis/
+
+# Local-only notebooks (not for repo)
+notebooks/iot_federation_tutorial.ipynb
